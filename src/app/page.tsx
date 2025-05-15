@@ -1,22 +1,11 @@
-import { Container } from "@/components/Container";
-import { Heading } from "@/components/Heading";
-import { Highlight } from "@/components/Highlight";
-import { Paragraph } from "@/components/Paragraph";
-import DashboardCTA from "@/components/DashboardCTA";
-import Stats from "@/components/Stats";
-import DashboardMaterials from "@/components/DashboardMaterials";
-export default function Home() {
-  return (
-    <Container>
-      <Heading className="font-black">Edin Capital Dashboard</Heading>
-      <div className="overflow-hidden my-8 rounded-lg bg-white shadow">
-        <div className="px-4 py-5 sm:p-6">
-          <DashboardCTA />
-        </div>
-      </div>
-      <Stats />
-      <DashboardMaterials />
-      
-    </Container>
-  );
+import { Metadata } from "next";
+import DashboardClient from "@/components/DashboardClient";
+
+export const metadata: Metadata = {
+  title: "Home | Investor Dashboard",
+  description: "Dashboard overview of key metrics and data from our portfolio.",
+};
+
+export default function HomePage() {
+  return <DashboardClient />;
 }
