@@ -1,46 +1,46 @@
-interface StatItem {
+interface Stat {
+  id: number | string;
   name: string;
   value: string;
-  change?: string;
-  changeType?: 'positive' | 'negative' | 'neutral';
 }
 
 interface StatsProps {
-  stats: StatItem[];
+  title?: string;
+  description?: string;
+  stats: Stat[];
   className?: string;
 }
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
-
-export default function Stats({ stats, className = '' }: StatsProps) {
+export default function Stats({ 
+  title = "Trusted by creators worldwide",
+  description = "Lorem ipsum dolor sit amet consect adipisicing possimus.",
+  stats,
+  className = ""
+}: StatsProps) {
   return (
-    <dl className={classNames(
-      "mx-auto grid grid-cols-1 gap-px bg-gray-900/5 sm:grid-cols-2 lg:grid-cols-3",
-      className
-    )}>
-      {stats.map((stat) => (
-        <div
-          key={stat.name}
-          className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 bg-white px-4 py-10 sm:px-6 xl:px-8"
-        >
-          <dt className="text-sm/6 font-medium text-gray-500">{stat.name}</dt>
-          {stat.change && (
-            <dd
-              className={classNames(
-                stat.changeType === 'negative' ? 'text-rose-600' : 
-                stat.changeType === 'positive' ? 'text-emerald-600' : 'text-gray-700',
-                'text-xs font-medium',
+    <div className={`bg-white py-12 sm:py-16 ${className}`}>
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl lg:max-w-none">
+          {(title || description) && (
+            <div className="text-center">
+              {title && (
+                <h2 className="text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                  {title}
+                </h2>
               )}
-            >
-              {stat.change}
-            </dd>
+              {description && <p className="mt-4 text-lg/8 text-gray-600">{description}</p>}
+            </div>
           )}
-          <dd className="w-full flex-none text-3xl/10 font-medium tracking-tight text-gray-900">{stat.value}</dd>
+          <dl className="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4">
+            {stats.map((stat) => (
+              <div key={stat.id} className="flex flex-col bg-gray-400/5 p-8">
+                <dt className="text-sm/6 font-semibold text-gray-600">{stat.name}</dt>
+                <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900">{stat.value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-      ))}
-    </dl>
+      </div>
+    </div>
   )
 }
-  

@@ -10,7 +10,7 @@ import { Heading } from "./Heading";
 import { socials } from "@/constants/socials";
 import { Badge } from "./Badge";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconLayoutSidebarRightCollapse } from "@tabler/icons-react";
+import { IconLayoutSidebarRightCollapse, IconMail } from "@tabler/icons-react";
 import { isMobile } from "@/lib/utils";
 
 export const Sidebar = () => {
@@ -32,7 +32,7 @@ export const Sidebar = () => {
               <Navigation setOpen={setOpen} />
             </div>
             <div onClick={() => isMobile() && setOpen(false)}>
-              <Badge href="https://www.canva.com/design/DAGmgO3YG1c/pWObK_mvXzJQ8x1dbyR72Q" text="Investor Deck" />
+              <Badge href="https://www.dropbox.com/scl/fi/oh4tndt76kkbl2cndqnqt/Edin-Capital-Deck-Updated-524.pdf?rlkey=bhbqaui3votyvnhpdt6tucmrn&st=b5yzcodq&dl=0" text="Overview Deck" />
             </div>
           </motion.div>
         )}
@@ -98,6 +98,13 @@ export const Navigation = ({
           <span>{link.label}</span>
         </Link>
       ))}
+      <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-10 px-2">
+        Contact
+      </Heading>
+      <Link href="mailto:info@edin.capital" className="text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm">
+        <IconMail className="h-4 w-4 flex-shrink-0" />
+        <span>info@edin.capital</span>
+      </Link>
     </div>
   );
 };

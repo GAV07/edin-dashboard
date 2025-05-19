@@ -11,6 +11,7 @@ import {
   ComposedChart,
   Area
 } from 'recharts';
+import Stats from './Stats';
 
 interface DashboardProps {
   fundOverview: {
@@ -44,6 +45,10 @@ const formatMillions = (value: number) => {
   return `$${(value / 1000000).toFixed(1)}M`;
 };
 
+const formatPercentage = (value: string) => {
+  return value.endsWith('%') ? value : `${value}%`;
+};
+
 export default function Dashboard({
   fundOverview,
   portfolioAllocation,
@@ -51,6 +56,18 @@ export default function Dashboard({
   distributionSourcesData,
   annualReturnsData
 }: DashboardProps) {
+  // Create key metrics summary stats
+  const keyMetricsStats = [
+    { id: 'committed', name: 'Capital Ask', value: fundOverview.committedCapital },
+    { id: 'numInv', name: 'Number of Investments', value: portfolioAllocation.numberOfInvestments },
+    { id: 'checkSize', name: 'Average Check Size', value: portfolioAllocation.averageCheckSize },
+    { id: 'distributions', name: 'LP Distributions', value: returnMetrics.lpDistributions },
+    { id: 'moic', name: 'MOIC', value: returnMetrics.moic },
+    { id: 'tvpi', name: 'Gross TVPI', value: returnMetrics.grossTvpi },
+    { id: 'dpi', name: 'DPI', value: returnMetrics.dpi },
+    { id: 'success', name: 'Expected Success Rate', value: portfolioAllocation.successRate },
+  ];
+
   // Calculate cumulative returns
   const cumulativeReturnsData = annualReturnsData.map((item, index) => {
     const previousCumulative = index > 0 
@@ -65,12 +82,14 @@ export default function Dashboard({
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800 mb-2">Edin Capital Fund 1</h1>
-        <p className="text-gray-600">$86M Financial Projection Dashboard</p>
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
+      <Stats
+        title="Edin Capital Fund 1"
+        description="Investor Portal"
+        stats={keyMetricsStats}
+        className="bg-white shadow-sm mb-4"
+      />
+
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Fund Overview</h2>
           <div className="space-y-3">
@@ -144,8 +163,8 @@ export default function Dashboard({
             </div>
           </div>
         </div>
-      </div>
-      
+      </div> */}
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Distribution Sources</h2>
