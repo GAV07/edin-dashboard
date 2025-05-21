@@ -45,7 +45,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
     // Get annual returns data in one call
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Bottom up'!K11:K20"  // First 10 years of returns
+      range: "'Bottom up'!K11:K36"
     })
   ]);
 

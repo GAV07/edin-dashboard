@@ -19,16 +19,16 @@ export default function Stats({
 }: StatsProps) {
   return (
     <div className={`bg-white py-12 sm:py-16 ${className}`}>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl lg:max-w-none">
+      <div className="max-w-7xl px-6 lg:px-8">
+        <div className="max-w-2xl lg:max-w-none">
           {(title || description) && (
-            <div className="text-center">
+            <div>
               {title && (
-                <h2 className="text-balance text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+                <h2 className="text-balance text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
                   {title}
                 </h2>
               )}
-              {description && <p className="mt-4 text-lg/8 text-gray-600">{description}</p>}
+              {description && <p className="mt-4 text-md text-gray-600">{description}</p>}
             </div>
           )}
           <dl className="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4">

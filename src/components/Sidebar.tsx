@@ -63,6 +63,8 @@ export const Navigation = ({
           key={link.href}
           href={link.href}
           onClick={() => isMobile() && setOpen(false)}
+          target={link.label === "Documents" ? "_blank" : undefined}
+          rel={link.label === "Documents" ? "noopener noreferrer" : undefined}
           className={twMerge(
             "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
             isActive(link.href) && "bg-white shadow-lg text-primary"

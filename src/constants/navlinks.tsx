@@ -2,35 +2,48 @@ import {
   IconArticle,
   IconBolt,
   IconBriefcase2,
+  IconChartBar,
+  IconFile,
+  IconFolderDown,
   IconHelp,
-  IconMail,
-  IconMessage2,
+  IconClipboardData,
+  IconUsers,
 } from "@tabler/icons-react";
 
 export const navlinks = [
   {
     href: "/",
-    label: "Dashboard",
+    label: "Overview",
     icon: IconBolt,
-  },
-  {
-    href: "/team",
-    label: "Team",
-    icon: IconMessage2,
-  },
-  {
-    href: "/pro-forma",
-    label: "Pro Forma",
-    icon: IconBriefcase2,
   },
   {
     href: "/executive-summary",
     label: "Executive Summary",
-    icon: IconMail,
+    icon: IconClipboardData,
+  },
+  {
+    href: "/pro-forma",
+    label: "Pro Forma",
+    icon: IconChartBar,
+  },
+  {
+    href: "/venture-bond",
+    label: "Venture Bond",
+    icon: IconBriefcase2,
+  },
+  {
+    href: "/team",
+    label: "Team",
+    icon: IconUsers,
   },
   {
     href: "/faq",
     label: "FAQ",
     icon: IconHelp,
+  },
+  {
+    href: "https://www.dropbox.com/scl/fo/xnzximqrp7kkf0wyybrcy/AF5aobDNhC5iuzgOK4l8jQE?rlkey=aepgz84yt58ffysnw73fqwqv5&st=hxb02boc&dl=0",
+    label: "Documents",
+    icon: IconFile,
   },
 ];

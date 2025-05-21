@@ -23,7 +23,7 @@ interface ProFormaData {
     investmentsMade: number;
     annualProfitSharing: number;
     cumulativeProfitSharingDistributions: number;
-    residualValue: number;
+    cumulativeResidualValue: number;
     residualValueEstimateRevenue: number;
     residualValueEstimateProfit: number;
     totalValue: number;
@@ -35,7 +35,7 @@ interface ProFormaData {
   }>;
 }
 
-async function fetchProFormaData(): Promise<ProFormaData> {
+async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaData> {
   const sheetId = process.env.GOOGLE_SHEET_ID;
   if (!sheetId) {
     throw new Error('GOOGLE_SHEET_ID is not defined');
@@ -43,21 +43,26 @@ async function fetchProFormaData(): Promise<ProFormaData> {
 
   const { sheets } = await getGoogleSheet(sheetId);
 
+  // Determine the sheet name based on scenario
+  const sheetName = scenario === 'base' ? 'Bottom up' : 
+                   scenario === 'conservative' ? 'Conservative' : 
+                   'Optimistic';
+
   const [assumptionsResponse, yearlyDataResponse, columnLResponse] = await Promise.all([
     // Get all assumptions in one call
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Bottom up'!B2:B7"  // Assumptions from B2 to B7
+      range: `'${sheetName}'!B2:B7`  // Assumptions from B2 to B7
     }),
     // Get all yearly data in one call
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Bottom up'!A10:U34"  // Updated range to include headers
+      range: `'${sheetName}'!A10:U34`  // Updated range to include headers
     }),
     // Get column L specifically
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Bottom up'!L10:L34"  // Column L data
+      range: `'${sheetName}'!L10:L34`  // Column L data
     })
   ]);
 
@@ -113,7 +118,7 @@ async function fetchProFormaData(): Promise<ProFormaData> {
         investmentsMade: Number(row[9] || 0),        // Column J
         annualProfitSharing: parseCurrencyValue(row[10]),   // Column K
         cumulativeProfitSharingDistributions: cumulativeDistributions, // Column L
-        residualValue: Number(row[12] || 0),         // Column M
+        cumulativeResidualValue: parseCurrencyValue(row[17]),         // Column R
         residualValueEstimateRevenue: parseCurrencyValue(row[15]), // Column P
         residualValueEstimateProfit: parseCurrencyValue(row[16]),  // Column Q
         totalValue: parseCurrencyValue(row[18]),            // Column S
@@ -130,14 +135,17 @@ async function fetchProFormaData(): Promise<ProFormaData> {
 }
 
 const getCachedData = unstable_cache(
-  fetchProFormaData,
+  async (scenario: string) => fetchProFormaData(scenario),
   ['pro-forma-data'],
   { revalidate: 300 } // Cache for 5 minutes
 );
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const data = await getCachedData();
+    const { searchParams } = new URL(request.url);
+    const scenario = searchParams.get('scenario') || 'base';
+    
+    const data = await getCachedData(scenario);
     return NextResponse.json(data);
   } catch (error: any) {
     console.error('Error in pro-forma API route:', error);

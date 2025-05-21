@@ -9,9 +9,11 @@ import {
   Tooltip, Legend, 
   ResponsiveContainer,
   ComposedChart,
-  Area
+  Area,
+  ReferenceLine
 } from 'recharts';
 import Stats from './Stats';
+import KeyDocs from './KeyDocs';
 
 interface DashboardProps {
   fundOverview: {
@@ -84,112 +86,13 @@ export default function Dashboard({
     <div className="p-6 bg-gray-50 min-h-screen">
       <Stats
         title="Edin Capital Fund 1"
-        description="Investor Portal"
+        description="Edin Capital introduces the Venture Bond, a revolutionary financial instrument combining equity and profit sharing that delivers superior risk-adjusted returns with increased liquidity for investors and better alignment for founders. Our model targets the vast, underserved segment of growth-oriented businesses that fall outside traditional venture capital's unicorn-hunting scope, generating market-leading returns without requiring billion-dollar exits while creating broader economic impact."
         stats={keyMetricsStats}
         className="bg-white shadow-sm mb-4"
       />
-
-      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Fund Overview</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Committed Capital</span>
-              <span className="font-semibold">{fundOverview.committedCapital}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Investable Capital</span>
-              <span className="font-semibold">{fundOverview.investableCapital}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Management Fee</span>
-              <span className="font-semibold">{fundOverview.managementFee}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Fund Life</span>
-              <span className="font-semibold">{fundOverview.fundLife}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Deployment Period</span>
-              <span className="font-semibold">{fundOverview.deploymentPeriod}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Carry</span>
-              <span className="font-semibold">{fundOverview.carry}</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Portfolio Allocation</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-600">Number of Investments</span>
-              <span className="font-semibold">{portfolioAllocation.numberOfInvestments}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Average Check Size</span>
-              <span className="font-semibold">{portfolioAllocation.averageCheckSize}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Success Rate</span>
-              <span className="font-semibold">{portfolioAllocation.successRate}</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Return Metrics</h2>
-          <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-600">LP Distributions</span>
-              <span className="font-semibold">{returnMetrics.lpDistributions}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">GP Carry</span>
-              <span className="font-semibold">{returnMetrics.gpCarry}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">MOIC</span>
-              <span className="font-semibold">{returnMetrics.moic}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">Gross TVPI</span>
-              <span className="font-semibold">{returnMetrics.grossTvpi}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600">DPI</span>
-              <span className="font-semibold">{returnMetrics.dpi}</span>
-            </div>
-          </div>
-        </div>
-      </div> */}
-
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Distribution Sources</h2>
-          <div className="h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie
-                  data={distributionSourcesData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                  label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(0)}%`}
-                >
-                  {distributionSourcesData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip formatter={(value) => `$${value.toLocaleString()}`} />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
+          <KeyDocs />
         </div>
         
         <div className="bg-white rounded-lg shadow p-6">
@@ -200,7 +103,7 @@ export default function Dashboard({
                 data={cumulativeReturnsData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
+                {/* <CartesianGrid strokeDasharray="3 3" /> */}
                 <XAxis dataKey="year" />
                 <YAxis 
                   yAxisId="left" 
@@ -214,7 +117,7 @@ export default function Dashboard({
                 />
                 <Tooltip 
                   formatter={(value: number) => formatMillions(value)}
-                  labelFormatter={(label) => `Year ${label}`}
+                  labelFormatter={(label) => `${label}`}
                 />
                 <Legend />
                 <Bar 
@@ -229,6 +132,18 @@ export default function Dashboard({
                   dataKey="cumulative" 
                   stroke="#ff7300" 
                   name="Cumulative Returns"
+                />
+                <ReferenceLine 
+                  x="Year 10" 
+                  yAxisId="right"
+                  stroke="#666" 
+                  strokeDasharray="3 3" 
+                  label={{ 
+                    value: 'Active Fund Duration', 
+                    position: 'top',
+                    fill: '#666',
+                    fontSize: 12
+                  }} 
                 />
               </ComposedChart>
             </ResponsiveContainer>

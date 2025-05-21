@@ -2,10 +2,18 @@ import Image from 'next/image';
 
 const people = [
   {
+    name: 'Andrew Davis',
+    role: 'Managing Partner',
+    imageUrl: '/images/team/andrew.jpeg',
+    bio: 'Andrew Davis is an award-winning founder, operator, and investor with impressive credentials in the venture capital world. With 7+ years of venture experience across prestigious firms including Techstars, Comcast, and MakerX, Andrew has developed a keen eye for promising investments. His 10+ years of operating experience spans multiple successful ventures, including roles as Founder of Phoenix, participation in Google&apos;s Community Leaders Program, and leadership positions at companies like Village Music (Founder &amp; CEO) and Musicasa (Head of Product). Based in Broward County, Andrew has built strong relationships with high-net-worth individuals, family offices, and institutions, making him a trusted advisor and community builder within the investment landscape.',
+    xUrl: '#',
+    linkedinUrl: 'https://www.linkedin.com/in/andgerous/',
+  },
+  {
     name: 'Aurelia Edwards',
     role: 'General Partner',
     imageUrl: '/images/team/aurelia.jpeg',
-    bio: 'Aurelia Edwards is an accomplished entrepreneur and investor with over 24 years of operating experience. As a three-time founder, she has built and led multiple successful ventures including Standard Measure Technologies as CEO, Pink Scissors Stationery as Principal, and her own therapy practice. Aurelia brings a wealth of global investment experience and startup advisory expertise to Edin Capital. Based in Palm Beach County, she combines her diverse background and entrepreneurial insights to identify promising investment opportunities and support founders on their growth journeys.&apos;',
+    bio: 'Aurelia Edwards is an award-winning, 4x founder and operator who, over the past 25 years, has founded and scaled companies across health and wellness, event production and management, and technology sectors. Based in Broward County, she is trusted by Fortune 100 enterprises and known for building communities across high-net-worth individuals, family offices, and institutions. After overcoming her own funding challenges, Aurelia is focused on bridging capital gaps for founders prioritizing profitability and sustainability. At Edin Capital, she is unlocking access to aligned, derisked investment opportunities that fuel regional growth. Her mission is to reshape venture by embedding equity, access, and longevity at the core of capital deployment.',
     xUrl: '#',
     linkedinUrl: 'https://www.linkedin.com/in/aureliaedwards/',
   },
@@ -13,17 +21,9 @@ const people = [
     name: 'Erick Gavin',
     role: 'General Partner',
     imageUrl: '/images/team/erick.jpeg',
-    bio: "Erick Gavin is a respected ecosystem builder with 10 years of experience developing Miami&apos;s innovation landscape. As the former Executive Director of Venture Miami for the City of Miami, he played a pivotal role in shaping the region&apos;s entrepreneurial environment. Erick successfully built Florida&apos;s largest incubator and serves as a Partner at Reefside Ventures. His background includes product design leadership at Dream Impact HK and serving as Senior Program Manager at the Center for Black Innovation. Based in Miami-Dade County, Erick leverages his extensive network and deep understanding of the startup ecosystem to create value for Edin Capital&apos;s portfolio companies.&quot;",
+    bio: "Erick Gavin is a respected ecosystem builder with 10 years of experience developing Miami&apos;s innovation landscape. As the former Executive Director of Venture Miami for the City of Miami, he played a pivotal role in shaping the region&apos;s entrepreneurial environment. Erick successfully built Florida&apos;s largest incubator and serves as a Partner at Reefside Ventures. His background includes product design leadership at Dream Impact HK and serving as Senior Program Manager at the Center for Black Innovation. Based in Miami-Dade County, Erick leverages his extensive network and deep understanding of the startup ecosystem to create value for Edin Capital&apos;s portfolio companies.",
     xUrl: '#',
     linkedinUrl: 'https://www.linkedin.com/in/erickgavin/',
-  },
-  {
-    name: 'Andrew Davis',
-    role: 'Managing Partner',
-    imageUrl: '/images/team/andrew.jpeg',
-    bio: 'Andrew Davis is an award-winning founder, operator, and investor with impressive credentials in the venture capital world. With 7+ years of venture experience across prestigious firms including Techstars, Comcast, and MakerX, Andrew has developed a keen eye for promising investments. His 10+ years of operating experience spans multiple successful ventures, including roles as Founder of Phoenix, participation in Google&apos;s Community Leaders Program, and leadership positions at companies like Village Music (Founder &amp; CEO) and Musicasa (Head of Product). Based in Broward County, Andrew has built strong relationships with high-net-worth individuals, family offices, and institutions, making him a trusted advisor and community builder within the investment landscape.&apos;',
-    xUrl: '#',
-    linkedinUrl: 'https://www.linkedin.com/in/andgerous/',
   },
 ];
 
@@ -36,8 +36,7 @@ export default function Team() {
             About the team
           </h2>
           <p className="mt-6 text-lg/8 text-gray-600">
-            We&apos;re a dynamic group of individuals who are passionate about what we do and dedicated to delivering the
-            best results for our clients.
+            Real-world operators and investors fueling sustainable innovation
           </p>
         </div>
         <ul role="list" className="divide-y divide-gray-200 xl:col-span-3">

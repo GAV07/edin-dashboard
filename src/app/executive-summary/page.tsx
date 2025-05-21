@@ -35,9 +35,9 @@ const EdInCapitalSummary = () => {
             <h1 className="text-3xl font-bold text-white">Edin Capital</h1>
             <p className="text-blue-100 mt-1">Fund I Executive Summary</p>
           </div>
-          <div className="bg-white bg-opacity-20 rounded-lg p-2">
+          {/* <div className="bg-white bg-opacity-20 rounded-lg p-2">
             <span className="text-white text-sm font-medium">Updated: May 13, 2025</span>
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -58,8 +58,8 @@ const EdInCapitalSummary = () => {
         <MetricCard 
           icon={<Target className="h-6 w-6 text-blue-500" />}
           title="Target Returns"
-          value="3.63x TVPI"
-          subtitle="4.44x MOIC | 2.90x DPI"
+          value="3.73x TVPI"
+          subtitle="4.56x MOIC | 2.98x DPI"
         />
       </div>
 
@@ -79,7 +79,7 @@ const EdInCapitalSummary = () => {
           </div>
           <div className="mt-6 bg-blue-50 p-4 rounded-lg">
             <h3 className="text-md font-semibold text-blue-800 mb-2">Target Profile</h3>
-            <p className="text-gray-700">Grounded companies pursuing sustainable growth at early growth stage with clear path to 7-figure annual revenue. Industry agnostic, tech-enabled businesses with strong operators scaling to the next level.</p>
+            <p className="text-gray-700">Grounded companies pursuing profitability at an early growth stage with a clear path to a 7-figure annual revenue. Industry agnostic, tech-enabled businesses with strong operators scaling to the next level.</p>
           </div>
         </div>
       </div>
@@ -110,7 +110,7 @@ const EdInCapitalSummary = () => {
               <ul className="space-y-2">
                 <li className="flex items-start">
                   <div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-0.5 mr-2 flex-shrink-0">•</div>
-                  <span className="text-gray-700">Time: 3 years post-investment</span>
+                  <span className="text-gray-700">Time: 4 years post-investment</span>
                 </li>
                 <li className="flex items-start">
                   <div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-0.5 mr-2 flex-shrink-0">•</div>
@@ -118,7 +118,7 @@ const EdInCapitalSummary = () => {
                 </li>
                 <li className="flex items-start">
                   <div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-0.5 mr-2 flex-shrink-0">•</div>
-                  <span className="text-gray-700">Margins: 35%</span>
+                  <span className="text-gray-700">Margins: 30%</span>
                 </li>
               </ul>
             </div>

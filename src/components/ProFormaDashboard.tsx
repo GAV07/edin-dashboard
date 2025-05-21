@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
   Legend, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area,
-  ComposedChart, Scatter
+  ComposedChart, Scatter, ReferenceLine
 } from 'recharts';
 
 // Color palette
@@ -72,7 +72,7 @@ interface ProFormaData {
     investmentsMade: number;
     annualProfitSharing: number;
     cumulativeProfitSharingDistributions: number;
-    residualValue: number;
+    cumulativeResidualValue: number;
     residualValueEstimateRevenue: number;
     residualValueEstimateProfit: number;
     totalValue: number;
@@ -91,6 +91,12 @@ const ProFormaDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [selectedScenario, setSelectedScenario] = useState('base');
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const loadData = async (isRefresh: boolean = false) => {
     if (isRefresh) {
@@ -101,7 +107,7 @@ const ProFormaDashboard = () => {
     setError(null);
 
     try {
-      const response = await fetch('/api/pro-forma');
+      const response = await fetch(`/api/pro-forma?scenario=${selectedScenario}`);
       const result = await response.json();
 
       if (!response.ok) {
@@ -132,7 +138,11 @@ const ProFormaDashboard = () => {
       loadData(true);
     }, 5 * 60 * 1000); // Refresh every 5 minutes
     return () => clearInterval(intervalId);
-  }, []);
+  }, [selectedScenario]);
+
+  if (!isClient) {
+    return null; // or a loading state that matches server-side
+  }
 
   if (loading && !isRefreshing) {
     return (
@@ -177,15 +187,39 @@ const ProFormaDashboard = () => {
             <p className="text-gray-500">Venture Bond Pro Forma Dashboard</p>
             {lastUpdated && (
               <p className="text-xs text-gray-400 mt-1">
-                Last updated: {lastUpdated.toLocaleString()}
+                Last updated: {lastUpdated.toLocaleString('en-US', {
+                  year: 'numeric',
+                  month: 'numeric',
+                  day: 'numeric',
+                  hour: 'numeric',
+                  minute: 'numeric',
+                  hour12: true
+                })}
               </p>
             )}
           </div>
-          <div className="bg-white rounded-lg shadow-sm p-4">
-            <h3 className="text-sm font-medium text-gray-500 mb-1">Target Fund Size</h3>
-            <p className="text-2xl font-bold text-dark">
-              $86M
-            </p>
+          <div className="flex gap-4">
+            <div className="bg-white rounded-lg shadow-sm p-4">
+              <label htmlFor="scenario-select" className="text-sm font-medium text-gray-500 mb-1 block">
+                Scenario
+              </label>
+              <select
+                id="scenario-select"
+                value={selectedScenario}
+                onChange={(e) => setSelectedScenario(e.target.value)}
+                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+              >
+                <option value="base">Base Case</option>
+                <option value="conservative">Conservative</option>
+                <option value="optimistic">Optimistic</option>
+              </select>
+            </div>
+            <div className="bg-white rounded-lg shadow-sm p-4">
+              <h3 className="text-sm font-medium text-gray-500 mb-1">Target Fund Size</h3>
+              <p className="text-2xl font-bold text-dark">
+                $86M
+              </p>
+            </div>
           </div>
         </div>
 
@@ -224,7 +258,7 @@ const ProFormaDashboard = () => {
           {activeTab === 'overview' && (
             <div className="space-y-6">
               {/* Summary Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+              {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h3 className="text-sm font-medium text-gray-500 mb-1">Average Check Size</h3>
                   <p className="text-2xl font-bold text-dark">{data.assumptions.avgCheckSize}</p>
@@ -239,7 +273,7 @@ const ProFormaDashboard = () => {
                   <h3 className="text-sm font-medium text-gray-500 mb-1">Profit Sharing Start</h3>
                   <p className="text-2xl font-bold text-dark">Year 4</p>
                 </div>
-              </div>
+              </div> */}
 
               {/* TVPI Chart */}
               <div className="bg-white rounded-lg shadow-sm p-6">
@@ -255,9 +289,20 @@ const ProFormaDashboard = () => {
                       <YAxis />
                       <Tooltip 
                         formatter={(value: number) => [`${value.toFixed(2)}x`, ""]}
-                        labelFormatter={(label) => `Year ${label}`}
+                        labelFormatter={(label) => `${label}`}
                       />
                       <Legend />
+                      <ReferenceLine 
+                        x="10" 
+                        stroke="#666" 
+                        strokeDasharray="3 3"
+                        label={{ 
+                          value: 'Active Fund Duration', 
+                          position: 'top',
+                          fill: '#666',
+                          fontSize: 12
+                        }}
+                      />
                       <Line 
                         type="monotone" 
                         dataKey="grossTVPI" 
@@ -278,39 +323,7 @@ const ProFormaDashboard = () => {
 
               {/* Portfolio Growth & Distributions */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Active Investing Period</h2>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={data.yearlyData.slice(0, 10)}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="year" />
-                        <YAxis 
-                          yAxisId="left" 
-                          tickFormatter={formatYAxisCurrency} 
-                        />
-                        <Tooltip 
-                          formatter={(value: number) => [formatNumber(value), "Companies"]}
-                          labelFormatter={(label) => `Year ${label}`}
-                        />
-                        <Legend />
-                        <Area 
-                          type="monotone" 
-                          yAxisId="left"
-                          dataKey="activePortcos" 
-                          fill={colors.primary} 
-                          stroke={colors.primary} 
-                          name="Active Companies" 
-                        />
-                        
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow-sm p-6">
+              <div className="bg-white rounded-lg shadow-sm p-6">
                   <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Profit Share Distributions</h2>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
@@ -320,17 +333,24 @@ const ProFormaDashboard = () => {
                       >
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="year" />
-                        <YAxis 
-                          yAxisId="left" 
-                          tickFormatter={formatYAxisCurrency} 
-                        />
+                        <YAxis tickFormatter={formatYAxisCurrency} />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
-                          labelFormatter={(label) => `Year ${label}`}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="10" 
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12
+                          }}
                         />
                         <Area 
                           type="monotone" 
-                          yAxisId="left"
                           dataKey="cumulativeProfitSharingDistributions" 
                           fill={colors.success} 
                           stroke={colors.success} 
@@ -340,6 +360,45 @@ const ProFormaDashboard = () => {
                     </ResponsiveContainer>
                   </div>
                 </div>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Residual Value</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={data.yearlyData}
+                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                        <XAxis dataKey="year" />
+                        <YAxis tickFormatter={formatYAxisCurrency} />
+                        <Tooltip 
+                          formatter={(value: number) => [formatCurrency(value), "Cumulative Residual Value"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="10" 
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12
+                          }}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="cumulativeResidualValue" 
+                          fill={colors.primary} 
+                          stroke={colors.primary} 
+                          name="Cumulative Residual Value" 
+                        />
+                        
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+               
               </div>
 
               {/* Portfolio Value Composition */}
@@ -353,32 +412,37 @@ const ProFormaDashboard = () => {
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="year" />
-                      <YAxis 
-                        yAxisId="left" 
-                        tickFormatter={formatYAxisCurrency} 
-                      />
+                      <YAxis tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
                         formatter={(value: number) => [formatCurrency(value), ""]}
-                        labelFormatter={(label) => `Year ${label}`}
+                        labelFormatter={(label) => `${label}`}
                       />
                       <Legend />
-                      <Bar 
-                        dataKey="residualValueEstimateRevenue" 
-                        yAxisId="left"
-                        stackId="a" 
-                        fill={colors.primary} 
-                        name="Residual Portfolio Value (Revenue)" 
+                      <ReferenceLine 
+                        x="10" 
+                        stroke="#666" 
+                        strokeDasharray="3 3"
+                        label={{ 
+                          value: 'Active Fund Duration', 
+                          position: 'top',
+                          fill: '#666',
+                          fontSize: 12
+                        }}
                       />
                       <Bar 
-                        dataKey="residualValueEstimateProfit" 
-                        yAxisId="left"
+                        dataKey="cumulativeProfitSharingDistributions" 
+                        stackId="a" 
+                        fill={colors.primary} 
+                        name="Cumulative Profit Sharing Distributions" 
+                      />
+                      <Bar 
+                        dataKey="cumulativeResidualValue" 
                         stackId="a" 
                         fill={colors.success} 
-                        name="Residual Portfolio Value (Profit Multiple)" 
+                        name="Cumulative Residual Value" 
                       />
                       <Line 
                         type="monotone" 
-                        yAxisId="left"
                         dataKey="totalValue" 
                         stroke={colors.dark} 
                         strokeWidth={2} 
@@ -404,15 +468,7 @@ const ProFormaDashboard = () => {
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="year" />
-                      <YAxis 
-                        yAxisId="left" 
-                        tickFormatter={formatYAxisCurrency} 
-                      />
-                      <YAxis 
-                        yAxisId="right" 
-                        orientation="right" 
-                        tickFormatter={formatYAxisPercent} 
-                      />
+                      <YAxis tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
                         formatter={(value: number, name: string) => {
                           if (name === "Average Margins") return [`${value.toFixed(1)}%`, name];
@@ -421,14 +477,25 @@ const ProFormaDashboard = () => {
                         labelFormatter={(label) => `Year ${label}`}
                       />
                       <Legend />
+                      <ReferenceLine 
+                        x="10" 
+                        stroke="#666" 
+                        strokeDasharray="3 3"
+                        label={{ 
+                          value: 'Active Fund Duration', 
+                          position: 'top',
+                          fill: '#666',
+                          fontSize: 12
+                        }}
+                      />
                       <Bar 
-                        yAxisId="left" 
+                        yAxisId="right" 
                         dataKey="portfolioRevenue" 
                         fill={colors.primary} 
                         name="Portfolio Revenue" 
                       />
                       <Bar 
-                        yAxisId="left" 
+                        yAxisId="right" 
                         dataKey="portfolioProfit" 
                         fill={colors.success} 
                         name="Portfolio Profit" 
@@ -457,18 +524,26 @@ const ProFormaDashboard = () => {
                       >
                         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="year" />
-                        <YAxis 
-                          yAxisId="left"
-                          tickFormatter={formatYAxisCurrency} 
-                        />
+                        <YAxis tickFormatter={formatYAxisCurrency} />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Avg Revenue/Company"]}
                           labelFormatter={(label) => `Year ${label}`}
                         />
+                        <ReferenceLine 
+                          x="10" 
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12
+                          }}
+                        />
                         <Line 
                           type="monotone" 
-                          yAxisId="left"
                           dataKey="avgRevenuePerCompany" 
+                          yAxisId="right"
                           stroke={colors.primary} 
                           strokeWidth={2}
                           dot={{ r: 4 }}
@@ -559,15 +634,7 @@ const ProFormaDashboard = () => {
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="year" />
-                      <YAxis 
-                        yAxisId="left" 
-                        tickFormatter={formatYAxisCurrency} 
-                      />
-                      <YAxis 
-                        yAxisId="right" 
-                        orientation="right" 
-                        tickFormatter={formatYAxisPercent} 
-                      />
+                      <YAxis tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
                         formatter={(value: number, name: string) => {
                           if (name === "Companies in Profit Sharing") return [formatNumber(value), name];
@@ -576,21 +643,23 @@ const ProFormaDashboard = () => {
                         labelFormatter={(label) => `Year ${label}`}
                       />
                       <Legend />
+                      <ReferenceLine 
+                        x="10" 
+                        stroke="#666" 
+                        strokeDasharray="3 3"
+                        label={{ 
+                          value: 'Active Fund Duration', 
+                          position: 'top',
+                          fill: '#666',
+                          fontSize: 12
+                        }}
+                      />
                       <Bar 
-                        yAxisId="left" 
+                        yAxisId="right" 
                         dataKey="annualProfitSharing" 
                         fill={colors.success} 
                         name="Annual Distributions" 
                       />
-                      {/* <Line 
-                        yAxisId="right" 
-                        type="monotone" 
-                        dataKey="companiesProfitSharing" 
-                        stroke={colors.accent} 
-                        strokeWidth={2}
-                        dot={{ r: 4 }}
-                        name="Companies in Profit Sharing" 
-                      /> */}
                     </ComposedChart>
                   </ResponsiveContainer>
                 </div>
@@ -614,6 +683,17 @@ const ProFormaDashboard = () => {
                           labelFormatter={(label) => `Year ${label}`}
                         />
                         <Legend />
+                        <ReferenceLine 
+                          x="10" 
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12
+                          }}
+                        />
                         <Line 
                           type="monotone" 
                           dataKey="grossProfitSharingReturnMultiple" 
@@ -648,6 +728,17 @@ const ProFormaDashboard = () => {
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(1)}%`, "Capital Returned"]}
                           labelFormatter={(label) => `Year ${label}`}
+                        />
+                        <ReferenceLine 
+                          x="10" 
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12
+                          }}
                         />
                         <Area 
                           type="monotone" 
@@ -821,9 +912,20 @@ const ProFormaDashboard = () => {
                       <YAxis tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
                         formatter={(value: number) => [formatCurrency(value), ""]}
-                        labelFormatter={(label) => `Year ${label}`}
+                        labelFormatter={(label) => `${label}`}
                       />
                       <Legend />
+                      <ReferenceLine 
+                        x="10" 
+                        stroke="#666" 
+                        strokeDasharray="3 3"
+                        label={{ 
+                          value: 'Active Fund Duration', 
+                          position: 'top',
+                          fill: '#666',
+                          fontSize: 12
+                        }}
+                      />
                       <Line 
                         type="monotone" 
                         dataKey="residualValueEstimateRevenue" 
