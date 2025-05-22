@@ -189,9 +189,9 @@ const EdInCapitalSummary = () => {
               <h3 className="text-md font-semibold text-gray-800 mb-3">Portfolio Performance</h3>
               <table className="w-full">
                 <tbody>
-                  <TableRow label="Portfolio Success Rate" value="70% (25 companies)" />
-                  <TableRow label="Average Profit Sharing Cap" value="6x" />
-                  <TableRow label="Expected Number of Exits" value="2" />
+                  <TableRow label="Portfolio Success Rate" value="75% (35 companies)" />
+                  <TableRow label="Profit Sharing Cap" value="6x" />
+                  <TableRow label="Expected Number of Exits" value="3" />
                   <TableRow label="Average Entry Ownership" value="16%" />
                   <TableRow label="Average Exit Ownership" value="11.2%" />
                 </tbody>
@@ -201,11 +201,11 @@ const EdInCapitalSummary = () => {
               <h3 className="text-md font-semibold text-gray-800 mb-3">Cash Flow Projections</h3>
               <table className="w-full">
                 <tbody>
-                  <TableRow label="Total Distributions" value="$310,800,000" />
-                  <TableRow label="From Profit Sharing" value="$294,000,000 (94.59%)" />
-                  <TableRow label="From Exit Liquidity" value="$16,800,000 (5.41%)" />
-                  <TableRow label="LP Distributions" value="$248,640,000" />
-                  <TableRow label="GP Carry" value="$62,160,000" />
+                  <TableRow label="Total Distributions" value="$319,200,000" />
+                  <TableRow label="From Profit Sharing" value="$294,015,120 (92.11%)" />
+                  <TableRow label="From Exit Liquidity" value="$25,184,880 (7.89%)" />
+                  <TableRow label="LP Distributions" value="$255,360,000" />
+                  <TableRow label="GP Carry" value="$63,840,000" />
                 </tbody>
               </table>
             </div>
@@ -221,14 +221,14 @@ const EdInCapitalSummary = () => {
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <TeamMember
-            name="Aurelia Edwards"
-            title="General Partner"
+            name="Andrew Davis"
+            title="Managing Partner"
             bio="3x founder, global investor, and startup advisor with experience at Google & Comcast. Former EIR & Investment Principal at Techstars and Investment Partner at MakerX."
             location="Palm Beach County, FL"
           />
           <TeamMember
-            name="Andrew Davis"
-            title="Managing Partner"
+            name="Aurelia Edwards"
+            title="General Partner"
             bio="Award-winning founder & operator backed by Fortune 100 enterprises. Advisor & community builder among HNWIs, family offices, and institutions."
             location="Broward County, FL"
           />

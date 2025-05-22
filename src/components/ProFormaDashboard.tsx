@@ -81,6 +81,7 @@ interface ProFormaData {
     percentageCapitalReturned: number;
     grossProfitSharingReturnMultiple: number;
     netProfitSharingReturnMultiple: number;
+    irr: number;
   }>;
 }
 
@@ -177,6 +178,11 @@ const ProFormaDashboard = () => {
     return null;
   }
 
+  console.log('Yearly Data:', data.yearlyData);
+
+  // Debug log for rendered data
+  console.log('Rendering with IRR data:', data.yearlyData.map(d => ({ year: d.year, irr: d.irr })));
+
   return (
     <div className="bg-background min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
@@ -244,12 +250,12 @@ const ProFormaDashboard = () => {
             >
               Profit Sharing
             </button>
-            <button 
+            {/* <button 
               className={`px-4 py-3 font-medium text-sm ${activeTab === 'assumptions' ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}
               onClick={() => setActiveTab('assumptions')}
             >
               Assumptions
-            </button>
+            </button> */}
           </div>
         </div>
 
@@ -257,150 +263,6 @@ const ProFormaDashboard = () => {
         <div className="space-y-6">
           {activeTab === 'overview' && (
             <div className="space-y-6">
-              {/* Summary Cards */}
-              {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">Average Check Size</h3>
-                  <p className="text-2xl font-bold text-dark">{data.assumptions.avgCheckSize}</p>
-                </div>
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">10 Year Gross TVPI</h3>
-                  <p className="text-2xl font-bold text-dark">
-                    {(data.yearlyData[9]?.grossTVPI || 0).toFixed(2)}x
-                  </p>
-                </div>
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h3 className="text-sm font-medium text-gray-500 mb-1">Profit Sharing Start</h3>
-                  <p className="text-2xl font-bold text-dark">Year 4</p>
-                </div>
-              </div> */}
-
-              {/* TVPI Chart */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-dark mb-4">Total Value to Paid-In Capital (TVPI)</h2>
-                <div className="h-64">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <LineChart
-                      data={data.yearlyData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis dataKey="year" />
-                      <YAxis />
-                      <Tooltip 
-                        formatter={(value: number) => [`${value.toFixed(2)}x`, ""]}
-                        labelFormatter={(label) => `${label}`}
-                      />
-                      <Legend />
-                      <ReferenceLine 
-                        x="10" 
-                        stroke="#666" 
-                        strokeDasharray="3 3"
-                        label={{ 
-                          value: 'Active Fund Duration', 
-                          position: 'top',
-                          fill: '#666',
-                          fontSize: 12
-                        }}
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="grossTVPI" 
-                        stroke={colors.primary} 
-                        activeDot={{ r: 8 }} 
-                        name="Gross TVPI" 
-                      />
-                      <Line 
-                        type="monotone" 
-                        dataKey="netTVPI" 
-                        stroke={colors.accent} 
-                        name="Net TVPI" 
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-
-              {/* Portfolio Growth & Distributions */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Profit Share Distributions</h2>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={data.yearlyData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="year" />
-                        <YAxis tickFormatter={formatYAxisCurrency} />
-                        <Tooltip 
-                          formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
-                          labelFormatter={(label) => `${label}`}
-                        />
-                        <ReferenceLine 
-                          x="10" 
-                          stroke="#666" 
-                          strokeDasharray="3 3"
-                          label={{ 
-                            value: 'Active Fund Duration', 
-                            position: 'top',
-                            fill: '#666',
-                            fontSize: 12
-                          }}
-                        />
-                        <Area 
-                          type="monotone" 
-                          dataKey="cumulativeProfitSharingDistributions" 
-                          fill={colors.success} 
-                          stroke={colors.success} 
-                          name="Cumulative Distributions" 
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Residual Value</h2>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={data.yearlyData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="year" />
-                        <YAxis tickFormatter={formatYAxisCurrency} />
-                        <Tooltip 
-                          formatter={(value: number) => [formatCurrency(value), "Cumulative Residual Value"]}
-                          labelFormatter={(label) => `${label}`}
-                        />
-                        <ReferenceLine 
-                          x="10" 
-                          stroke="#666" 
-                          strokeDasharray="3 3"
-                          label={{ 
-                            value: 'Active Fund Duration', 
-                            position: 'top',
-                            fill: '#666',
-                            fontSize: 12
-                          }}
-                        />
-                        <Area 
-                          type="monotone" 
-                          dataKey="cumulativeResidualValue" 
-                          fill={colors.primary} 
-                          stroke={colors.primary} 
-                          name="Cumulative Residual Value" 
-                        />
-                        
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-               
-              </div>
-
               {/* Portfolio Value Composition */}
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-lg font-semibold text-dark mb-4">Total Portfolio Value Composition</h2>
@@ -408,9 +270,8 @@ const ProFormaDashboard = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                       data={data.yearlyData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="year" />
                       <YAxis tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
@@ -419,14 +280,16 @@ const ProFormaDashboard = () => {
                       />
                       <Legend />
                       <ReferenceLine 
-                        x="10" 
+                        x="Year 10"
                         stroke="#666" 
                         strokeDasharray="3 3"
                         label={{ 
                           value: 'Active Fund Duration', 
                           position: 'top',
                           fill: '#666',
-                          fontSize: 12
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          offset: 10
                         }}
                       />
                       <Bar 
@@ -453,10 +316,191 @@ const ProFormaDashboard = () => {
                   </ResponsiveContainer>
                 </div>
               </div>
+
+              {/* TVPI Chart */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-semibold text-dark mb-4">Total Value to Paid-In Capital (TVPI)</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" />
+                        <YAxis />
+                        <Tooltip 
+                          formatter={(value: number) => [`${value.toFixed(2)}x`, ""]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <Legend />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="grossTVPI" 
+                          stroke={colors.primary} 
+                          activeDot={{ r: 8 }} 
+                          name="Gross TVPI" 
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="netTVPI" 
+                          stroke={colors.accent} 
+                          name="Net TVPI" 
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* IRR Chart */}
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-semibold text-dark mb-4">Internal Rate of Return (IRR)</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" />
+                        <YAxis 
+                          tickFormatter={(value) => `${value.toFixed(0)}%`}
+                          domain={['dataMin - 10', 'dataMax + 10']}
+                        />
+                        <Tooltip 
+                          formatter={(value: number) => [`${value.toFixed(1)}%`, "IRR"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          y={0}
+                          stroke="#666"
+                          strokeDasharray="2 2"
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="irr" 
+                          stroke={colors.warning} 
+                          strokeWidth={2}
+                          dot={{ r: 4 }}
+                          name="IRR" 
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              {/* Portfolio Growth & Distributions */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Profit Share Distributions</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" />
+                        <YAxis tickFormatter={formatYAxisCurrency} />
+                        <Tooltip 
+                          formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
+                          labelFormatter={(label) => `Year ${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="cumulativeProfitSharingDistributions" 
+                          fill={colors.success} 
+                          stroke={colors.success} 
+                          name="Cumulative Distributions" 
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Residual Value</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" />
+                        <YAxis tickFormatter={formatYAxisCurrency} />
+                        <Tooltip 
+                          formatter={(value: number) => [formatCurrency(value), "Cumulative Residual Value"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="cumulativeResidualValue" 
+                          fill={colors.primary} 
+                          stroke={colors.primary} 
+                          name="Cumulative Residual Value" 
+                        />
+                        
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+               
+              </div>
             </div>
           )}
           {activeTab === 'projections' && (
             <div className="space-y-6">
+              {/* Company Growth Metrics */}
               {/* Revenue & Profit Projection */}
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-lg font-semibold text-dark mb-4">Portfolio Revenue & Profit Projection</h2>
@@ -464,28 +508,29 @@ const ProFormaDashboard = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                       data={data.yearlyData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="year" />
                       <YAxis tickFormatter={formatYAxisCurrency} />
+                      <YAxis orientation="right" yAxisId="right" tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
                         formatter={(value: number, name: string) => {
-                          if (name === "Average Margins") return [`${value.toFixed(1)}%`, name];
                           return [formatCurrency(value), name];
                         }}
                         labelFormatter={(label) => `Year ${label}`}
                       />
                       <Legend />
                       <ReferenceLine 
-                        x="10" 
+                        x="Year 10"
                         stroke="#666" 
                         strokeDasharray="3 3"
                         label={{ 
                           value: 'Active Fund Duration', 
                           position: 'top',
                           fill: '#666',
-                          fontSize: 12
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          offset: 10
                         }}
                       />
                       <Bar 
@@ -500,19 +545,10 @@ const ProFormaDashboard = () => {
                         fill={colors.success} 
                         name="Portfolio Profit" 
                       />
-                      <Line 
-                        yAxisId="right" 
-                        type="monotone" 
-                        dataKey="avgMargins" 
-                        stroke={colors.warning} 
-                        name="Average Margins" 
-                      />
                     </ComposedChart>
                   </ResponsiveContainer>
                 </div>
               </div>
-
-              {/* Company Growth Metrics */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white rounded-lg shadow-sm p-6">
                   <h2 className="text-lg font-semibold text-dark mb-4">Average Revenue Per Company</h2>
@@ -520,24 +556,26 @@ const ProFormaDashboard = () => {
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={data.yearlyData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="year" />
                         <YAxis tickFormatter={formatYAxisCurrency} />
+                        <YAxis orientation="right" yAxisId="right" tickFormatter={formatYAxisCurrency} />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Avg Revenue/Company"]}
                           labelFormatter={(label) => `Year ${label}`}
                         />
                         <ReferenceLine 
-                          x="10" 
+                          x="Year 10"
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
                             value: 'Active Fund Duration', 
                             position: 'top',
                             fill: '#666',
-                            fontSize: 12
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
                           }}
                         />
                         <Line 
@@ -553,34 +591,48 @@ const ProFormaDashboard = () => {
                     </ResponsiveContainer>
                   </div>
                 </div>
-                {/* <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Revenue Growth Rate</h2>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-lg font-semibold text-dark mb-4">Average Margins</h2>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={data.yearlyData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="year" />
                         <YAxis tickFormatter={formatYAxisPercent} />
                         <Tooltip 
-                          formatter={(value: number) => [`${value.toFixed(1)}%`, "Growth Rate"]}
+                          formatter={(value: number) => [`${value.toFixed(1)}%`, "Average Margins"]}
                           labelFormatter={(label) => `Year ${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: 'Active Fund Duration', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
                         />
                         <Line 
                           type="monotone" 
-                          dataKey="avgAnnualGrowthRate" 
-                          stroke={colors.accent} 
+                          dataKey="avgMargins" 
+                          stroke={colors.warning} 
                           strokeWidth={2}
                           dot={{ r: 4 }}
-                          name="Average Annual Growth Rate" 
+                          name="Average Margins" 
                         />
                       </LineChart>
                     </ResponsiveContainer>
                   </div>
-                </div> */}
+                </div>
               </div>
+
+              
 
               {/* Investment Deployment & Returns */}
               {/* <div className="bg-white rounded-lg shadow-sm p-6">
@@ -630,11 +682,11 @@ const ProFormaDashboard = () => {
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                       data={data.yearlyData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="year" />
                       <YAxis tickFormatter={formatYAxisCurrency} />
+                      <YAxis orientation="right" yAxisId="right" tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
                         formatter={(value: number, name: string) => {
                           if (name === "Companies in Profit Sharing") return [formatNumber(value), name];
@@ -644,14 +696,16 @@ const ProFormaDashboard = () => {
                       />
                       <Legend />
                       <ReferenceLine 
-                        x="10" 
+                        x="Year 10"
                         stroke="#666" 
                         strokeDasharray="3 3"
                         label={{ 
                           value: 'Active Fund Duration', 
                           position: 'top',
                           fill: '#666',
-                          fontSize: 12
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          offset: 10
                         }}
                       />
                       <Bar 
@@ -673,9 +727,8 @@ const ProFormaDashboard = () => {
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={data.yearlyData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="year" />
                         <YAxis />
                         <Tooltip 
@@ -684,14 +737,16 @@ const ProFormaDashboard = () => {
                         />
                         <Legend />
                         <ReferenceLine 
-                          x="10" 
+                          x="Year 10"
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
                             value: 'Active Fund Duration', 
                             position: 'top',
                             fill: '#666',
-                            fontSize: 12
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
                           }}
                         />
                         <Line 
@@ -715,37 +770,38 @@ const ProFormaDashboard = () => {
                   </div>
                 </div>
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Capital Returned Percentage</h2>
+                  <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Profit Sharing Distributions</h2>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
                         data={data.yearlyData}
-                        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                         <XAxis dataKey="year" />
-                        <YAxis tickFormatter={formatYAxisPercent} />
+                        <YAxis tickFormatter={formatYAxisCurrency} />
                         <Tooltip 
-                          formatter={(value: number) => [`${value.toFixed(1)}%`, "Capital Returned"]}
+                          formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
                           labelFormatter={(label) => `Year ${label}`}
                         />
                         <ReferenceLine 
-                          x="10" 
+                          x="Year 10"
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
                             value: 'Active Fund Duration', 
                             position: 'top',
                             fill: '#666',
-                            fontSize: 12
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
                           }}
                         />
                         <Area 
                           type="monotone" 
-                          dataKey="percentageCapitalReturned" 
-                          fill={colors.primary} 
-                          stroke={colors.primary} 
-                          name="Percentage of Capital Returned" 
+                          dataKey="cumulativeProfitSharingDistributions" 
+                          fill={colors.success} 
+                          stroke={colors.success} 
+                          name="Cumulative Distributions" 
                         />
                       </AreaChart>
                     </ResponsiveContainer>
@@ -899,15 +955,14 @@ const ProFormaDashboard = () => {
               </div>
 
               {/* Advanced Metrics */}
-              <div className="bg-white rounded-lg shadow-sm p-6">
+              {/* <div className="bg-white rounded-lg shadow-sm p-6">
                 <h2 className="text-lg font-semibold text-dark mb-4">Investment Valuation Metrics</h2>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart
                       data={data.yearlyData}
-                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                      margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis dataKey="year" />
                       <YAxis tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
@@ -916,14 +971,16 @@ const ProFormaDashboard = () => {
                       />
                       <Legend />
                       <ReferenceLine 
-                        x="10" 
+                        x="Year 10"
                         stroke="#666" 
                         strokeDasharray="3 3"
                         label={{ 
                           value: 'Active Fund Duration', 
                           position: 'top',
                           fill: '#666',
-                          fontSize: 12
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          offset: 10
                         }}
                       />
                       <Line 
@@ -941,7 +998,7 @@ const ProFormaDashboard = () => {
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
-              </div>
+              </div> */}
             </div>
           )}
           {/* Other tab content will be added in subsequent edits */}

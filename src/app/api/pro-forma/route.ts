@@ -32,6 +32,7 @@ interface ProFormaData {
     percentageCapitalReturned: number;
     grossProfitSharingReturnMultiple: number;
     netProfitSharingReturnMultiple: number;
+    irr: number;
   }>;
 }
 
@@ -57,7 +58,7 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
     // Get all yearly data in one call
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: `'${sheetName}'!A10:U34`  // Updated range to include headers
+      range: `'${sheetName}'!A10:V34`  // Updated range to include column V for IRR
     }),
     // Get column L specifically
     sheets.spreadsheets.values.get({
@@ -73,6 +74,8 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
   // Log raw responses for debugging
   console.log('Column L raw response:', JSON.stringify(columnLResponse.data, null, 2));
   console.log('Column L values:', columnLValues);
+  console.log('Yearly data sample:', yearlyValues.slice(0, 3));
+  console.log('IRR column (V) values:', yearlyValues.map(row => row[21]));
 
   const data: ProFormaData = {
     assumptions: {
@@ -96,7 +99,20 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
         const numValue = Number(cleanValue);
         // If the value is already in decimal form (e.g., 0.45), return it
         // Otherwise convert from percentage to decimal (e.g., 45 -> 0.45)
-        return numValue > 1 ? numValue / 100 : numValue;
+        return Math.abs(numValue) > 1 ? numValue / 100 : numValue;
+      };
+
+      // Helper function specifically for IRR values
+      const parseIRRValue = (value: any) => {
+        if (!value) return 0;
+        console.log('Parsing IRR value:', value);
+        // Remove % symbol and convert to string
+        const cleanValue = value.toString().replace('%', '').trim();
+        // Convert to number
+        const numValue = Number(cleanValue);
+        console.log('Cleaned IRR value:', cleanValue, 'Parsed number:', numValue);
+        // Return the value as percentage (e.g., -50 for -50%, 25 for 25%)
+        return numValue;
       };
 
       // Remove any currency formatting and convert to number
@@ -109,11 +125,11 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
       return {
         year: `Year ${index + 1}`,
         activePortcos: Number(row[2] || 0),         // Column C
-        companiesProfitSharing: Number(row[3] || 0), // Column D
+        companiesProfitSharing: Number(row[5] || 0), // Column D
         portfolioRevenue: portfolioRevenue,       // Column G
         portfolioProfit: parseCurrencyValue(row[8]),        // Column I
         avgMargins: parsePercentageValue(row[7]),           // Column H - Percentage value
-        avgRevenuePerCompany: activePortcos > 0 ? portfolioRevenue / activePortcos : 0,   // Calculate from portfolio revenue and active companies
+        avgRevenuePerCompany: parseCurrencyValue(row[3]), //Column D
         avgAnnualGrowthRate: parsePercentageValue(row[4]),  // Column E - Percentage value
         investmentsMade: Number(row[9] || 0),        // Column J
         annualProfitSharing: parseCurrencyValue(row[10]),   // Column K
@@ -127,9 +143,14 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
         percentageCapitalReturned: parseCurrencyValue(row[14]), // Column O
         grossProfitSharingReturnMultiple: Number(row[12] || 0), // Column M
         netProfitSharingReturnMultiple: Number(row[13] || 0),   // Column N
+        irr: parseIRRValue(row[21]), // Column V - IRR
       };
     })
   };
+
+  // Log the processed data
+  console.log('Processed IRR values:', data.yearlyData.map(d => ({ year: d.year, irr: d.irr })));
+  console.log('Sample IRR values:', data.yearlyData.slice(0, 5).map(d => ({ year: d.year, rawIRR: d.irr, type: typeof d.irr })));
 
   return data;
 }

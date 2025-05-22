@@ -22,6 +22,7 @@ interface DashboardData {
     moic: string;
     grossTvpi: string;
     dpi: string;
+    irr: string;
   };
   distributionSourcesData: Array<{ name: string; value: number }>;
   annualReturnsData: Array<{ year: string; returns: number }>;
@@ -77,6 +78,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
       moic: overviewValues[48]?.[0] || '',
       grossTvpi: overviewValues[49]?.[0] || '',
       dpi: overviewValues[50]?.[0] || '',
+      irr: overviewValues[51]?.[0] || '',
     },
     distributionSourcesData: [
       {
