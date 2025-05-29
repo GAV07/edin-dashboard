@@ -1,6 +1,6 @@
 import { Container } from "@/components/Container";
 import { Metadata } from "next";
-import VentureBond from "@/components/VentureBond";
+import VentureBondCalculator from "@/components/VentureBond";
 
 export const metadata: Metadata = {
   title: "Venture Bond | Investor Dashboard",
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 export default function VentureBondPage() {
   return (
     <>
-      <VentureBond />
+      <VentureBondCalculator />
     </>
   );
 }

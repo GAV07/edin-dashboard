@@ -8,6 +8,7 @@ import {
   IconClipboardData,
   IconUsers,
   IconUsersGroup,
+  IconBuildingStore,
 } from "@tabler/icons-react";
 
 export const navlinks = [
@@ -27,6 +28,11 @@ export const navlinks = [
     icon: IconChartBar,
   },
   {
+    href: "/market-research",
+    label: "Market Research",
+    icon: IconBuildingStore,
+  },
+  {
     href: "/venture-bond",
     label: "Venture Bond",
     icon: IconBriefcase2,
@@ -37,8 +43,8 @@ export const navlinks = [
     icon: IconDeviceLaptop,
   },
   {
-    href: "/founders",
-    label: "Founders",
+    href: "/portfolio",
+    label: "Portfolio",
     icon: IconUsersGroup,
   },
   {

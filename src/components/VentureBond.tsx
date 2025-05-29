@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
   Legend, ResponsiveContainer, ComposedChart, Area
 } from 'recharts';
 
+// TypeScript interfaces
 interface InputValues {
   investmentAmount: number;
   valCap: number;
@@ -14,7 +15,7 @@ interface InputValues {
   profitMargin: number;
   growthRate: number;
   initialRevenue: number;
-  initialProfit: number;
+  initialProfitMargin: number;
   simulationYears: number;
   equityPercentage: number;
 }
@@ -34,7 +35,10 @@ interface YearlyData {
 interface SummaryMetrics {
   totalDistributions: number;
   totalProfits: number;
+  totalRevenue: number;
   distributionToProfit: number;
+  profitRetainedByCompany: number;
+  capitalEfficiency: number;
   timeToRecoup: number | string;
   triggerYear: number | string;
   finalReturnMultiple: number;
@@ -43,38 +47,92 @@ interface SummaryMetrics {
   totalReturnMultiple: number;
 }
 
-interface CalculationResults {
+interface Results {
   yearlyData: YearlyData[];
   summaryMetrics: SummaryMetrics;
 }
 
-const VentureBondCalculator: React.FC = () => {
+interface Scenarios {
+  conservative: InputValues;
+  normal: InputValues;
+  optimistic: InputValues;
+}
+
+const VentureBondCalculator = () => {
   // Default values
   const defaultValues: InputValues = {
     investmentAmount: 2000000,
-    valCap: 10000000,
+    valCap: 12500000,
     yearsToTrigger: 4,
     revenueThreshold: 2000000,
     profitMargin: 35,
     growthRate: 30,
     initialRevenue: 1000000,
-    initialProfit: 200000,
+    initialProfitMargin: 20,
     simulationYears: 10,
     equityPercentage: 20
   };
 
+  // Scenario presets
+  const scenarios: Scenarios = {
+    conservative: {
+      investmentAmount: 2000000,
+      valCap: 12500000,
+      yearsToTrigger: 4,
+      revenueThreshold: 2500000,
+      profitMargin: 30,
+      growthRate: 15,
+      initialRevenue: 800000,
+      initialProfitMargin: 15,
+      simulationYears: 10,
+      equityPercentage: 20
+    },
+    normal: {
+      investmentAmount: 2000000,
+      valCap: 12500000,
+      yearsToTrigger: 4,
+      revenueThreshold: 2000000,
+      profitMargin: 35,
+      growthRate: 30,
+      initialRevenue: 1000000,
+      initialProfitMargin: 20,
+      simulationYears: 10,
+      equityPercentage: 20
+    },
+    optimistic: {
+      investmentAmount: 2000000,
+      valCap: 12500000,
+      yearsToTrigger: 4,
+      revenueThreshold: 1500000,
+      profitMargin: 40,
+      growthRate: 50,
+      initialRevenue: 1200000,
+      initialProfitMargin: 25,
+      simulationYears: 10,
+      equityPercentage: 20
+    }
+  };
+
   // State
   const [inputs, setInputs] = useState<InputValues>(defaultValues);
-  const [results, setResults] = useState<CalculationResults | null>(null);
+  const [results, setResults] = useState<Results | null>(null);
   const [chartData, setChartData] = useState<YearlyData[]>([]);
 
-  // Handle input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle input changes with number formatting
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    let numericValue = parseFloat(value.replace(/,/g, ''));
+    
     setInputs({
       ...inputs,
-      [name]: parseFloat(value)
+      [name]: isNaN(numericValue) ? 0 : numericValue
     });
+  };
+
+  // Format number inputs with commas
+  const formatInputValue = (value: number) => {
+    if (value === 0 || value === null || value === undefined) return '';
+    return new Intl.NumberFormat('en-US').format(value);
   };
 
   // Reset to defaults
@@ -82,11 +140,16 @@ const VentureBondCalculator: React.FC = () => {
     setInputs(defaultValues);
   };
 
+  // Apply scenario preset
+  const applyScenario = (scenarioType: keyof Scenarios) => {
+    setInputs(scenarios[scenarioType]);
+  };
+
   // Calculate results
   useEffect(() => {
     if (!inputs.investmentAmount) return;
 
-    const calculateResults = (): CalculationResults => {
+    const calculateResults = () => {
       const {
         investmentAmount,
         valCap,
@@ -95,7 +158,7 @@ const VentureBondCalculator: React.FC = () => {
         profitMargin,
         growthRate,
         initialRevenue,
-        initialProfit,
+        initialProfitMargin,
         simulationYears,
         equityPercentage
       } = inputs;
@@ -104,12 +167,13 @@ const VentureBondCalculator: React.FC = () => {
       const yearlyData: YearlyData[] = [];
       let totalDistributions = 0;
       let totalProfits = 0;
+      let totalRevenueSum = 0;
       let currentProfitSharePercentage = 0;
       let hasTriggerOccurred = false;
       let triggerYear = -1;
       let timeToRecoup = -1;
       let currentRevenue = initialRevenue;
-      let currentProfit = initialProfit;
+      let currentProfit = initialRevenue * (initialProfitMargin / 100);
       let currentDistributionMultiple = 0;
 
       // Simulate each year
@@ -157,6 +221,7 @@ const VentureBondCalculator: React.FC = () => {
         }
 
         totalProfits += currentProfit;
+        totalRevenueSum += currentRevenue;
 
         // Calculate equity value
         const equityValue = (currentRevenue * 5) * (equityPercentage / 100); // Using 5x revenue multiple for equity valuation
@@ -176,10 +241,16 @@ const VentureBondCalculator: React.FC = () => {
       }
 
       // Calculate summary metrics
+      const profitGivenToFund = totalDistributions / totalProfits;
+      const capitalEfficiency = totalDistributions / investmentAmount; // How much they get back per dollar invested
+      
       const summaryMetrics: SummaryMetrics = {
         totalDistributions,
         totalProfits,
-        distributionToProfit: totalDistributions / totalProfits,
+        totalRevenue: totalRevenueSum,
+        distributionToProfit: profitGivenToFund,
+        profitRetainedByCompany: 1 - profitGivenToFund,
+        capitalEfficiency,
         timeToRecoup: timeToRecoup !== -1 ? timeToRecoup : "Not within simulation period",
         triggerYear: triggerYear !== -1 ? triggerYear : "Not within simulation period",
         finalReturnMultiple: totalDistributions / investmentAmount,
@@ -197,7 +268,7 @@ const VentureBondCalculator: React.FC = () => {
   }, [inputs]);
 
   // Currency formatter
-  const formatCurrency = (value: number | undefined | null): string => {
+  const formatCurrency = (value: number | undefined | null) => {
     if (value === undefined || value === null) return '-';
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -208,33 +279,79 @@ const VentureBondCalculator: React.FC = () => {
   };
 
   // Percentage formatter
-  const formatPercent = (value: number | undefined | null): string => {
+  const formatPercent = (value: number | string | undefined | null) => {
     if (value === undefined || value === null) return '-';
     return `${value}%`;
   };
 
   // Format any number with commas
-  const formatNumber = (value: number | undefined | null): string => {
+  const formatNumber = (value: number | undefined | null) => {
     if (value === undefined || value === null) return '-';
     return new Intl.NumberFormat('en-US').format(value);
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 bg-gray-50 rounded-lg shadow-md">
+    <div className="w-full p-6 bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Edin Capital Venture Bond Calculator</h1>
       
       <div className="mb-8">
-        <p className="mb-4 text-gray-600">
-          The Venture Bond combines convertible equity with profit sharing, creating a 
-          powerful investment instrument that provides better alignment between founders and investors.
-        </p>
         <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
-          <p className="text-blue-700">
-            <strong>How it works:</strong> After the investment, once trigger conditions are met (time, revenue, 
-            and profit margin thresholds), the company begins sharing a percentage of profits. The sharing rate 
-            decreases as investment multiples are achieved: 20% until 2x return, 10% until 4x return, 
-            and 5% until reaching the 6x cap. Meanwhile, the equity component maintains upside potential.
+          <h3 className="text-lg font-semibold text-blue-800 mb-3">Edin Capital&apos;s Venture Bond Structure</h3>
+          <p className="text-blue-700 mb-4">
+            A new financial instrument combining equity with profit sharing designed to increase returns & liquidity, 
+            decrease risk, better align founders and investors, and enhance economic development.
           </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <h4 className="font-medium text-blue-800 mb-2">Investment Components</h4>
+              <ul className="space-y-1 text-sm text-blue-700">
+                <li>• Convertible Equity with valuation cap</li>
+                <li>• Profit-Sharing with specific triggers</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-medium text-blue-800 mb-2">Trigger Requirements</h4>
+              <ul className="space-y-1 text-sm text-blue-700">
+                <li>• Time: (Avg) 4 years post-investment, or</li>
+                <li>• Revenue: $1M LTM minimum and</li>
+                <li>• Margins: 30% profit threshold</li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-medium text-blue-800 mb-2">Profit-Sharing Tiers</h4>
+              <ul className="space-y-1 text-sm text-blue-700">
+                <li>• 20% until 2x return</li>
+                <li>• 10% until 4x return</li>
+                <li>• 5% until 6x return</li>
+                <li>• 1% until liquidity event</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Scenario Buttons */}
+        <div className="flex flex-wrap justify-center gap-4 mb-6">
+          <button
+            onClick={() => applyScenario('conservative')}
+            className="bg-orange-500 hover:bg-orange-600 text-white py-1.5 px-3 rounded-lg transition duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 border border-orange-600 active:transform active:translate-y-0 active:shadow-md"
+          >
+            Conservative Scenario
+          </button>
+          <button
+            onClick={() => applyScenario('normal')}
+            className="bg-blue-500 hover:bg-blue-600 text-white py-1.5 px-3 rounded-lg transition duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 border border-blue-600 active:transform active:translate-y-0 active:shadow-md"
+          >
+            Normal Scenario
+          </button>
+          <button
+            onClick={() => applyScenario('optimistic')}
+            className="bg-green-500 hover:bg-green-600 text-white py-1.5 px-3 rounded-lg transition duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 border border-green-600 active:transform active:translate-y-0 active:shadow-md"
+          >
+            Optimistic Scenario
+          </button>
         </div>
       </div>
 
@@ -250,9 +367,9 @@ const VentureBondCalculator: React.FC = () => {
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
                 <input
-                  type="number"
+                  type="text"
                   name="investmentAmount"
-                  value={inputs.investmentAmount}
+                  value={formatInputValue(inputs.investmentAmount)}
                   onChange={handleInputChange}
                   className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -266,9 +383,9 @@ const VentureBondCalculator: React.FC = () => {
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
                 <input
-                  type="number"
+                  type="text"
                   name="valCap"
-                  value={inputs.valCap}
+                  value={formatInputValue(inputs.valCap)}
                   onChange={handleInputChange}
                   className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -279,16 +396,13 @@ const VentureBondCalculator: React.FC = () => {
               <label className="block text-sm font-medium text-gray-600 mb-1">
                 Equity % (at Valuation Cap)
               </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  name="equityPercentage"
-                  value={inputs.equityPercentage}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">%</span>
-              </div>
+              <input
+                type="number"
+                name="equityPercentage"
+                value={inputs.equityPercentage}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
           </div>
           
@@ -315,9 +429,9 @@ const VentureBondCalculator: React.FC = () => {
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
                 <input
-                  type="number"
+                  type="text"
                   name="revenueThreshold"
-                  value={inputs.revenueThreshold}
+                  value={formatInputValue(inputs.revenueThreshold)}
                   onChange={handleInputChange}
                   className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -326,18 +440,15 @@ const VentureBondCalculator: React.FC = () => {
             
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
-                Profit Margin Threshold
+                Profit Margin Threshold (%)
               </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  name="profitMargin"
-                  value={inputs.profitMargin}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">%</span>
-              </div>
+              <input
+                type="number"
+                name="profitMargin"
+                value={inputs.profitMargin}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
           </div>
         </div>
@@ -353,9 +464,9 @@ const VentureBondCalculator: React.FC = () => {
               <div className="relative">
                 <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
                 <input
-                  type="number"
+                  type="text"
                   name="initialRevenue"
-                  value={inputs.initialRevenue}
+                  value={formatInputValue(inputs.initialRevenue)}
                   onChange={handleInputChange}
                   className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
@@ -364,34 +475,28 @@ const VentureBondCalculator: React.FC = () => {
             
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
-                Initial Annual Profit
+                Initial Profit Margin (%)
               </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                <input
-                  type="number"
-                  name="initialProfit"
-                  value={inputs.initialProfit}
-                  onChange={handleInputChange}
-                  className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              <input
+                type="number"
+                name="initialProfitMargin"
+                value={inputs.initialProfitMargin}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
             
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">
-                Annual Revenue Growth Rate
+                Annual Revenue Growth Rate (%)
               </label>
-              <div className="relative">
-                <input
-                  type="number"
-                  name="growthRate"
-                  value={inputs.growthRate}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-                <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500">%</span>
-              </div>
+              <input
+                type="number"
+                name="growthRate"
+                value={inputs.growthRate}
+                onChange={handleInputChange}
+                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
             </div>
             
             <div>
@@ -404,7 +509,7 @@ const VentureBondCalculator: React.FC = () => {
                 value={inputs.simulationYears}
                 onChange={handleInputChange}
                 min="5"
-                max="15"
+                max="25"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -428,14 +533,19 @@ const VentureBondCalculator: React.FC = () => {
               <div className="bg-green-50 p-4 rounded-md border border-green-200">
                 <h3 className="font-medium text-green-800 mb-2">Return Summary</h3>
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="text-sm text-gray-600">Total Return:</div>
-                  <div className="text-sm font-semibold text-gray-800">
-                    {formatCurrency(results.summaryMetrics.totalReturnValue)}
+                  <div className="text-sm text-gray-600">Total Company Revenue:</div>
+                  <div className="text-sm font-semibold text-gray-800 text-right">
+                    {formatCurrency(results.summaryMetrics.totalRevenue)}
                   </div>
                   
                   <div className="text-sm text-gray-600">Return Multiple:</div>
-                  <div className="text-sm font-semibold text-gray-800">
+                  <div className="text-sm font-semibold text-gray-800 text-right">
                     {results.summaryMetrics.totalReturnMultiple.toFixed(2)}x
+                  </div>
+                  
+                  <div className="text-sm text-gray-600">Fund Distribution:</div>
+                  <div className="text-sm font-semibold text-gray-800 text-right">
+                    {formatPercent((results.summaryMetrics.distributionToProfit * 100).toFixed(2))}
                   </div>
                 </div>
               </div>
@@ -507,7 +617,7 @@ const VentureBondCalculator: React.FC = () => {
                   <div className="flex justify-between">
                     <div className="text-sm text-gray-600">Profit Share to Company:</div>
                     <div className="text-sm font-semibold text-gray-800">
-                      {formatPercent((1 - results.summaryMetrics.distributionToProfit) * 100)}
+                      {formatPercent((results.summaryMetrics.profitRetainedByCompany * 100).toFixed(2))}
                     </div>
                   </div>
                 </div>
@@ -517,51 +627,9 @@ const VentureBondCalculator: React.FC = () => {
         </div>
       </div>
 
-      {/* Main Chart Section */}
-      {results && (
-        <div className="bg-white p-6 rounded-lg shadow mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Company Profit vs Distributions</h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 30, bottom: 5 }}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="year" label={{ value: 'Year', position: 'insideBottomRight', offset: -5 }} />
-                <YAxis 
-                  label={{ value: 'Amount ($)', angle: -90, position: 'insideLeft' }}
-                  tickFormatter={(value) => value >= 1000000 ? `$${(value / 1000000).toFixed(1)}M` : `$${(value / 1000).toFixed(0)}K`}
-                />
-                <Tooltip 
-                  formatter={(value, name) => {
-                    if (name === "Company Profit") return [formatCurrency(value as number), name];
-                    if (name === "Distribution to Investor") return [formatCurrency(value as number), name];
-                    if (name === "Cumulative Distribution") return [formatCurrency(value as number), name];
-                    return [value, name];
-                  }}
-                  labelFormatter={(label) => `${label}`}
-                />
-                <Legend />
-                <Bar dataKey="profit" name="Company Profit" fill="#4F46E5" />
-                <Bar dataKey="distribution" name="Distribution to Investor" fill="#10B981" />
-                <Line 
-                  type="monotone" 
-                  dataKey="cumulativeDistribution" 
-                  name="Cumulative Distribution" 
-                  stroke="#F59E0B" 
-                  strokeWidth={2} 
-                  dot={{ r: 5 }} 
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
-
       {/* Year-by-Year Projections Table */}
       {results && (
-        <div className="bg-white p-6 rounded-lg shadow">
+        <div className="bg-white p-6 rounded-lg shadow mb-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Year-by-Year Projections</h2>
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
@@ -592,6 +660,53 @@ const VentureBondCalculator: React.FC = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+        </div>
+      )}
+
+      {/* Main Chart Section */}
+      {results && (
+        <div className="bg-white p-6 rounded-lg shadow mb-8">
+          <h2 className="text-lg font-semibold text-gray-800 mb-4">Company Profit vs Distributions</h2>
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <ComposedChart
+                data={chartData}
+                margin={{ top: 20, right: 30, left: 30, bottom: 5 }}
+              >
+                <XAxis 
+                  dataKey="year" 
+                  label={{ value: 'Year', position: 'insideBottomRight', offset: -5, fontSize: 12 }}
+                  tick={{ fontSize: 11 }}
+                />
+                <YAxis 
+                  label={{ value: 'Amount ($)', angle: -90, position: 'insideLeft', fontSize: 12 }}
+                  tickFormatter={(value) => value >= 1000000 ? `$${(value / 1000000).toFixed(1)}M` : `$${(value / 1000).toFixed(0)}K`}
+                  tick={{ fontSize: 11 }}
+                />
+                <Tooltip 
+                  formatter={(value: any, name: string) => {
+                    if (name === "Company Profit") return [formatCurrency(Number(value)), name];
+                    if (name === "Distribution to Investor") return [formatCurrency(Number(value)), name];
+                    if (name === "Cumulative Distribution") return [formatCurrency(Number(value)), name];
+                    return [value, name];
+                  }}
+                  labelFormatter={(label: any) => `Year ${label}`}
+                  contentStyle={{ fontSize: '12px' }}
+                />
+                <Legend wrapperStyle={{ fontSize: '12px' }} />
+                <Bar dataKey="profit" name="Company Profit" fill="#4F46E5" />
+                <Bar dataKey="distribution" name="Distribution to Investor" fill="#10B981" />
+                <Line 
+                  type="monotone" 
+                  dataKey="cumulativeDistribution" 
+                  name="Cumulative Distribution" 
+                  stroke="#F59E0B" 
+                  strokeWidth={2} 
+                  dot={{ r: 5 }} 
+                />
+              </ComposedChart>
+            </ResponsiveContainer>
           </div>
         </div>
       )}
