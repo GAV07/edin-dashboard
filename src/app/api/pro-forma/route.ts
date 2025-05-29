@@ -45,9 +45,9 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
   const { sheets } = await getGoogleSheet(sheetId);
 
   // Determine the sheet name based on scenario
-  const sheetName = scenario === 'base' ? 'Bottom up' : 
-                   scenario === 'conservative' ? 'Conservative' : 
-                   'Optimistic';
+  const sheetName = scenario === 'base' ? 'Base_API' : 
+                   scenario === 'conservative' ? 'Conservative_API' : 
+                   'Optimistic_API';
 
   const [assumptionsResponse, yearlyDataResponse, columnLResponse] = await Promise.all([
     // Get all assumptions in one call
@@ -58,12 +58,12 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
     // Get all yearly data in one call
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: `'${sheetName}'!A10:V34`  // Updated range to include column V for IRR
+      range: `'${sheetName}'!A16:V40`  // Updated range to include column V for IRR
     }),
     // Get column L specifically
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: `'${sheetName}'!L10:L34`  // Column L data
+      range: `'${sheetName}'!L16:L40`  // Column L data
     })
   ]);
 

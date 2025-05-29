@@ -284,7 +284,7 @@ const ProFormaDashboard = () => {
                         stroke="#666" 
                         strokeDasharray="3 3"
                         label={{ 
-                          value: 'Active Fund Duration', 
+                          value: '10y Benchmark', 
                           position: 'top',
                           fill: '#666',
                           fontSize: 12,
@@ -339,7 +339,7 @@ const ProFormaDashboard = () => {
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
-                            value: 'Active Fund Duration', 
+                            value: '10y Benchmark', 
                             position: 'top',
                             fill: '#666',
                             fontSize: 12,
@@ -393,7 +393,7 @@ const ProFormaDashboard = () => {
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
-                            value: 'Active Fund Duration', 
+                            value: '10y Benchmark', 
                             position: 'top',
                             fill: '#666',
                             fontSize: 12,
@@ -436,7 +436,7 @@ const ProFormaDashboard = () => {
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
-                            value: 'Active Fund Duration', 
+                            value: '10y Benchmark', 
                             position: 'top',
                             fill: '#666',
                             fontSize: 12,
@@ -474,7 +474,7 @@ const ProFormaDashboard = () => {
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
-                            value: 'Active Fund Duration', 
+                            value: '10y Benchmark', 
                             position: 'top',
                             fill: '#666',
                             fontSize: 12,
@@ -525,7 +525,7 @@ const ProFormaDashboard = () => {
                         stroke="#666" 
                         strokeDasharray="3 3"
                         label={{ 
-                          value: 'Active Fund Duration', 
+                          value: '10y Benchmark', 
                           position: 'top',
                           fill: '#666',
                           fontSize: 12,
@@ -570,7 +570,7 @@ const ProFormaDashboard = () => {
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
-                            value: 'Active Fund Duration', 
+                            value: '10y Benchmark', 
                             position: 'top',
                             fill: '#666',
                             fontSize: 12,
@@ -610,7 +610,7 @@ const ProFormaDashboard = () => {
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
-                            value: 'Active Fund Duration', 
+                            value: '10y Benchmark', 
                             position: 'top',
                             fill: '#666',
                             fontSize: 12,
@@ -700,7 +700,7 @@ const ProFormaDashboard = () => {
                         stroke="#666" 
                         strokeDasharray="3 3"
                         label={{ 
-                          value: 'Active Fund Duration', 
+                          value: '10y Benchmark', 
                           position: 'top',
                           fill: '#666',
                           fontSize: 12,
@@ -741,7 +741,7 @@ const ProFormaDashboard = () => {
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
-                            value: 'Active Fund Duration', 
+                            value: '10y Benchmark', 
                             position: 'top',
                             fill: '#666',
                             fontSize: 12,
@@ -788,7 +788,7 @@ const ProFormaDashboard = () => {
                           stroke="#666" 
                           strokeDasharray="3 3"
                           label={{ 
-                            value: 'Active Fund Duration', 
+                            value: '10y Benchmark', 
                             position: 'top',
                             fill: '#666',
                             fontSize: 12,

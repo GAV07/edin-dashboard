@@ -1,3 +1,5 @@
+import React from 'react';
+
 interface Stat {
   id: number | string;
   name: string;
@@ -6,7 +8,7 @@ interface Stat {
 
 interface StatsProps {
   title?: string;
-  description?: string;
+  description?: string | React.ReactNode;
   stats: Stat[];
   className?: string;
 }
@@ -28,7 +30,11 @@ export default function Stats({
                   {title}
                 </h2>
               )}
-              {description && <p className="mt-4 text-md text-gray-600">{description}</p>}
+              {description && (
+                <div className="mt-4 text-md text-gray-600">
+                  {typeof description === 'string' ? <p>{description}</p> : description}
+                </div>
+              )}
             </div>
           )}
           <dl className="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4">

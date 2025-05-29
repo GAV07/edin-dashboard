@@ -35,6 +35,7 @@ interface DashboardProps {
     moic: string;
     grossTvpi: string;
     dpi: string;
+    irr: string;
   };
   distributionSourcesData: Array<{ name: string; value: number }>;
   annualReturnsData: Array<{ year: string; returns: number }>;
@@ -55,19 +56,18 @@ export default function Dashboard({
   fundOverview,
   portfolioAllocation,
   returnMetrics,
-  distributionSourcesData,
   annualReturnsData
 }: DashboardProps) {
   // Create key metrics summary stats
   const keyMetricsStats = [
     { id: 'committed', name: 'Capital Ask', value: fundOverview.committedCapital },
-    { id: 'numInv', name: 'Number of Investments', value: portfolioAllocation.numberOfInvestments },
+    { id: 'numInv', name: 'Number of Investments (10y)', value: portfolioAllocation.numberOfInvestments },
     { id: 'checkSize', name: 'Average Check Size', value: portfolioAllocation.averageCheckSize },
-    { id: 'distributions', name: 'LP Distributions', value: returnMetrics.lpDistributions },
-    { id: 'moic', name: 'MOIC', value: returnMetrics.moic },
-    { id: 'tvpi', name: 'Gross TVPI', value: returnMetrics.grossTvpi },
-    { id: 'dpi', name: 'DPI', value: returnMetrics.dpi },
-    { id: 'success', name: 'Expected Success Rate', value: portfolioAllocation.successRate },
+    { id: 'distributions', name: 'Cum. Profit Sharing Dist. (10y)', value: returnMetrics.lpDistributions },
+    { id: 'moic', name: 'MOIC (10y)', value: returnMetrics.moic },
+    { id: 'tvpi', name: 'Gross TVPI (10y)', value: returnMetrics.grossTvpi },
+    { id: 'dpi', name: 'DPI (10y)', value: returnMetrics.dpi },
+    { id: 'irr', name: 'IRR (10y)', value: returnMetrics.irr },
   ];
 
   // Calculate cumulative returns
@@ -85,15 +85,31 @@ export default function Dashboard({
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <Stats
-        title="Edin Capital Fund 1"
-        description="Edin Capital introduces the Venture Bond, a revolutionary financial instrument combining equity and profit sharing that delivers superior risk-adjusted returns with increased liquidity for investors and better alignment for founders. Our model targets the vast, underserved segment of growth-oriented businesses that fall outside traditional venture capital's unicorn-hunting scope, generating market-leading returns without requiring billion-dollar exits while creating broader economic impact."
+        title="Edin Capital Fund I"
+        description={
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Our Mission</h3>
+              <p className="text-gray-600">
+                We provide growth capital to ambitious entrepreneurs building sustainable, profitable businesses through our innovative Venture Bond—combining equity investment with profit-sharing to create better alignment, reduced risk, and increased liquidity for both founders and investors.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">Our Vision</h3>
+              <p className="text-gray-600">
+                To transform venture capital by serving the 99.96% of small businesses left behind by traditional VC, creating a new paradigm that enables more companies to succeed, generates stronger risk-adjusted returns, and drives regenerative economic development across communities.
+              </p>
+            </div>
+            <p className="text-gray-600">
+              Edin Capital introduces the Venture Bond, a revolutionary financial instrument combining equity and profit sharing that delivers superior risk-adjusted returns with increased liquidity for investors and better alignment for founders.
+            </p>
+          </div>
+        }
         stats={keyMetricsStats}
         className="bg-white shadow-sm mb-4"
       />
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-        <div className="bg-white rounded-lg shadow p-6">
-          <KeyDocs />
-        </div>
+      <div className="gap-6 mb-6">
+        
         
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Annual vs. Cumulative Returns</h2>
@@ -139,7 +155,7 @@ export default function Dashboard({
                   stroke="#666" 
                   strokeDasharray="3 3" 
                   label={{ 
-                    value: 'Active Fund Duration', 
+                    value: '10y Benchmark', 
                     position: 'top',
                     fill: '#666',
                     fontSize: 12
@@ -151,8 +167,8 @@ export default function Dashboard({
         </div>
       </div>
       
-      <div className="mt-8 text-center text-gray-500 text-sm">
-        <p>Data based on Edin Capital Fund 1 financial projections. $86M model.</p>
+      <div className="mt-8 text-center text-gray-500 text-xs">
+        <p>Data based on Edin Capital Fund I financial projections. $86M model.</p>
       </div>
     </div>
   );
