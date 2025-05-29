@@ -49,7 +49,7 @@ const formatYAxisCurrency = (value: number, index: number): string => {
   return `$${(value / 1000000).toFixed(0)}M`;
 };
 
-const formatYAxisPercent = (value: number, index: number): string => `${value}%`;
+const formatYAxisPercent = (value: number, index: number): string => `${(value * 100).toFixed(0)}%`;
 
 interface ProFormaData {
   assumptions: {
@@ -265,15 +265,15 @@ const ProFormaDashboard = () => {
             <div className="space-y-6">
               {/* Portfolio Value Composition */}
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-dark mb-4">Total Portfolio Value Composition</h2>
+                <h2 className="text-base font-semibold text-dark mb-4">Total Portfolio Value Composition</h2>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                       data={data.yearlyData}
                       margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <XAxis dataKey="year" />
-                      <YAxis tickFormatter={formatYAxisCurrency} />
+                      <XAxis dataKey="year" fontSize={12} />
+                      <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
                       <Tooltip 
                         formatter={(value: number) => [formatCurrency(value), ""]}
                         labelFormatter={(label) => `${label}`}
@@ -295,21 +295,18 @@ const ProFormaDashboard = () => {
                       <Bar 
                         dataKey="cumulativeProfitSharingDistributions" 
                         stackId="a" 
-                        fill={colors.primary} 
+                        fill={colors.success} 
                         name="Cumulative Profit Sharing Distributions" 
                       />
                       <Bar 
                         dataKey="cumulativeResidualValue" 
                         stackId="a" 
-                        fill={colors.success} 
+                        fill={colors.secondary} 
                         name="Cumulative Residual Value" 
                       />
-                      <Line 
-                        type="monotone" 
+                      <Scatter 
                         dataKey="totalValue" 
-                        stroke={colors.dark} 
-                        strokeWidth={2} 
-                        dot={{ r: 4 }} 
+                        fill={colors.dark}
                         name="Total Value" 
                       />
                     </ComposedChart>
@@ -317,18 +314,100 @@ const ProFormaDashboard = () => {
                 </div>
               </div>
 
+              {/* Portfolio Growth & Distributions */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-base font-semibold text-dark mb-4">Cumulative Profit Share Distributions</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" fontSize={12} />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
+                        <Tooltip 
+                          formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: '10y Benchmark', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="cumulativeProfitSharingDistributions" 
+                          fill={colors.success} 
+                          stroke={colors.success} 
+                          name="Cumulative Distributions" 
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-base font-semibold text-dark mb-4">Cumulative Residual Value</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <AreaChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" fontSize={12} />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
+                        <Tooltip 
+                          formatter={(value: number) => [formatCurrency(value), "Cumulative Residual Value"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: '10y Benchmark', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Area 
+                          type="monotone" 
+                          dataKey="cumulativeResidualValue" 
+                          fill={colors.secondary} 
+                          stroke={colors.secondary} 
+                          name="Cumulative Residual Value" 
+                        />
+                        
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+               
+              </div>
+
               {/* TVPI Chart */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Total Value to Paid-In Capital (TVPI)</h2>
+                  <h2 className="text-base font-semibold text-dark mb-4">Total Value to Paid-In Capital (TVPI)</h2>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" />
-                        <YAxis />
+                        <XAxis dataKey="year" fontSize={12} />
+                        <YAxis tickFormatter={(value) => `${value.toFixed(1)}x`} fontSize={12} />
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(2)}x`, ""]}
                           labelFormatter={(label) => `${label}`}
@@ -357,7 +436,7 @@ const ProFormaDashboard = () => {
                         <Line 
                           type="monotone" 
                           dataKey="netTVPI" 
-                          stroke={colors.accent} 
+                          stroke={colors.secondary} 
                           name="Net TVPI" 
                         />
                       </LineChart>
@@ -367,17 +446,18 @@ const ProFormaDashboard = () => {
 
                 {/* IRR Chart */}
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Internal Rate of Return (IRR)</h2>
+                  <h2 className="text-base font-semibold text-dark mb-4">Internal Rate of Return (IRR)</h2>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" />
+                        <XAxis dataKey="year" fontSize={12} />
                         <YAxis 
                           tickFormatter={(value) => `${value.toFixed(0)}%`}
                           domain={['dataMin - 10', 'dataMax + 10']}
+                          fontSize={12}
                         />
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(1)}%`, "IRR"]}
@@ -414,88 +494,6 @@ const ProFormaDashboard = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Portfolio Growth & Distributions */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Profit Share Distributions</h2>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={data.yearlyData}
-                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <XAxis dataKey="year" />
-                        <YAxis tickFormatter={formatYAxisCurrency} />
-                        <Tooltip 
-                          formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
-                          labelFormatter={(label) => `Year ${label}`}
-                        />
-                        <ReferenceLine 
-                          x="Year 10"
-                          stroke="#666" 
-                          strokeDasharray="3 3"
-                          label={{ 
-                            value: '10y Benchmark', 
-                            position: 'top',
-                            fill: '#666',
-                            fontSize: 12,
-                            fontWeight: 'bold',
-                            offset: 10
-                          }}
-                        />
-                        <Area 
-                          type="monotone" 
-                          dataKey="cumulativeProfitSharingDistributions" 
-                          fill={colors.success} 
-                          stroke={colors.success} 
-                          name="Cumulative Distributions" 
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-                <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Cumulative Residual Value</h2>
-                  <div className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart
-                        data={data.yearlyData}
-                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
-                      >
-                        <XAxis dataKey="year" />
-                        <YAxis tickFormatter={formatYAxisCurrency} />
-                        <Tooltip 
-                          formatter={(value: number) => [formatCurrency(value), "Cumulative Residual Value"]}
-                          labelFormatter={(label) => `${label}`}
-                        />
-                        <ReferenceLine 
-                          x="Year 10"
-                          stroke="#666" 
-                          strokeDasharray="3 3"
-                          label={{ 
-                            value: '10y Benchmark', 
-                            position: 'top',
-                            fill: '#666',
-                            fontSize: 12,
-                            fontWeight: 'bold',
-                            offset: 10
-                          }}
-                        />
-                        <Area 
-                          type="monotone" 
-                          dataKey="cumulativeResidualValue" 
-                          fill={colors.primary} 
-                          stroke={colors.primary} 
-                          name="Cumulative Residual Value" 
-                        />
-                        
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
-               
-              </div>
             </div>
           )}
           {activeTab === 'projections' && (
@@ -503,21 +501,20 @@ const ProFormaDashboard = () => {
               {/* Company Growth Metrics */}
               {/* Revenue & Profit Projection */}
               <div className="bg-white rounded-lg shadow-sm p-6">
-                <h2 className="text-lg font-semibold text-dark mb-4">Portfolio Revenue & Profit Projection</h2>
+                <h2 className="text-base font-semibold text-dark mb-4">Portfolio Revenue & Profit Projection</h2>
                 <div className="h-64">
                   <ResponsiveContainer width="100%" height="100%">
                     <ComposedChart
                       data={data.yearlyData}
                       margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <XAxis dataKey="year" />
-                      <YAxis tickFormatter={formatYAxisCurrency} />
-                      <YAxis orientation="right" yAxisId="right" tickFormatter={formatYAxisCurrency} />
+                      <XAxis dataKey="year" fontSize={12} />
+                      <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
                       <Tooltip 
                         formatter={(value: number, name: string) => {
                           return [formatCurrency(value), name];
                         }}
-                        labelFormatter={(label) => `Year ${label}`}
+                        labelFormatter={(label) => `${label}`}
                       />
                       <Legend />
                       <ReferenceLine 
@@ -534,13 +531,11 @@ const ProFormaDashboard = () => {
                         }}
                       />
                       <Bar 
-                        yAxisId="right" 
                         dataKey="portfolioRevenue" 
                         fill={colors.primary} 
                         name="Portfolio Revenue" 
                       />
                       <Bar 
-                        yAxisId="right" 
                         dataKey="portfolioProfit" 
                         fill={colors.success} 
                         name="Portfolio Profit" 
@@ -551,19 +546,18 @@ const ProFormaDashboard = () => {
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Average Revenue Per Company</h2>
+                  <h2 className="text-base font-semibold text-dark mb-4">Average Revenue Per Company</h2>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" />
-                        <YAxis tickFormatter={formatYAxisCurrency} />
-                        <YAxis orientation="right" yAxisId="right" tickFormatter={formatYAxisCurrency} />
+                        <XAxis dataKey="year" fontSize={12} />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Avg Revenue/Company"]}
-                          labelFormatter={(label) => `Year ${label}`}
+                          labelFormatter={(label) => `${label}`}
                         />
                         <ReferenceLine 
                           x="Year 10"
@@ -581,7 +575,6 @@ const ProFormaDashboard = () => {
                         <Line 
                           type="monotone" 
                           dataKey="avgRevenuePerCompany" 
-                          yAxisId="right"
                           stroke={colors.primary} 
                           strokeWidth={2}
                           dot={{ r: 4 }}
@@ -592,18 +585,18 @@ const ProFormaDashboard = () => {
                   </div>
                 </div>
                 <div className="bg-white rounded-lg shadow-sm p-6">
-                  <h2 className="text-lg font-semibold text-dark mb-4">Average Margins</h2>
+                  <h2 className="text-base font-semibold text-dark mb-4">Average Margins</h2>
                   <div className="h-64">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" />
-                        <YAxis tickFormatter={formatYAxisPercent} />
+                        <XAxis dataKey="year" fontSize={12} />
+                        <YAxis tickFormatter={formatYAxisPercent} fontSize={12} />
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(1)}%`, "Average Margins"]}
-                          labelFormatter={(label) => `Year ${label}`}
+                          labelFormatter={(label) => `${label}`}
                         />
                         <ReferenceLine 
                           x="Year 10"
@@ -686,13 +679,12 @@ const ProFormaDashboard = () => {
                     >
                       <XAxis dataKey="year" />
                       <YAxis tickFormatter={formatYAxisCurrency} />
-                      <YAxis orientation="right" yAxisId="right" tickFormatter={formatYAxisCurrency} />
                       <Tooltip 
                         formatter={(value: number, name: string) => {
                           if (name === "Companies in Profit Sharing") return [formatNumber(value), name];
                           return [formatCurrency(value), name];
                         }}
-                        labelFormatter={(label) => `Year ${label}`}
+                        labelFormatter={(label) => `${label}`}
                       />
                       <Legend />
                       <ReferenceLine 
@@ -709,7 +701,6 @@ const ProFormaDashboard = () => {
                         }}
                       />
                       <Bar 
-                        yAxisId="right" 
                         dataKey="annualProfitSharing" 
                         fill={colors.success} 
                         name="Annual Distributions" 
@@ -730,10 +721,10 @@ const ProFormaDashboard = () => {
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
                         <XAxis dataKey="year" />
-                        <YAxis />
+                        <YAxis tickFormatter={(value) => `${value.toFixed(1)}x`} />
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(2)}x`, "Return Multiple"]}
-                          labelFormatter={(label) => `Year ${label}`}
+                          labelFormatter={(label) => `${label}`}
                         />
                         <Legend />
                         <ReferenceLine 
@@ -760,7 +751,7 @@ const ProFormaDashboard = () => {
                         <Line 
                           type="monotone" 
                           dataKey="netProfitSharingReturnMultiple" 
-                          stroke={colors.accent} 
+                          stroke={colors.secondary} 
                           strokeWidth={2}
                           dot={{ r: 4 }}
                           name="Net Profit Sharing Multiple" 
@@ -781,7 +772,7 @@ const ProFormaDashboard = () => {
                         <YAxis tickFormatter={formatYAxisCurrency} />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
-                          labelFormatter={(label) => `Year ${label}`}
+                          labelFormatter={(label) => `${label}`}
                         />
                         <ReferenceLine 
                           x="Year 10"

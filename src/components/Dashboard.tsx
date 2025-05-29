@@ -112,57 +112,88 @@ export default function Dashboard({
         
         
         <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold mb-4">Annual vs. Cumulative Returns</h2>
-          <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart
-                data={cumulativeReturnsData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-              >
-                {/* <CartesianGrid strokeDasharray="3 3" /> */}
-                <XAxis dataKey="year" />
-                <YAxis 
-                  yAxisId="left" 
-                  orientation="left"
-                  tickFormatter={formatMillions}
-                />
-                <YAxis 
-                  yAxisId="right" 
-                  orientation="right"
-                  tickFormatter={formatMillions}
-                />
-                <Tooltip 
-                  formatter={(value: number) => formatMillions(value)}
-                  labelFormatter={(label) => `${label}`}
-                />
-                <Legend />
-                <Bar 
-                  yAxisId="left" 
-                  dataKey="annual" 
-                  fill="#8884d8" 
-                  name="Annual Returns" 
-                />
-                <Line 
-                  yAxisId="right" 
-                  type="monotone" 
-                  dataKey="cumulative" 
-                  stroke="#ff7300" 
-                  name="Cumulative Returns"
-                />
-                <ReferenceLine 
-                  x="Year 10" 
-                  yAxisId="right"
-                  stroke="#666" 
-                  strokeDasharray="3 3" 
-                  label={{ 
-                    value: '10y Benchmark', 
-                    position: 'top',
-                    fill: '#666',
-                    fontSize: 12
-                  }} 
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
+          <h2 className="text-lg font-semibold mb-4">Investment Returns Analysis</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Annual Returns Chart */}
+            <div>
+              <h3 className="text-base font-medium mb-3 text-gray-700">Annual Returns</h3>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={cumulativeReturnsData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <XAxis dataKey="year" fontSize={12} />
+                    <YAxis 
+                      tickFormatter={formatMillions}
+                      fontSize={12}
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => formatMillions(value)}
+                      labelFormatter={(label) => `${label}`}
+                    />
+                    <Bar 
+                      dataKey="annual" 
+                      fill="#8884d8" 
+                      name="Annual Returns" 
+                    />
+                    <ReferenceLine 
+                      x="Year 10" 
+                      stroke="#666" 
+                      strokeDasharray="3 3" 
+                      label={{ 
+                        value: '10y Benchmark', 
+                        position: 'top',
+                        fill: '#666',
+                        fontSize: 12
+                      }} 
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {/* Cumulative Returns Chart */}
+            <div>
+              <h3 className="text-base font-medium mb-3 text-gray-700">Cumulative Returns</h3>
+              <div className="h-72">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={cumulativeReturnsData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <XAxis dataKey="year" fontSize={12} />
+                    <YAxis 
+                      tickFormatter={formatMillions}
+                      fontSize={12}
+                    />
+                    <Tooltip 
+                      formatter={(value: number) => formatMillions(value)}
+                      labelFormatter={(label) => `${label}`}
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="cumulative" 
+                      stroke="#ff7300" 
+                      strokeWidth={3}
+                      name="Cumulative Returns"
+                      dot={{ fill: '#ff7300', strokeWidth: 2, r: 4 }}
+                    />
+                    <ReferenceLine 
+                      x="Year 10" 
+                      stroke="#666" 
+                      strokeDasharray="3 3" 
+                      label={{ 
+                        value: '10y Benchmark', 
+                        position: 'top',
+                        fill: '#666',
+                        fontSize: 12
+                      }} 
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
           </div>
         </div>
       </div>

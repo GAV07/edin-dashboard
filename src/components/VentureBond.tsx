@@ -540,7 +540,7 @@ const VentureBondCalculator: React.FC = () => {
                     if (name === "Cumulative Distribution") return [formatCurrency(value as number), name];
                     return [value, name];
                   }}
-                  labelFormatter={(label) => `Year ${label}`}
+                  labelFormatter={(label) => `${label}`}
                 />
                 <Legend />
                 <Bar dataKey="profit" name="Company Profit" fill="#4F46E5" />

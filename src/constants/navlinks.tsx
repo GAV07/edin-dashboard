@@ -1,13 +1,13 @@
 import {
-  IconArticle,
   IconBolt,
   IconBriefcase2,
   IconChartBar,
   IconFile,
-  IconFolderDown,
+  IconDeviceLaptop,
   IconHelp,
   IconClipboardData,
   IconUsers,
+  IconUsersGroup,
 } from "@tabler/icons-react";
 
 export const navlinks = [
@@ -30,6 +30,16 @@ export const navlinks = [
     href: "/venture-bond",
     label: "Venture Bond",
     icon: IconBriefcase2,
+  },
+  {
+    href: "/edinOS",
+    label: "EdinOS",
+    icon: IconDeviceLaptop,
+  },
+  {
+    href: "/founders",
+    label: "Founders",
+    icon: IconUsersGroup,
   },
   {
     href: "/team",

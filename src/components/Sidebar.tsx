@@ -80,7 +80,7 @@ export const Navigation = ({
         </Link>
       ))}
 
-      <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-10 px-2">
+      <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
         Socials
       </Heading>
       {socials.map((link: Navlink) => (
@@ -100,7 +100,7 @@ export const Navigation = ({
           <span>{link.label}</span>
         </Link>
       ))}
-      <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-10 px-2">
+      <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
         Contact
       </Heading>
       <Link href="mailto:info@edin.capital" className="text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm">

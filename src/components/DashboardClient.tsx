@@ -24,6 +24,7 @@ interface DashboardData {
     moic: string;
     grossTvpi: string;
     dpi: string;
+    irr: string;
   };
   distributionSourcesData: Array<{ name: string; value: number }>;
   annualReturnsData: Array<{ year: string; returns: number }>;
