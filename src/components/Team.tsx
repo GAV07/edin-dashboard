@@ -6,7 +6,6 @@ const people = [
     role: 'Managing Partner',
     imageUrl: '/images/team/andrew.jpeg',
     bio: 'Andrew Davis is an award-winning founder, operator, and investor with impressive credentials in the venture capital world. With 7+ years of venture experience across prestigious firms including Techstars, Comcast, and MakerX, Andrew has developed a keen eye for promising investments. His 10+ years of operating experience spans multiple successful ventures, including roles as Founder of Phoenix, participation in Google&apos;s Community Leaders Program, and leadership positions at companies like Village Music (Founder &amp; CEO) and Musicasa (Head of Product). Based in Broward County, Andrew has built strong relationships with high-net-worth individuals, family offices, and institutions, making him a trusted advisor and community builder within the investment landscape.',
-    xUrl: '#',
     linkedinUrl: 'https://www.linkedin.com/in/andgerous/',
   },
   {
@@ -14,7 +13,6 @@ const people = [
     role: 'General Partner',
     imageUrl: '/images/team/aurelia.jpeg',
     bio: 'Aurelia Edwards is an award-winning, 4x founder and operator who, over the past 25 years, has founded and scaled companies across health and wellness, event production and management, and technology sectors. Based in Broward County, she is trusted by Fortune 100 enterprises and known for building communities across high-net-worth individuals, family offices, and institutions. After overcoming her own funding challenges, Aurelia is focused on bridging capital gaps for founders prioritizing profitability and sustainability. At Edin Capital, she is unlocking access to aligned, derisked investment opportunities that fuel regional growth. Her mission is to reshape venture by embedding equity, access, and longevity at the core of capital deployment.',
-    xUrl: '#',
     linkedinUrl: 'https://www.linkedin.com/in/aureliaedwards/',
   },
   {
@@ -22,8 +20,14 @@ const people = [
     role: 'General Partner',
     imageUrl: '/images/team/erick.jpeg',
     bio: "Erick Gavin is a respected ecosystem builder with 10 years of experience developing Miami&apos;s innovation landscape. As the former Executive Director of Venture Miami for the City of Miami, he played a pivotal role in shaping the region&apos;s entrepreneurial environment. Erick successfully built Florida&apos;s largest incubator and serves as a Partner at Reefside Ventures. His background includes product design leadership at Dream Impact HK and serving as Senior Program Manager at the Center for Black Innovation. Based in Miami-Dade County, Erick leverages his extensive network and deep understanding of the startup ecosystem to create value for Edin Capital&apos;s portfolio companies.",
-    xUrl: '#',
     linkedinUrl: 'https://www.linkedin.com/in/erickgavin/',
+  },
+  {
+    name: 'Nelson Telemaco',
+    role: 'General Partner',
+    imageUrl: '/images/team/nelson.jpeg',
+    bio: "Nelson Telemaco is a corporate executive, serial “intrapreneur”, startup founder, investor, board director, and advisor/consultant, who has honed his ability to understand and serve customers at scale, explore new markets, develop strong teams and partnerships, de-risk enterprises, and build successful businesses through innovation and sharp execution. He is excited to leverage his experiences across multiple disciplines to identify and capitalize on opportunities that impact the most meaningful results for organizations and the communities they serve.",
+    linkedinUrl: 'https://www.linkedin.com/in/ntelemaco/',
   },
 ];
 
@@ -53,16 +57,6 @@ export default function Team() {
                 <h3 className="text-lg/8 font-semibold tracking-tight text-gray-900">{person.name}</h3>
                 <p className="text-base/7 text-gray-600">{person.role}</p>
                 <p className="mt-6 text-base/7 text-gray-600">{person.bio}</p>
-                <ul role="list" className="mt-6 flex gap-x-6">
-                  <li>
-                    <a href={person.xUrl} className="text-gray-400 hover:text-gray-500">
-                      <span className="sr-only">X</span>
-                      <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true" className="size-5">
-                        <path d="M11.4678 8.77491L17.2961 2H15.915L10.8543 7.88256L6.81232 2H2.15039L8.26263 10.8955L2.15039 18H3.53159L8.87581 11.7878L13.1444 18H17.8063L11.4675 8.77491H11.4678ZM9.57608 10.9738L8.95678 10.0881L4.02925 3.03974H6.15068L10.1273 8.72795L10.7466 9.61374L15.9156 17.0075H13.7942L9.57608 10.9742V10.9738Z" />
-                      </svg>
-                    </a>
-                  </li>
-                </ul>
                 <div className="mt-4">
                   <a
                     href={person.linkedinUrl}
