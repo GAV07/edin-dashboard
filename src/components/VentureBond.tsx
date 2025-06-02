@@ -292,66 +292,140 @@ const VentureBondCalculator = () => {
 
   return (
     <div className="w-full p-6 bg-gray-50 rounded-lg shadow-md">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Edin Capital Venture Bond Calculator</h1>
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Edin Capital Venture Bond</h1>
       
       <div className="mb-8">
-        <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
-          <h3 className="text-lg font-semibold text-blue-800 mb-3">Edin Capital&apos;s Venture Bond Structure</h3>
-          <p className="text-blue-700 mb-4">
-            A new financial instrument combining equity with profit sharing designed to increase returns & liquidity, 
-            decrease risk, better align founders and investors, and enhance economic development.
-          </p>
+        <div className="bg-white rounded-lg p-8 shadow-lg mb-6">
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-gray-800 mb-3">Venture Bond Founder Journey</h2>
+            <p className="text-gray-600 mb-6">
+              A step-by-step guide showing how founders progress through the venture bond structure, 
+              from initial investment to various exit opportunities while maintaining control and providing 
+              sustainable returns to investors.
+            </p>
+          </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <h4 className="font-medium text-blue-800 mb-2">Investment Components</h4>
-              <ul className="space-y-1 text-sm text-blue-700">
-                <li>• Convertible Equity with valuation cap</li>
-                <li>• Profit-Sharing with specific triggers</li>
-              </ul>
+          <div className="flex items-center justify-between overflow-x-auto py-5 px-0 gap-4 min-h-96">
+            {/* Step 1 */}
+            <div className="bg-white border-2 border-blue-200 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
+              <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">📈 Investment</h3>
+              <p className="m-0 text-xs leading-relaxed text-gray-600">Receive Venture Bond investment</p>
+              <div className="bg-gray-50 rounded p-2 mt-2 text-xs text-gray-700">
+                <strong className="block mb-1">Components:</strong>
+                Convertible equity + Profit sharing
+              </div>
             </div>
             
-            <div>
-              <h4 className="font-medium text-blue-800 mb-2">Trigger Requirements</h4>
-              <ul className="space-y-1 text-sm text-blue-700">
-                <li>• Time: (Avg) 4 years post-investment, or</li>
-                <li>• Revenue: $1M LTM minimum and</li>
-                <li>• Margins: 30% profit threshold</li>
-              </ul>
+            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
+            
+            {/* Step 2 */}
+            <div className="bg-white border-2 border-blue-200 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
+              <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">🚀 Growth</h3>
+              <p className="m-0 text-xs leading-relaxed text-gray-600">Scale business & operations</p>
+              <div className="bg-gray-50 rounded p-2 mt-2 text-xs text-gray-700">
+                <strong className="block mb-1">Focus:</strong>
+                Revenue, margins, efficiency
+              </div>
             </div>
             
-            <div>
-              <h4 className="font-medium text-blue-800 mb-2">Profit-Sharing Tiers</h4>
-              <ul className="space-y-1 text-sm text-blue-700">
-                <li>• 20% until 2x return</li>
-                <li>• 10% until 4x return</li>
-                <li>• 5% until 6x return</li>
-                <li>• 1% until liquidity event</li>
-              </ul>
+            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
+            
+            {/* Step 3 */}
+            <div className="bg-white border-2 border-blue-200 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
+              <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">🎯 Triggers</h3>
+              <p className="m-0 text-xs leading-relaxed text-gray-600">Hit all required conditions</p>
+              <div className="bg-gray-50 rounded p-2 mt-2 text-xs text-gray-700">
+                <strong className="block mb-1">Required:</strong>
+                Time + Revenue + Margins
+              </div>
             </div>
+            
+            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
+            
+            {/* Step 4 */}
+            <div className="bg-white border-2 border-blue-200 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
+              <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">💰 Profit Sharing</h3>
+              <p className="m-0 text-xs leading-relaxed text-gray-600">Quarterly distributions begin</p>
+              <div className="bg-gray-50 rounded p-2 mt-2 text-xs text-gray-700">
+                <strong className="block mb-1">Tranches:</strong>
+                20% → 10% → 5%
+              </div>
+            </div>
+            
+            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
+            
+            {/* Decision Point */}
+            <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
+              <h3 className="m-0 mb-2 text-sm font-semibold text-blue-800">🔀 Paths</h3>
+              <p className="m-0 text-xs leading-relaxed text-blue-700">Multiple options</p>
+            </div>
+            
+            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
+            
+            {/* Branches */}
+            <div className="flex flex-col gap-3 min-w-36">
+              <div className="bg-white border-2 border-gray-300 rounded-lg p-3 text-center shadow-md">
+                <h4 className="m-0 mb-1 text-xs font-semibold text-gray-800">🔄 Continue</h4>
+                <p className="m-0 text-xs leading-tight text-gray-600">Keep profit sharing until 6x cap reached</p>
+              </div>
+              
+              <div className="bg-white border-2 border-gray-300 rounded-lg p-3 text-center shadow-md">
+                <h4 className="m-0 mb-1 text-xs font-semibold text-gray-800">💼 Equity Round</h4>
+                <p className="m-0 text-xs leading-tight text-gray-600">Auto-convert to preferred stock + continue profit sharing</p>
+              </div>
+              
+              <div className="bg-white border-2 border-gray-300 rounded-lg p-3 text-center shadow-md">
+                <h4 className="m-0 mb-1 text-xs font-semibold text-gray-800">🏆 Exit Event</h4>
+                <p className="m-0 text-xs leading-tight text-gray-600">Acquisition/IPO triggers payout</p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-5 p-4 bg-gray-50 rounded-lg text-center">
+            <p className="m-0 text-sm text-gray-600">
+              <strong>Key Benefit:</strong> Founders maintain control while providing continuous returns to investors through sustainable growth
+            </p>
           </div>
         </div>
 
-        {/* Scenario Buttons */}
-        <div className="flex flex-wrap justify-center gap-4 mb-6">
-          <button
-            onClick={() => applyScenario('conservative')}
-            className="bg-orange-500 hover:bg-orange-600 text-white py-1.5 px-3 rounded-lg transition duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 border border-orange-600 active:transform active:translate-y-0 active:shadow-md"
-          >
-            Conservative Scenario
-          </button>
-          <button
-            onClick={() => applyScenario('normal')}
-            className="bg-blue-500 hover:bg-blue-600 text-white py-1.5 px-3 rounded-lg transition duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 border border-blue-600 active:transform active:translate-y-0 active:shadow-md"
-          >
-            Normal Scenario
-          </button>
-          <button
-            onClick={() => applyScenario('optimistic')}
-            className="bg-green-500 hover:bg-green-600 text-white py-1.5 px-3 rounded-lg transition duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-1 border border-green-600 active:transform active:translate-y-0 active:shadow-md"
-          >
-            Optimistic Scenario
-          </button>
+        {/* Calculator Introduction */}
+        <div className="bg-white rounded-lg p-6 shadow mb-6">
+          <h2 className="text-xl font-semibold text-gray-800 mb-3">Interactive Calculator</h2>
+          <p className="text-gray-600 mb-4">
+            Use the calculator below to model different scenarios and see how the venture bond structure 
+            performs under various business conditions. Start with a preset scenario or customize the 
+            parameters to match your specific situation.
+          </p>
+          
+          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
+            <h3 className="text-sm font-medium text-blue-800 mb-2">Quick Start Scenarios</h3>
+            <p className="text-sm text-blue-700 mb-4">
+              Choose a scenario below to populate the calculator with realistic assumptions, 
+              or scroll down to customize all parameters manually.
+            </p>
+            
+            {/* Scenario Buttons */}
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => applyScenario('conservative')}
+                className="bg-white border-2 border-blue-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm"
+              >
+                Conservative Scenario
+              </button>
+              <button
+                onClick={() => applyScenario('normal')}
+                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm border-2 border-blue-500 hover:border-blue-600"
+              >
+                Normal Scenario
+              </button>
+              <button
+                onClick={() => applyScenario('optimistic')}
+                className="bg-white border-2 border-blue-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm"
+              >
+                Optimistic Scenario
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 

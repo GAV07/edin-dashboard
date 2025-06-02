@@ -134,7 +134,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
 
   const data: DashboardData = {
     fundOverview: {
-      committedCapital: '$85M',
+      committedCapital: '$86M',
       investableCapital: formatCurrency(parseCurrencyValue(assumptions[1]?.[0]) || 70000000),
       managementFee: assumptions[1]?.[0] || '2.5%',
       fundLife: '15 years',

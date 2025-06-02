@@ -61,7 +61,7 @@ export default function Dashboard({
   // Create key metrics summary stats
   const keyMetricsStats = [
     { id: 'committed', name: 'Capital Ask', value: fundOverview.committedCapital },
-    { id: 'numInv', name: 'Number of Investments (10y)', value: portfolioAllocation.numberOfInvestments },
+    { id: 'numInv', name: 'Number of Investments', value: portfolioAllocation.numberOfInvestments },
     { id: 'checkSize', name: 'Average Check Size', value: portfolioAllocation.averageCheckSize },
     { id: 'distributions', name: 'Cum. Profit Sharing Dist. (10y)', value: returnMetrics.lpDistributions },
     { id: 'moic', name: 'MOIC (10y)', value: returnMetrics.moic },
