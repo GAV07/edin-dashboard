@@ -2,8 +2,8 @@ import { Metadata } from "next";
 import DashboardClient from "@/components/DashboardClient";
 
 export const metadata: Metadata = {
-  title: "Home | Investor Dashboard",
-  description: "Dashboard overview of key metrics and data from our portfolio.",
+  title: "Edin Investor Dashboard",
+  description: "Investor portal covering key data, metrics, and documents for Edin Capital.",
 };
 
 export default function HomePage() {

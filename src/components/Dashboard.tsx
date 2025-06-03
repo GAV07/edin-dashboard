@@ -13,7 +13,6 @@ import {
   ReferenceLine
 } from 'recharts';
 import Stats from './Stats';
-import KeyDocs from './KeyDocs';
 
 interface DashboardProps {
   fundOverview: {

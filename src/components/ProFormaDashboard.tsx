@@ -187,12 +187,12 @@ const ProFormaDashboard = () => {
     <div className="bg-background min-h-screen p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-2xl font-bold text-dark">Edin Capital Financial Model</h1>
-            <p className="text-gray-500">Venture Bond Pro Forma Dashboard</p>
+        <div className="space-y-6 mb-8">
+          <div className="space-y-4">
+            <h1 className="text-3xl font-bold text-dark">Edin Capital Financial Model</h1>
+            <p className="text-lg text-gray-500">Venture Bond Pro Forma Dashboard</p>
             {lastUpdated && (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-sm text-gray-400">
                 Last updated: {lastUpdated.toLocaleString('en-US', {
                   year: 'numeric',
                   month: 'numeric',
@@ -203,26 +203,32 @@ const ProFormaDashboard = () => {
                 })}
               </p>
             )}
+            <div className="flex items-center gap-2 text-sm text-warning mt-4 p-3 bg-warning/5 border border-warning/20 rounded-lg md:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+              </svg>
+              <span>Best viewed on a larger screen for optimal experience</span>
+            </div>
           </div>
-          <div className="flex gap-4">
-            <div className="bg-white rounded-lg shadow-sm p-4">
-              <label htmlFor="scenario-select" className="text-sm font-medium text-gray-500 mb-1 block">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <label htmlFor="scenario-select" className="text-sm font-medium text-gray-500 mb-2 block">
                 Scenario
               </label>
               <select
                 id="scenario-select"
                 value={selectedScenario}
                 onChange={(e) => setSelectedScenario(e.target.value)}
-                className="block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                className="block w-full px-4 py-3 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-base"
               >
                 <option value="base">Base Case</option>
                 <option value="conservative">Conservative</option>
                 <option value="optimistic">Optimistic</option>
               </select>
             </div>
-            <div className="bg-white rounded-lg shadow-sm p-4">
-              <h3 className="text-sm font-medium text-gray-500 mb-1">Target Fund Size</h3>
-              <p className="text-2xl font-bold text-dark">
+            <div className="bg-white rounded-lg shadow-sm p-6">
+              <h3 className="text-sm font-medium text-gray-500 mb-2">Target Fund Size</h3>
+              <p className="text-3xl font-bold text-dark">
                 $86M
               </p>
             </div>
@@ -272,13 +278,23 @@ const ProFormaDashboard = () => {
                       data={data.yearlyData}
                       margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <XAxis dataKey="year" fontSize={12} />
-                      <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
+                      <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                      <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
                       <Tooltip 
                         formatter={(value: number) => [formatCurrency(value), ""]}
                         labelFormatter={(label) => `${label}`}
                       />
-                      <Legend />
+                      <Legend 
+                        wrapperStyle={{
+                          fontSize: '10px',
+                          paddingTop: '10px'
+                        }}
+                        layout="horizontal"
+                        verticalAlign="bottom"
+                        align="center"
+                        iconSize={8}
+                        iconType="circle"
+                      />
                       <ReferenceLine 
                         x="Year 10"
                         stroke="#666" 
@@ -324,8 +340,8 @@ const ProFormaDashboard = () => {
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" fontSize={12} />
-                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
                           labelFormatter={(label) => `${label}`}
@@ -362,8 +378,8 @@ const ProFormaDashboard = () => {
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" fontSize={12} />
-                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Cumulative Residual Value"]}
                           labelFormatter={(label) => `${label}`}
@@ -406,13 +422,23 @@ const ProFormaDashboard = () => {
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" fontSize={12} />
-                        <YAxis tickFormatter={(value) => `${value.toFixed(1)}x`} fontSize={12} />
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={(value) => `${value.toFixed(1)}x`} fontSize={12} className="text-[10px] md:text-xs" />
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(2)}x`, ""]}
                           labelFormatter={(label) => `${label}`}
                         />
-                        <Legend />
+                        <Legend 
+                          wrapperStyle={{
+                            fontSize: '10px',
+                            paddingTop: '10px'
+                          }}
+                          layout="horizontal"
+                          verticalAlign="bottom"
+                          align="center"
+                          iconSize={8}
+                          iconType="circle"
+                        />
                         <ReferenceLine 
                           x="Year 10"
                           stroke="#666" 
@@ -453,11 +479,12 @@ const ProFormaDashboard = () => {
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" fontSize={12} />
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
                         <YAxis 
                           tickFormatter={(value) => `${value.toFixed(0)}%`}
                           domain={['dataMin - 10', 'dataMax + 10']}
                           fontSize={12}
+                          className="text-[10px] md:text-xs"
                         />
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(1)}%`, "IRR"]}
@@ -508,15 +535,25 @@ const ProFormaDashboard = () => {
                       data={data.yearlyData}
                       margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <XAxis dataKey="year" fontSize={12} />
-                      <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
+                      <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                      <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
                       <Tooltip 
                         formatter={(value: number, name: string) => {
                           return [formatCurrency(value), name];
                         }}
                         labelFormatter={(label) => `${label}`}
                       />
-                      <Legend />
+                      <Legend 
+                        wrapperStyle={{
+                          fontSize: '10px',
+                          paddingTop: '10px'
+                        }}
+                        layout="horizontal"
+                        verticalAlign="bottom"
+                        align="center"
+                        iconSize={8}
+                        iconType="circle"
+                      />
                       <ReferenceLine 
                         x="Year 10"
                         stroke="#666" 
@@ -553,8 +590,8 @@ const ProFormaDashboard = () => {
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" fontSize={12} />
-                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} />
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Avg Revenue/Company"]}
                           labelFormatter={(label) => `${label}`}
@@ -592,8 +629,8 @@ const ProFormaDashboard = () => {
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" fontSize={12} />
-                        <YAxis tickFormatter={formatYAxisPercent} fontSize={12} />
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisPercent} fontSize={12} className="text-[10px] md:text-xs" />
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(1)}%`, "Average Margins"]}
                           labelFormatter={(label) => `${label}`}
@@ -677,8 +714,8 @@ const ProFormaDashboard = () => {
                       data={data.yearlyData}
                       margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                     >
-                      <XAxis dataKey="year" />
-                      <YAxis tickFormatter={formatYAxisCurrency} />
+                      <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                      <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
                       <Tooltip 
                         formatter={(value: number, name: string) => {
                           if (name === "Companies in Profit Sharing") return [formatNumber(value), name];
@@ -686,7 +723,7 @@ const ProFormaDashboard = () => {
                         }}
                         labelFormatter={(label) => `${label}`}
                       />
-                      <Legend />
+                      
                       <ReferenceLine 
                         x="Year 10"
                         stroke="#666" 
@@ -720,13 +757,23 @@ const ProFormaDashboard = () => {
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" />
-                        <YAxis tickFormatter={(value) => `${value.toFixed(1)}x`} />
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={(value) => `${value.toFixed(1)}x`} fontSize={12} className="text-[10px] md:text-xs" />
                         <Tooltip 
                           formatter={(value: number) => [`${value.toFixed(2)}x`, "Return Multiple"]}
                           labelFormatter={(label) => `${label}`}
                         />
-                        <Legend />
+                        <Legend 
+                          wrapperStyle={{
+                            fontSize: '10px',
+                            paddingTop: '10px'
+                          }}
+                          layout="horizontal"
+                          verticalAlign="bottom"
+                          align="center"
+                          iconSize={8}
+                          iconType="circle"
+                        />
                         <ReferenceLine 
                           x="Year 10"
                           stroke="#666" 
@@ -768,8 +815,8 @@ const ProFormaDashboard = () => {
                         data={data.yearlyData}
                         margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="year" />
-                        <YAxis tickFormatter={formatYAxisCurrency} />
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
                         <Tooltip 
                           formatter={(value: number) => [formatCurrency(value), "Cumulative Distributions"]}
                           labelFormatter={(label) => `${label}`}
