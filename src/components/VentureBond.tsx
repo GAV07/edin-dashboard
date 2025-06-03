@@ -292,7 +292,7 @@ const VentureBondCalculator = () => {
 
   return (
     <div className="w-full p-6 bg-gray-50 rounded-lg shadow-md">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Edin Capital Venture Bond</h1>
+      <h1 className="text-2xl font-semibold tracking-tight text-gray-800 mb-6 sm:text-3xl">Edin Capital Venture Bond</h1>
       
       <div className="mb-8">
         <div className="bg-white rounded-lg p-8 shadow-lg mb-6">

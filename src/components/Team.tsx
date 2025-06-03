@@ -5,28 +5,28 @@ const people = [
     name: 'Andrew Davis',
     role: 'Managing Partner',
     imageUrl: '/images/team/andrew.jpeg',
-    bio: 'Andrew Davis is an award-winning founder, operator, and investor with impressive credentials in the venture capital world. With 7+ years of venture experience across prestigious firms including Techstars, Comcast, and MakerX, Andrew has developed a keen eye for promising investments. His 10+ years of operating experience spans multiple successful ventures, including roles as Founder of Phoenix, participation in Google&apos;s Community Leaders Program, and leadership positions at companies like Village Music (Founder &amp; CEO) and Musicasa (Head of Product). Based in Broward County, Andrew has built strong relationships with high-net-worth individuals, family offices, and institutions, making him a trusted advisor and community builder within the investment landscape.',
+    bio: 'Award-winning founder, operator, and investor with 7+ years of venture experience at Techstars, Comcast, and MakerX. 10+ years operating experience including Founder of Phoenix and Google Community Leaders Program.',
     linkedinUrl: 'https://www.linkedin.com/in/andgerous/',
   },
   {
     name: 'Aurelia Edwards',
     role: 'General Partner',
     imageUrl: '/images/team/aurelia.jpeg',
-    bio: 'Aurelia Edwards is an award-winning, 4x founder and operator who, over the past 25 years, has founded and scaled companies across health and wellness, event production and management, and technology sectors. Based in Broward County, she is trusted by Fortune 100 enterprises and known for building communities across high-net-worth individuals, family offices, and institutions. After overcoming her own funding challenges, Aurelia is focused on bridging capital gaps for founders prioritizing profitability and sustainability. At Edin Capital, she is unlocking access to aligned, derisked investment opportunities that fuel regional growth. Her mission is to reshape venture by embedding equity, access, and longevity at the core of capital deployment.',
+    bio: 'Award-winning 4x founder and operator with 25 years experience across health, wellness, events, and technology. Trusted by Fortune 100 enterprises and focused on bridging capital gaps for sustainable founders.',
     linkedinUrl: 'https://www.linkedin.com/in/aureliaedwards/',
   },
   {
     name: 'Erick Gavin',
     role: 'General Partner',
     imageUrl: '/images/team/erick.jpeg',
-    bio: "Erick Gavin is a respected ecosystem builder with 10 years of experience developing Miami&apos;s innovation landscape. As the former Executive Director of Venture Miami for the City of Miami, he played a pivotal role in shaping the region&apos;s entrepreneurial environment. Erick successfully built Florida&apos;s largest incubator and serves as a Partner at Reefside Ventures. His background includes product design leadership at Dream Impact HK and serving as Senior Program Manager at the Center for Black Innovation. Based in Miami-Dade County, Erick leverages his extensive network and deep understanding of the startup ecosystem to create value for Edin Capital&apos;s portfolio companies.",
+    bio: "Respected ecosystem builder with 10 years developing Miami's innovation landscape. Former Executive Director of Venture Miami, built Florida's largest incubator, and Partner at Reefside Ventures.",
     linkedinUrl: 'https://www.linkedin.com/in/erickgavin/',
   },
   {
     name: 'Nelson Telemaco',
     role: 'General Partner',
     imageUrl: '/images/team/nelson.jpeg',
-    bio: "Nelson Telemaco is a corporate executive, serial “intrapreneur”, startup founder, investor, board director, and advisor/consultant, who has honed his ability to understand and serve customers at scale, explore new markets, develop strong teams and partnerships, de-risk enterprises, and build successful businesses through innovation and sharp execution. He is excited to leverage his experiences across multiple disciplines to identify and capitalize on opportunities that impact the most meaningful results for organizations and the communities they serve.",
+    bio: "Corporate executive, serial \"intrapreneur\", startup founder, investor, and board director with expertise in scaling businesses, developing teams, and de-risking enterprises through innovation and execution.",
     linkedinUrl: 'https://www.linkedin.com/in/ntelemaco/',
   },
 ];
@@ -34,50 +34,55 @@ const people = [
 export default function Team() {
   return (
     <div className="bg-white py-12">
-      <div className="mx-auto max-w-full px-6 lg:px-8 xl:grid-cols-6">
-        <div className="max-w-xl xl:col-span-2 py-12">
-          <h2 className="text-pretty text-4xl font-semibold tracking-tight text-gray-900 sm:text-5xl">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        {/* Header Section */}
+        <div className="mb-16">
+          <h2 className="text-balance text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
             About the team
           </h2>
-          <p className="mt-6 text-lg/8 text-gray-600">
+          <p className="mt-6 text-md text-gray-600 max-w-2xl">
             Real-world operators and investors fueling sustainable innovation
           </p>
         </div>
-        <ul role="list" className="divide-y divide-gray-200 xl:col-span-3">
+
+        {/* Team Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           {people.map((person) => (
-            <li key={person.name} className="flex flex-col gap-10 py-12 first:pt-0 last:pb-0 sm:flex-row">
-              <Image
-                alt={person.name}
-                src={person.imageUrl}
-                width={200}
-                height={200}
-                className="aspect-square w-52 max-h-52 flex-none rounded-2xl object-cover"
-              />
-              <div className="max-w-4xl flex-auto">
-                <h3 className="text-lg/8 font-semibold tracking-tight text-gray-900">{person.name}</h3>
-                <p className="text-base/7 text-gray-600">{person.role}</p>
-                <p className="mt-6 text-base/7 text-gray-600">{person.bio}</p>
-                <div className="mt-4">
-                  <a
-                    href={person.linkedinUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white font-semibold hover:bg-blue-700 transition"
-                  >
-                    <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true" className="w-5 h-5">
-                      <path
-                        d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z"
-                        clipRule="evenodd"
-                        fillRule="evenodd"
-                      />
-                    </svg>
-                    View LinkedIn
-                  </a>
+            <div key={person.name} className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 hover:shadow-xl transition-shadow duration-300">
+              <div className="flex items-start space-x-6">
+                <Image
+                  alt={person.name}
+                  src={person.imageUrl}
+                  width={120}
+                  height={120}
+                  className="w-24 h-24 flex-none rounded-full object-cover"
+                />
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg font-semibold tracking-tight text-gray-900">{person.name}</h3>
+                  <p className="text-sm font-medium text-blue-600 mb-3">{person.role}</p>
+                  <p className="text-sm text-gray-600 leading-relaxed">{person.bio}</p>
+                  <div className="mt-4">
+                    <a
+                      href={person.linkedinUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                    >
+                      <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true" className="w-4 h-4">
+                        <path
+                          d="M16.338 16.338H13.67V12.16c0-.995-.017-2.277-1.387-2.277-1.39 0-1.601 1.086-1.601 2.207v4.248H8.014v-8.59h2.559v1.174h.037c.356-.675 1.227-1.387 2.526-1.387 2.703 0 3.203 1.778 3.203 4.092v4.711zM5.005 6.575a1.548 1.548 0 11-.003-3.096 1.548 1.548 0 01.003 3.096zm-1.337 9.763H6.34v-8.59H3.667v8.59zM17.668 1H2.328C1.595 1 1 1.581 1 2.298v15.403C1 18.418 1.595 19 2.328 19h15.34c.734 0 1.332-.582 1.332-1.299V2.298C19 1.581 18.402 1 17.668 1z"
+                          clipRule="evenodd"
+                          fillRule="evenodd"
+                        />
+                      </svg>
+                      View LinkedIn
+                    </a>
+                  </div>
                 </div>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   )

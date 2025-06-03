@@ -32,7 +32,7 @@ const EdinCapitalSummary = () => {
       <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-3xl font-bold text-white">Edin Capital</h1>
+            <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Edin Capital</h1>
             <p className="text-blue-100 mt-1">Fund I Executive Summary</p>
           </div>
           {/* <div className="bg-white bg-opacity-20 rounded-lg p-2">
