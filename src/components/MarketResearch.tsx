@@ -127,7 +127,7 @@ const MarketAnalysisDashboard: React.FC = () => {
         </div>
         <p className="text-blue-100 mt-1">
           The US economy stands at an inflection point. Our comprehensive analysis reveals a massive untapped market 
-          opportunity created by the convergence of VC's structural failures, AI-enabled transformation, and 
+          opportunity created by the convergence of VC&apos;s structural failures, AI-enabled transformation, and 
           deteriorating founder-investor relations.
         </p>
       </div>
@@ -175,7 +175,7 @@ const MarketAnalysisDashboard: React.FC = () => {
                 <div className="space-y-4">
                   <h3 className="text-md font-semibold text-gray-800 mb-2">Performance Breakdown</h3>
                   <ul className="space-y-2 text-sm text-gray-700">
-                    <li>• 2017 vintage IRR dropped from 16.8% to 12.0% (vs S&P 500's 12.83%)</li>
+                    <li>• 2017 vintage IRR dropped from 16.8% to 12.0% (vs S&P 500&apos;s 12.83%)</li>
                     <li>• Only 14.3% of 2017 funds achieved DPI {'>'} 1x after 7 years</li>
                     <li>• Bridge rounds hit 40% of seed-stage financing</li>
                     <li>• Down rounds increased 5x (6.7% to 20% of rounds)</li>
