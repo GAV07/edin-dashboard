@@ -32,7 +32,7 @@ export const Sidebar = () => {
               <Navigation setOpen={setOpen} />
             </div>
             <div onClick={() => isMobile() && setOpen(false)}>
-              <Badge href="https://www.dropbox.com/scl/fi/oh4tndt76kkbl2cndqnqt/Edin-Capital-Deck-Updated-524.pdf?rlkey=bhbqaui3votyvnhpdt6tucmrn&st=b5yzcodq&dl=0" text="Overview Deck" />
+              <Badge href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=ye3wvcjq&dl=0" text="Edin Deck" />
             </div>
           </motion.div>
         )}

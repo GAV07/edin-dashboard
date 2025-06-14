@@ -28,11 +28,6 @@ export const navlinks = [
     icon: IconChartBar,
   },
   {
-    href: "/market-research",
-    label: "Market Research",
-    icon: IconBuildingStore,
-  },
-  {
     href: "/venture-bond",
     label: "Venture Bond",
     icon: IconBriefcase2,
@@ -41,6 +36,11 @@ export const navlinks = [
     href: "/edinOS",
     label: "EdinOS",
     icon: IconDeviceLaptop,
+  },
+  {
+    href: "/market-research",
+    label: "Market Research",
+    icon: IconBuildingStore,
   },
   {
     href: "/portfolio",
