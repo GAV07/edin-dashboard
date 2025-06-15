@@ -769,8 +769,8 @@ const VentureBondCalculator = () => {
                   contentStyle={{ fontSize: '12px' }}
                 />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Bar dataKey="profit" name="Company Profit" fill="#4F46E5" />
-                <Bar dataKey="distribution" name="Distribution to Investor" fill="#10B981" />
+                <Bar dataKey="profit" name="Company Profit" fill="#8B9A5B" />
+                <Bar dataKey="distribution" name="Distribution to Investor" fill="#5B9BD5" />
                 <Line 
                   type="monotone" 
                   dataKey="cumulativeDistribution" 

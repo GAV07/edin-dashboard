@@ -40,7 +40,7 @@ interface DashboardProps {
   annualReturnsData: Array<{ year: string; returns: number }>;
 }
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
+const COLORS = ['#4A5D23', '#8B9A5B', '#5B9BD5', '#7BA05B', '#6BA6CD'];
 
 // Format numbers to millions with 1 decimal place
 const formatMillions = (value: number) => {
@@ -133,7 +133,7 @@ export default function Dashboard({
                     />
                     <Bar 
                       dataKey="annual" 
-                      fill="#8884d8" 
+                      fill="#4A5D23" 
                       name="Annual Returns" 
                     />
                     <ReferenceLine 
@@ -173,10 +173,10 @@ export default function Dashboard({
                     <Line 
                       type="monotone" 
                       dataKey="cumulative" 
-                      stroke="#ff7300" 
+                      stroke="#5B9BD5" 
                       strokeWidth={3}
                       name="Cumulative Returns"
-                      dot={{ fill: '#ff7300', strokeWidth: 2, r: 4 }}
+                      dot={{ fill: '#5B9BD5', strokeWidth: 2, r: 4 }}
                     />
                     <ReferenceLine 
                       x="Year 10" 

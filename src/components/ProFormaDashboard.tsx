@@ -9,17 +9,17 @@ import {
 
 // Color palette
 const colors = {
-  primary: '#6366F1',
-  secondary: '#8B5CF6',
-  accent: '#EC4899',
-  success: '#10B981',
-  warning: '#F59E0B',
-  danger: '#EF4444',
-  dark: '#111827',
-  light: '#F9FAFB',
-  background: '#F3F4F6',
-  backgroundDark: '#1F2937',
-  chartColors: ['#6366F1', '#EC4899', '#10B981', '#F59E0B', '#8B5CF6', '#EF4444', '#14B8A6', '#3B82F6']
+  primary: '#4A5D23', // Dark green (like Annual Revenue)
+  secondary: '#8B9A5B', // Light green (like Annual Profit)
+  accent: '#5B9BD5', // Blue (like Cumulative Distributions)
+  success: '#4A5D23', // Dark green
+  warning: '#8B9A5B', // Light green
+  danger: '#5B9BD5', // Blue
+  dark: '#111827', // Very dark gray for text
+  light: '#F9FAFB', // Very light gray
+  background: '#F3F4F6', // Light background
+  backgroundDark: '#1F2937', // Dark background
+  chartColors: ['#4A5D23', '#8B9A5B', '#5B9BD5', '#7BA05B', '#6BA6CD', '#5A7C32', '#4A8BC2', '#9BB86F']
 };
 
 // Formatters
