@@ -17,6 +17,8 @@ export interface PortfolioCompany {
   memosOverviews?: string;
   dataRoom?: string;
   location?: string;
+  highlights?: string;
+  nextSteps?: string;
   investorPortalDisplay?: boolean;
 }
 
