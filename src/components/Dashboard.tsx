@@ -84,7 +84,7 @@ export default function Dashboard({
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <Stats
-        title="Edin Capital Fund I"
+        title="Edin Capital: a new beginning in venture capital"
         description={
           <div className="space-y-4">
             <div>

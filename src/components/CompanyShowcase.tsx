@@ -209,7 +209,7 @@ const StatsComponent = () => {
               <div className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{investorPortalCompanies}</div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Term Negotiations</span>
+                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Term Negotiations (below)</span>
               </div>
             </div>
           </div>
@@ -236,32 +236,34 @@ const StatsComponent = () => {
         </div>
 
         {/* Location Donut Chart with Recharts - Now Larger */}
-        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
+        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 min-h-96">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Companies by Location</h3>
           
           {locationData.length > 0 ? (
-            <div className="min-h-80">
-              <ResponsiveContainer width="100%" height="75%">
-                <PieChart>
-                  <Pie
-                    data={locationData}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={100}
-                    paddingAngle={2}
-                    dataKey="value"
-                  >
-                    {locationData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                    ))}
-                  </Pie>
-                  <Tooltip content={<CustomTooltip />} />
-                </PieChart>
-              </ResponsiveContainer>
+            <div className="flex flex-col h-full">
+              <div className="flex-shrink-0 mb-4">
+                <ResponsiveContainer width="100%" height={240}>
+                  <PieChart width={400} height={240}>
+                    <Pie
+                      data={locationData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={100}
+                      paddingAngle={2}
+                      dataKey="value"
+                    >
+                      {locationData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip content={<CustomTooltip />} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
               
               {/* Top 3 Locations Legend */}
-              <div className="mt-4">
+              <div className="flex-grow">
                 <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Top 3 Locations</h4>
                 <div className="space-y-2">
                   {locationData.slice(0, 3).map((item, index) => (

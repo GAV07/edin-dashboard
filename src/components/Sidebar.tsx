@@ -32,7 +32,7 @@ export const Sidebar = () => {
               <Navigation setOpen={setOpen} />
             </div>
             <div onClick={() => isMobile() && setOpen(false)}>
-              <Badge href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=ye3wvcjq&dl=0" text="Edin Deck" />
+              <Badge href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0" text="Edin Deck" target="_blank" />
             </div>
           </motion.div>
         )}
@@ -84,9 +84,12 @@ export const Navigation = ({
         Socials
       </Heading>
       {socials.map((link: Navlink) => (
-        <Link
+        <a
           key={link.href}
           href={link.href}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => isMobile() && setOpen(false)}
           className={twMerge(
             "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm"
           )}
@@ -98,7 +101,7 @@ export const Navigation = ({
             )}
           />
           <span>{link.label}</span>
-        </Link>
+        </a>
       ))}
       <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
         Contact
@@ -123,7 +126,7 @@ const SidebarHeader = () => {
       />
       <div className="flex text-sm flex-col">
         <p className="font-bold text-primary">Edin Capital</p>
-        <p className="font-light text-secondary">Venture Firm</p>
+        <p className="font-light text-secondary">Fund 1</p>
       </div>
     </div>
   );

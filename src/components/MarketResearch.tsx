@@ -46,19 +46,21 @@ const MarketAnalysisDashboard: React.FC = () => {
 
   const sources: Sources = {
     sifted2024: "https://sifted.eu/articles/founder-vc-relationships-2024",
-    pilotReport: "https://pilot.com/blog/founder-salary-report-2025",
-    cartaReport: "https://carta.com/data/vc-fund-performance-q4-2024-full-report/",
-    pitchbookQ3: "https://pitchbook.com/news/reports/q3-2024-global-fund-performance-report",
-    chamberCommerce: "https://www.uschamber.com/technology/empowering-small-business-2024",
+    pilotReport: "https://pilot.com/founder-salary-report-2025",
+    cartaReport: "https://carta.com/data/vc-fund-performance-q4-2024-full-report/#vc-fund-performance-2024",
+    pitchbookQ3: "https://pitchbook.com/news/reports/q3-2024-global-fund-performance-report-with-preliminary-q4-2024-data",
+    chamberCommerce: "https://www.uschamber.com/assets/documents/Impact-of-Technology-on-Small-Business-Report-2024.pdf",
     naicsData: "https://www.naics.com/business-lists/counts-by-company-size/",
-    harvardLaw: "https://corpgov.law.harvard.edu/2023/venture-capital-failure-rates/",
-    imdBusiness: "https://www.imd.org/research-knowledge/strategy/",
-    stanfordGSB: "https://www.gsb.stanford.edu/faculty-research/publications/search-funds-2024",
+    harvardLaw: "https://corpgov.law.harvard.edu/2023/09/29/startup-failure/",
+    imdBusiness: "https://www.imd.org/ibyimd/finance/why-diversification-could-be-a-winning-formula-for-vc-funds/",
+    stanfordGSB: "https://www.gsb.stanford.edu/experience/about/centers-institutes/ces/research/search-funds",
     nyuStern: "https://pages.stern.nyu.edu/~adamodar/New_Home_Page/datafile/margin.html",
-    sbaReport: "https://www.sba.gov/document/report-small-business-capital-access-study",
-    cornellArxiv: "https://arxiv.org/search/?query=transforming+business&searchtype=all",
-    blackrock: "https://www.blackrock.com/institutions/insights/private-markets",
-    mckinsey: "https://www.mckinsey.com/industries/private-equity-and-principal-investors/our-insights"
+    sbaReport: "https://www.sba.gov/document/report-sba-2024-capital-impact-report",
+    cornellArxiv: "https://arxiv.org/abs/2411.14437",
+    springerLink: "https://link.springer.com/article/10.1007/s11187-022-00684-9",
+    partnersGroup: "https://www.partnersgroup.com/~/media/Files/P/Partnersgroup/Universal/news-and-views/solving-the-private-markets-allocation-gap-from-products-to-portfolio-construction.pdf",
+    mckinsey: "https://www.mckinsey.com/industries/private-capital/our-insights/global-private-markets-report",
+    cambridgeAssociates: "https://www.cambridgeassociates.com/insight/us-pe-vc-benchmark-commentary-calendar-year-2023/"
   };
 
   const keyStats: KeyStat[] = [
@@ -66,8 +68,8 @@ const MarketAnalysisDashboard: React.FC = () => {
       icon: <Building2 className="w-6 h-6" />,
       title: "Target Market Size",
       value: "200k+",
-      subtitle: "Companies vs 15k VC-backed",
-      change: "10x larger opportunity",
+      subtitle: "Companies",
+      change: "10x larger opportunity (vs VC)",
       color: "text-blue-600"
     },
     {
@@ -83,15 +85,15 @@ const MarketAnalysisDashboard: React.FC = () => {
       title: "VC Fund Performance",
       value: "14.3%",
       subtitle: "Achieve DPI of 1x after 7 years",
-      change: "85.7% underperform",
+      change: "underperforming market returns",
       color: "text-red-600"
     },
     {
       icon: <Users className="w-6 h-6" />,
       title: "Founder Relations",
-      value: "71%",
-      subtitle: "Report worsening investor relations",
-      change: "Systemic breakdown",
+      value: "77%",
+      subtitle: "Bootstrap over VC",
+      change: "Systemic change",
       color: "text-orange-600"
     }
   ];
@@ -358,7 +360,7 @@ const MarketAnalysisDashboard: React.FC = () => {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3 text-sm">
           <a href={sources.harvardLaw} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
             <ExternalLink className="w-3 h-3" />
-            Harvard Law School 2023
+            Harvard Law School
           </a>
           <a href={sources.imdBusiness} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
             <ExternalLink className="w-3 h-3" />
@@ -366,7 +368,7 @@ const MarketAnalysisDashboard: React.FC = () => {
           </a>
           <a href={sources.stanfordGSB} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
             <ExternalLink className="w-3 h-3" />
-            Stanford GSB 2024
+            Stanford GSB Research
           </a>
           <a href={sources.nyuStern} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
             <ExternalLink className="w-3 h-3" />
@@ -376,9 +378,17 @@ const MarketAnalysisDashboard: React.FC = () => {
             <ExternalLink className="w-3 h-3" />
             McKinsey Global Report
           </a>
-          <a href={sources.blackrock} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
+          <a href={sources.springerLink} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
             <ExternalLink className="w-3 h-3" />
-            BlackRock Private Markets
+            Springer Academic Research
+          </a>
+          <a href={sources.partnersGroup} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
+            <ExternalLink className="w-3 h-3" />
+            Partners Group Report
+          </a>
+          <a href={sources.cambridgeAssociates} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-blue-600 hover:text-blue-700">
+            <ExternalLink className="w-3 h-3" />
+            Cambridge Associates
           </a>
         </div>
       </div>

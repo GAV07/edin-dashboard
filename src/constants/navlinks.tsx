@@ -33,7 +33,7 @@ export const navlinks = [
     icon: IconBriefcase2,
   },
   {
-    href: "/edinOS",
+    href: "/edin-os",
     label: "EdinOS",
     icon: IconDeviceLaptop,
   },
