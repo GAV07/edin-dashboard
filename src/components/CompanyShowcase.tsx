@@ -166,7 +166,7 @@ const StatsComponent = () => {
     .sort((a, b) => b.value - a.value);
 
   // Green-inspired colors for the pie chart
-  const COLORS = ['#065F46', '#047857', '#059669', '#10B981', '#34D399', '#6EE7B7'];
+  const COLORS = ['#2d5016', '#4a7c59', '#6bb6ff', '#00b894', '#74b9ff', '#55a3ff'];
 
   // Custom tooltip for the pie chart
   const CustomTooltip = ({ active, payload }: any) => {
@@ -199,7 +199,7 @@ const StatsComponent = () => {
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 flex flex-col justify-center items-center text-center">
               <div className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{totalCompanies}</div>
               <div className="flex items-center gap-2">
-                <Building2 className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                                      <Building2 className="w-5 h-5 text-accent dark:text-skyConnect" />
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Companies</span>
               </div>
             </div>
@@ -208,7 +208,7 @@ const StatsComponent = () => {
             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 flex flex-col justify-center items-center text-center">
               <div className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{investorPortalCompanies}</div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-green-600 dark:text-green-400" />
+                                      <CheckCircle className="w-5 h-5 text-mintAccent dark:text-secondary" />
                 <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Term Negotiations (below)</span>
               </div>
             </div>

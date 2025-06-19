@@ -9,17 +9,17 @@ import {
 
 // Color palette
 const colors = {
-  primary: '#4A5D23', // Dark green (like Annual Revenue)
-  secondary: '#8B9A5B', // Light green (like Annual Profit)
-  accent: '#5B9BD5', // Blue (like Cumulative Distributions)
-  success: '#4A5D23', // Dark green
-  warning: '#8B9A5B', // Light green
-  danger: '#5B9BD5', // Blue
-  dark: '#111827', // Very dark gray for text
-  light: '#F9FAFB', // Very light gray
-  background: '#F3F4F6', // Light background
-  backgroundDark: '#1F2937', // Dark background
-  chartColors: ['#4A5D23', '#8B9A5B', '#5B9BD5', '#7BA05B', '#6BA6CD', '#5A7C32', '#4A8BC2', '#9BB86F']
+  primary: '#2d5016', // Forest Deep
+  secondary: '#4a7c59', // Sage Growth
+  accent: '#6bb6ff', // Circuit Blue
+  success: '#00b894', // Tech Mint
+  warning: '#dda15e', // Golden Circuit
+  danger: '#bc6c25', // Copper Trace
+  dark: '#2d3436', // Mountain Shadow
+  light: '#F9FAFB', // Very light gray (keeping existing)
+  background: '#F3F4F6', // Light background (keeping existing)
+  backgroundDark: '#636e72', // Stone Mist
+  chartColors: ['#2d5016', '#4a7c59', '#6bb6ff', '#00b894', '#74b9ff', '#55a3ff', '#dda15e', '#bc6c25']
 };
 
 // Formatters

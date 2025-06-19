@@ -70,7 +70,7 @@ const MarketAnalysisDashboard: React.FC = () => {
       value: "200k+",
       subtitle: "Companies",
       change: "10x larger opportunity (vs VC)",
-      color: "text-blue-600"
+      color: "text-accent"
     },
     {
       icon: <TrendingUp className="w-6 h-6" />,
@@ -78,7 +78,7 @@ const MarketAnalysisDashboard: React.FC = () => {
       value: "40%",
       subtitle: "Small businesses using AI",
       change: "↑ 74% from 2023",
-      color: "text-green-600"
+      color: "text-mintAccent"
     },
     {
       icon: <AlertTriangle className="w-6 h-6" />,
@@ -122,12 +122,12 @@ const MarketAnalysisDashboard: React.FC = () => {
   return (
     <div className="p-6 space-y-6">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 rounded-xl p-6">
+      <div className="bg-gradient-to-r from-primary to-secondary rounded-xl p-6">
         <div className="flex items-center gap-3 mb-4">
           <BarChart3 className="w-8 h-8 text-white" />
           <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Market Analysis: An Emerging Market Beyond Venture Capital</h1>
         </div>
-        <p className="text-blue-100 mt-1">
+        <p className="text-warmLight mt-1">
           The US economy stands at an inflection point. Our comprehensive analysis reveals a massive untapped market 
           opportunity created by the convergence of VC&apos;s structural failures, AI-enabled transformation, and 
           deteriorating founder-investor relations.

@@ -29,11 +29,11 @@ const EdinCapitalSummary = () => {
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-indigo-700 p-6">
+      <div className="bg-gradient-to-r from-primary to-secondary p-6">
         <div className="flex justify-between items-start">
           <div>
             <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">Edin Capital</h1>
-            <p className="text-blue-100 mt-1">Fund I Executive Summary</p>
+            <p className="text-warmLight mt-1">Fund I Executive Summary</p>
           </div>
           {/* <div className="bg-white bg-opacity-20 rounded-lg p-2">
             <span className="text-white text-sm font-medium">Updated: May 13, 2025</span>
@@ -44,19 +44,19 @@ const EdinCapitalSummary = () => {
       {/* Key Metrics Dashboard */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6 bg-gray-50">
         <MetricCard 
-          icon={<DollarSign className="h-6 w-6 text-blue-500" />}
+          icon={<DollarSign className="h-6 w-6 text-accent" />}
           title="Target Fund Size"
           value="$86M"
           subtitle="Total committed capital with $70M investable"
         />
         <MetricCard 
-          icon={<Users className="h-6 w-6 text-blue-500" />}
+          icon={<Users className="h-6 w-6 text-mintAccent" />}
           title="Portfolio Size"
           value="35 Companies"
           subtitle="$2M average check size"
         />
         <MetricCard 
-          icon={<Target className="h-6 w-6 text-blue-500" />}
+          icon={<Target className="h-6 w-6 text-secondary" />}
           title="Target Returns"
           value="3.73x TVPI"
           subtitle="4.56x MOIC | 2.98x DPI"
@@ -66,7 +66,7 @@ const EdinCapitalSummary = () => {
       {/* Fund Strategy */}
       <div className="p-6">
         <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-          <Rocket className="h-5 w-5 mr-2 text-blue-500" />
+          <Rocket className="h-5 w-5 mr-2 text-accent" />
           Investment Strategy
         </h2>
         <div className="bg-white rounded-lg p-4 border border-gray-200">
@@ -77,8 +77,8 @@ const EdinCapitalSummary = () => {
             <StrategyPoint text="Better align founders and investors" />
             <StrategyPoint text="Enhance economic development" />
           </div>
-          <div className="mt-6 bg-blue-50 p-4 rounded-lg">
-            <h3 className="text-md font-semibold text-blue-800 mb-2">Target Profile</h3>
+          <div className="mt-6 bg-warmLight p-4 rounded-lg">
+            <h3 className="text-md font-semibold text-primary mb-2">Target Profile</h3>
             <p className="text-gray-700">Grounded companies pursuing profitability at an early growth stage with a clear path to a 7-figure annual revenue. Industry agnostic, tech-enabled businesses with strong operators scaling to the next level.</p>
           </div>
         </div>
@@ -87,7 +87,7 @@ const EdinCapitalSummary = () => {
       {/* Venture Bond Structure */}
       <div className="p-6 bg-gray-50">
         <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-          <ChartBar className="h-5 w-5 mr-2 text-blue-500" />
+          <ChartBar className="h-5 w-5 mr-2 text-secondary" />
           Venture Bond Structure
         </h2>
         <div className="bg-white rounded-lg p-4 border border-gray-200">
@@ -96,30 +96,30 @@ const EdinCapitalSummary = () => {
               <h3 className="text-md font-semibold text-gray-800 mb-2">Investment Components</h3>
               <ul className="space-y-2">
                 <li className="flex items-start">
-                  <div className="h-5 w-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mt-0.5 mr-2 flex-shrink-0">1</div>
+                  <div className="h-5 w-5 rounded-full bg-warmLight flex items-center justify-center text-primary mt-0.5 mr-2 flex-shrink-0">1</div>
                   <span className="text-gray-700">Convertible Equity with valuation cap</span>
                 </li>
                 <li className="flex items-start">
-                  <div className="h-5 w-5 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mt-0.5 mr-2 flex-shrink-0">2</div>
+                  <div className="h-5 w-5 rounded-full bg-warmLight flex items-center justify-center text-primary mt-0.5 mr-2 flex-shrink-0">2</div>
                   <span className="text-gray-700">Profit-Sharing component with specific triggers</span>
                 </li>
               </ul>
             </div>
             <div className="flex-1">
-              <h3 className="text-md font-semibold text-gray-800 mb-2">Profit-Sharing Triggers</h3>
+              <h3 className="text-md font-semibold text-gray-800 mb-2">Profit-Sharing Triggers (Example)</h3>
               <ul className="space-y-2">
-                <li className="flex items-start">
-                  <div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-0.5 mr-2 flex-shrink-0">•</div>
-                  <span className="text-gray-700">Time: 4 years post-investment</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-0.5 mr-2 flex-shrink-0">•</div>
-                  <span className="text-gray-700">Revenue: $2M LTM</span>
-                </li>
-                <li className="flex items-start">
-                  <div className="h-5 w-5 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-0.5 mr-2 flex-shrink-0">•</div>
-                  <span className="text-gray-700">Margins: 30%</span>
-                </li>
+                                  <li className="flex items-start">
+                    <div className="h-5 w-5 rounded-full bg-warmLight flex items-center justify-center text-mintAccent mt-0.5 mr-2 flex-shrink-0">•</div>
+                    <span className="text-gray-700">Time: 4 years post-investment</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="h-5 w-5 rounded-full bg-warmLight flex items-center justify-center text-mintAccent mt-0.5 mr-2 flex-shrink-0">•</div>
+                    <span className="text-gray-700">Revenue: $1M LTM</span>
+                  </li>
+                  <li className="flex items-start">
+                    <div className="h-5 w-5 rounded-full bg-warmLight flex items-center justify-center text-mintAccent mt-0.5 mr-2 flex-shrink-0">•</div>
+                    <span className="text-gray-700">Margins: 30%</span>
+                  </li>
               </ul>
             </div>
             <div className="flex-1">
@@ -154,11 +154,10 @@ const EdinCapitalSummary = () => {
             <h3 className="text-md font-semibold text-gray-800 mb-3">Fund Terms</h3>
             <table className="w-full">
               <tbody>
-                <TableRow label="Fund Life" value="10 years" />
+                <TableRow label="Fund Life" value="Perpetual" />
                 <TableRow label="Deployment Period" value="4 years" />
-                <TableRow label="Management Fee" value="1.7% (average)" />
+                <TableRow label="Management Fee" value="2.5%" />
                 <TableRow label="Carry" value="20%" />
-                <TableRow label="Follow-on Reserves" value="0%" />
               </tbody>
             </table>
           </div>
@@ -166,10 +165,7 @@ const EdinCapitalSummary = () => {
             <h3 className="text-md font-semibold text-gray-800 mb-3">Capital Allocation</h3>
             <table className="w-full">
               <tbody>
-                <TableRow label="Committed Capital" value="$85,602,410" />
-                <TableRow label="Management Fees" value="$14,552,410" />
-                <TableRow label="Operational Expenses" value="$1,050,000" />
-                <TableRow label="Investable Capital" value="$70,000,000" />
+                <TableRow label="Committed Capital" value="$86M" />
                 <TableRow label="Average Check Size" value="$2,000,000" />
               </tbody>
             </table>
@@ -189,11 +185,10 @@ const EdinCapitalSummary = () => {
               <h3 className="text-md font-semibold text-gray-800 mb-3">Portfolio Performance</h3>
               <table className="w-full">
                 <tbody>
-                  <TableRow label="Portfolio Success Rate" value="75% (35 companies)" />
-                  <TableRow label="Profit Sharing Cap" value="6x" />
+                  <TableRow label="Portfolio Success Rate" value="70% (average)" />
                   <TableRow label="Expected Number of Exits" value="3" />
                   <TableRow label="Average Entry Ownership" value="16%" />
-                  <TableRow label="Average Exit Ownership" value="11.2%" />
+                  <TableRow label="Average Exit Ownership" value="11%" />
                 </tbody>
               </table>
             </div>
@@ -201,11 +196,8 @@ const EdinCapitalSummary = () => {
               <h3 className="text-md font-semibold text-gray-800 mb-3">Cash Flow Projections</h3>
               <table className="w-full">
                 <tbody>
-                  <TableRow label="Total Distributions" value="$319,200,000" />
-                  <TableRow label="From Profit Sharing" value="$294,015,120 (92.11%)" />
-                  <TableRow label="From Exit Liquidity" value="$25,184,880 (7.89%)" />
-                  <TableRow label="LP Distributions" value="$255,360,000" />
-                  <TableRow label="GP Carry" value="$63,840,000" />
+                  <TableRow label="Total Distributions (10y)" value="$222M" />
+                  <TableRow label="Portfolio Profits (10y)" value="$1.2B" />
                 </tbody>
               </table>
             </div>
@@ -232,6 +224,12 @@ const EdinCapitalSummary = () => {
             bio="Award-winning founder & operator backed by Fortune 100 enterprises. Advisor & community builder among HNWIs, family offices, and institutions."
             location="Broward County, FL"
           />
+          <TeamMember
+              name="Nelson T"
+              title="General Partner"
+              bio="Global exec with 25+ yrs Fortune 10-100 & founder of accelerator. Built business from inception to $1B+ in 4yrs @ Sompo. Led ops to $600M - 16 countries, serving 1k multinationals @ AIG. Created first VC/PE asset protection instruments @ Chubb"
+              location="Broward County, FL"
+            />
           <TeamMember
             name="Erick Gavin"
             title="General Partner"

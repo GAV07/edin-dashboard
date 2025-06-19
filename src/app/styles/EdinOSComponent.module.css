@@ -26,7 +26,7 @@
 .titleIcon {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -67,7 +67,7 @@
   left: 0;
   right: 0;
   height: 3px;
-  background: linear-gradient(90deg, #22c55e, #16a34a);
+  background: linear-gradient(90deg, #2d5016, #4a7c59);
   opacity: 0;
   transition: opacity 0.2s ease;
 }
@@ -99,7 +99,7 @@
 .statIcon {
   width: 24px;
   height: 24px;
-  color: #22c55e;
+  color: #2d5016;
 }
 
 .statValue {
@@ -141,13 +141,13 @@
 .sectionIcon {
   width: 40px;
   height: 40px;
-  background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
-  border: 1px solid #bbf7d0;
+  background: linear-gradient(135deg, #ffecd1 0%, #f9f9f9 100%);
+  border: 1px solid #dda15e;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #16a34a;
+  color: #4a7c59;
 }
 
 .sectionTitle {
@@ -168,19 +168,19 @@
   padding: 1rem;
   background: #f8fafc;
   border-radius: 8px;
-  border-left: 3px solid #22c55e;
+  border-left: 3px solid #2d5016;
   transition: all 0.2s ease;
 }
 
 .capabilityItem:hover {
-  background: #f0fdf4;
+  background: #ffecd1;
   transform: translateX(4px);
 }
 
 .capabilityIcon {
   width: 20px;
   height: 20px;
-  color: #16a34a;
+  color: #4a7c59;
   flex-shrink: 0;
   margin-top: 2px;
 }
@@ -223,7 +223,7 @@
 .ecosystemCenter {
   width: 180px;
   height: 180px;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -232,7 +232,7 @@
   font-weight: 700;
   text-align: center;
   font-size: 1.1rem;
-  box-shadow: 0 8px 25px rgba(34, 197, 94, 0.3);
+  box-shadow: 0 8px 25px rgba(45, 80, 22, 0.3);
   position: relative;
   z-index: 2;
   transition: all 0.3s ease;
@@ -262,15 +262,15 @@
   left: 0;
   right: 0;
   height: 2px;
-  background: linear-gradient(90deg, #22c55e, #16a34a);
+  background: linear-gradient(90deg, #2d5016, #4a7c59);
   border-radius: 12px 12px 0 0;
   opacity: 0;
   transition: opacity 0.2s ease;
 }
 
 .ecosystemNode:hover {
-  background: #f0fdf4;
-  border-color: #bbf7d0;
+  background: #ffecd1;
+  border-color: #dda15e;
   transform: translateY(-2px);
 }
 
@@ -281,13 +281,13 @@
 .nodeIcon {
   width: 32px;
   height: 32px;
-  background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+  background: linear-gradient(135deg, #ffecd1 0%, #dda15e 100%);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 0.75rem;
-  color: #16a34a;
+  color: #4a7c59;
 }
 
 .nodeTitle {
@@ -331,7 +331,7 @@
   content: '';
   width: 8px;
   height: 8px;
-  background: #22c55e;
+  background: #2d5016;
   border-radius: 50%;
 }
 
@@ -354,7 +354,7 @@
   content: '→';
   position: absolute;
   left: 0;
-  color: #22c55e;
+  color: #2d5016;
   font-weight: 600;
 }
 
@@ -363,8 +363,8 @@
 }
 
 .competitiveAdvantages {
-  background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);
-  border: 1px solid #bbf7d0;
+  background: linear-gradient(135deg, #ffecd1 0%, #f9f9f9 100%);
+  border: 1px solid #dda15e;
   border-radius: 16px;
   padding: 2.5rem;
   margin-top: 2rem;
@@ -379,7 +379,7 @@
 
 .advantageCard {
   background: white;
-  border: 1px solid #bbf7d0;
+  border: 1px solid #dda15e;
   border-radius: 12px;
   padding: 1.5rem;
   transition: all 0.2s ease;
@@ -387,7 +387,7 @@
 
 .advantageCard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 4px 12px rgba(45, 80, 22, 0.1);
 }
 
 .advantageHeader {
@@ -400,7 +400,7 @@
 .advantageIcon {
   width: 36px;
   height: 36px;
-  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  background: linear-gradient(135deg, #2d5016 0%, #4a7c59 100%);
   border-radius: 8px;
   display: flex;
   align-items: center;
@@ -438,7 +438,7 @@
 .metricNumber {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #22c55e;
+  color: #2d5016;
   display: block;
 }
 

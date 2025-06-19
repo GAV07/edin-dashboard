@@ -66,14 +66,14 @@ export const Navigation = ({
           target={link.label === "Documents" ? "_blank" : undefined}
           rel={link.label === "Documents" ? "noopener noreferrer" : undefined}
           className={twMerge(
-            "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
+            "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
             isActive(link.href) && "bg-white shadow-lg text-primary"
           )}
         >
           <link.icon
             className={twMerge(
               "h-4 w-4 flex-shrink-0",
-              isActive(link.href) && "text-sky-500"
+              isActive(link.href) && "text-accent"
             )}
           />
           <span>{link.label}</span>
@@ -91,13 +91,13 @@ export const Navigation = ({
           rel="noopener noreferrer"
           onClick={() => isMobile() && setOpen(false)}
           className={twMerge(
-            "text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm"
+            "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm"
           )}
         >
           <link.icon
             className={twMerge(
               "h-4 w-4 flex-shrink-0",
-              isActive(link.href) && "text-sky-500"
+              isActive(link.href) && "text-accent"
             )}
           />
           <span>{link.label}</span>
@@ -106,7 +106,7 @@ export const Navigation = ({
       <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
         Contact
       </Heading>
-      <Link href="mailto:info@edin.capital" className="text-secondary hover:text-primary transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm">
+      <Link href="mailto:info@edin.capital" className="text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm">
         <IconMail className="h-4 w-4 flex-shrink-0" />
         <span>info@edin.capital</span>
       </Link>

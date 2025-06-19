@@ -18,8 +18,18 @@ const config: Config = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       colors: {
-        primary: "var(--neutral-700)",
-        secondary: "var(--neutral-500)",
+        primary: "#2d5016", // Forest Deep
+        secondary: "#4a7c59", // Sage Growth
+        accent: "#6bb6ff", // Circuit Blue
+        mintAccent: "#00b894", // Tech Mint
+        mountainShadow: "#2d3436", // Mountain Shadow
+        stoneMist: "#636e72", // Stone Mist
+        goldenCircuit: "#dda15e", // Golden Circuit
+        copperTrace: "#bc6c25", // Copper Trace
+        warmLight: "#ffecd1", // Warm Light
+        pureWhite: "#ffffff", // Pure White
+        skyConnect: "#74b9ff", // Sky Connect
+        dataFlow: "#55a3ff", // Data Flow
       },
     },
   },
