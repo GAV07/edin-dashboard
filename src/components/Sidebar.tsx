@@ -10,11 +10,45 @@ import { Heading } from "./Heading";
 import { socials } from "@/constants/socials";
 import { Badge } from "./Badge";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconLayoutSidebarRightCollapse, IconMail } from "@tabler/icons-react";
+import { IconLayoutSidebarRightCollapse, IconMail, IconLogout, IconUser, IconSettings } from "@tabler/icons-react";
 import { isMobile } from "@/lib/utils";
+import { useSession, signOut } from "next-auth/react";
+
+declare global {
+  interface Window {
+    gtag: (command: string, ...args: any[]) => void;
+  }
+}
 
 export const Sidebar = () => {
   const [open, setOpen] = useState(isMobile() ? false : true);
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    // Track sign out event
+    if (typeof window !== 'undefined' && window.gtag && session?.user) {
+      window.gtag('event', 'logout', {
+        event_category: 'Authentication',
+        user_id: session.user.id,
+        event_label: session.user.role,
+      });
+    }
+    
+    // Sign out and redirect to signin page
+    try {
+      await signOut({ 
+        callbackUrl: '/auth/signin',
+        redirect: false // Don't use NextAuth's redirect, handle it manually
+      });
+      // Manual redirect after sign out
+      router.push('/auth/signin');
+    } catch (error) {
+      console.error('Sign out error:', error);
+      // Fallback redirect
+      router.push('/auth/signin');
+    }
+  };
 
   return (
     <>
@@ -31,8 +65,38 @@ export const Sidebar = () => {
               <SidebarHeader />
               <Navigation setOpen={setOpen} />
             </div>
-            <div onClick={() => isMobile() && setOpen(false)}>
-              <Badge href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0" text="Edin Deck" target="_blank" />
+            <div className="space-y-3">
+              {/* User Info Section */}
+              {session?.user && (
+                <div className="bg-white rounded-lg p-3 border border-gray-200">
+                  <div className="flex items-center space-x-2 mb-2">
+                    <IconUser className="h-4 w-4 text-gray-500" />
+                    <span className="text-xs font-medium text-gray-700">Signed in as</span>
+                  </div>
+                  <p className="text-xs font-bold text-primary truncate">{session.user.name}</p>
+                  <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
+                  <div className="mt-2">
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">
+                      {session.user.role}
+                    </span>
+                  </div>
+                </div>
+              )}
+              
+              {/* Sign Out Button */}
+              {session?.user && (
+                <button
+                  onClick={handleSignOut}
+                  className="w-full flex items-center space-x-2 py-2 px-3 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition duration-200"
+                >
+                  <IconLogout className="h-4 w-4" />
+                  <span>Sign Out</span>
+                </button>
+              )}
+              
+              <div onClick={() => isMobile() && setOpen(false)}>
+                <Badge href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0" text="Edin Deck" target="_blank" />
+              </div>
             </div>
           </motion.div>
         )}
@@ -53,6 +117,7 @@ export const Navigation = ({
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   const isActive = (href: string) => pathname === href;
 
@@ -79,6 +144,31 @@ export const Navigation = ({
           <span>{link.label}</span>
         </Link>
       ))}
+
+      {/* Admin Section - Only show for admin users */}
+      {session?.user?.role === 'admin' && (
+        <>
+          <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
+            Admin
+          </Heading>
+          <Link
+            href="/admin/users"
+            onClick={() => isMobile() && setOpen(false)}
+            className={twMerge(
+              "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
+              isActive('/admin/users') && "bg-white shadow-lg text-primary"
+            )}
+          >
+            <IconSettings
+              className={twMerge(
+                "h-4 w-4 flex-shrink-0",
+                isActive('/admin/users') && "text-accent"
+              )}
+            />
+            <span>Manage Users</span>
+          </Link>
+        </>
+      )}
 
       <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
         Socials

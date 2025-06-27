@@ -5,6 +5,9 @@ import { Inter } from "next/font/google";
 import { twMerge } from "tailwind-merge";
 import { Footer } from "@/components/Footer";
 import Script from "next/script";
+import { AuthProvider } from "@/components/AuthProvider";
+import { AnalyticsWrapper } from "@/components/AnalyticsWrapper";
+import { ConditionalLayout } from "@/components/ConditionalLayout";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,7 +38,9 @@ export default function RootLayout({
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
-            gtag('config', 'G-60LQ571T8N');
+            gtag('config', 'G-60LQ571T8N', {
+              send_page_view: false // We'll handle page views manually with user context
+            });
           `}
         </Script>
       </head>
@@ -45,13 +50,13 @@ export default function RootLayout({
           "flex antialiased h-screen overflow-hidden bg-gray-100"
         )}
       >
-        <Sidebar />
-        <div className="lg:pl-2 lg:pt-2 bg-gray-100 flex-1 overflow-y-auto">
-          <div className="flex-1 bg-white min-h-screen lg:rounded-tl-xl border border-transparent lg:border-neutral-200 overflow-y-auto">
-            {children}
-            <Footer />
-          </div>
-        </div>
+        <AuthProvider>
+          <AnalyticsWrapper>
+            <ConditionalLayout>
+              {children}
+            </ConditionalLayout>
+          </AnalyticsWrapper>
+        </AuthProvider>
       </body>
     </html>
   );
