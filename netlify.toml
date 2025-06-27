@@ -1,4 +1,4 @@
-# example netlify.toml
+# Netlify configuration for Next.js 15 with App Router
 [build]
   command = "npm run build"
   publish = ".next"
@@ -9,27 +9,6 @@
 # Use Netlify's Essential Next.js plugin for proper Next.js support
 [[plugins]]
   package = "@netlify/plugin-nextjs"
-
-# Enable Next.js runtime
-[build.processing]
-  skip_processing = false
-
-# Handle Next.js API routes and authentication
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[[redirects]]
-  from = "/_next/static/*"
-  to = "/static/:splat"
-  status = 200
-
-# Handle all other routes with Next.js
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
 
 # Security headers
 [[headers]]
