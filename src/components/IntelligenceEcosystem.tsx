@@ -10,7 +10,7 @@ interface Feature {
   name: string;
   description: string;
   href: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: React.ComponentType<any>;
 }
 
 const features: Feature[] = [

@@ -11,7 +11,7 @@ import {
 interface Feature {
   name: string;
   description: string;
-  icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  icon: React.ComponentType<any>;
   category: 'financial' | 'intelligence';
 }
 

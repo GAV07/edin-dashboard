@@ -79,7 +79,7 @@ const EdinCapitalSummary = () => {
           </div>
           <div className="mt-6 bg-warmLight p-4 rounded-lg">
             <h3 className="text-md font-semibold text-primary mb-2">Target Profile</h3>
-            <p className="text-gray-700">We invest in 'Goldilocks companies—profitable businesses with $1M+ revenue led by domain experts who are positioned perfectly between early-stage uncertainty and late-stage maturity, seeking patient capital and technology-enabled growth without the constraints of traditional venture capital&apos;s boom-or-bust model.</p>
+            <p className="text-gray-700">We invest in Goldilocks companies — profitable businesses with $1M+ revenue led by domain experts who are positioned perfectly between early-stage uncertainty and late-stage maturity, seeking patient capital and technology - enabled growth without the constraints of traditional venture capital&apos;s boom-or-bust model.</p>
           </div>
         </div>
       </div>

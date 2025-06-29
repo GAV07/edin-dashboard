@@ -90,13 +90,13 @@ export default function Dashboard({
             <div>
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Our Mission</h3>
               <p className="text-gray-600">
-                We partner with exceptional founders to build profitable, sustainable businesses through our breakthrough Venture Bond instrument—providing patient capital, operational excellence, and aligned incentives that enable companies to thrive without the constraints of traditional venture capital's boom-or-bust model.
+                We partner with exceptional founders to build profitable, sustainable businesses through our breakthrough Venture Bond instrument — providing patient capital, operational excellence, and aligned incentives that enable companies to thrive without the constraints of traditional venture capital&apos;s boom-or-bust model.
               </p>
             </div>
             <div>
               <h3 className="text-lg font-semibold text-gray-800 mb-2">Our Vision</h3>
               <p className="text-gray-600">
-                To establish Integrated Capital as the defining investment category of the next generation—where financial innovation, technological excellence, and socioeconomic impact converge to create regenerative ecosystems that transcend traditional venture capital limitations and redefine what's possible in early-stage investing.
+                To establish Integrated Capital as the defining investment category of the next generation — where financial innovation, technological excellence, and socioeconomic impact converge to create regenerative ecosystems that transcend traditional venture capital limitations and redefine what&apos;s possible in early-stage investing.
               </p>
             </div>
             <p className="text-gray-600">
