@@ -2,6 +2,11 @@
 
 import React, { useEffect } from 'react';
 import styles from '../app/styles/EdinOSComponent.module.css';
+import { EdinOSHero } from './EdinOSHero';
+import EdinOSFeatures from './EdinOSFeatures';
+import IntelligenceEcosystem from './IntelligenceEcosystem';
+import { OperationsArchitecture } from './OperationsArchitecture';
+import CompetitiveAdvantages from './CompetitiveAdvantages';
 
 const EdinOSComponent: React.FC = () => {
   useEffect(() => {
@@ -80,215 +85,21 @@ const EdinOSComponent: React.FC = () => {
   }, []);
 
   return (
-    <div className={styles.dashboardContent}>
-      {/* Header Section */}
-      <div className={styles.headerSection}>
-        <h1 className={styles.pageTitle}>
-          <div className={styles.titleIcon}>🌳</div>
-          EdinOS Platform
-        </h1>
-        <p className={styles.pageSubtitle}>
-          Our comprehensive financial and operational platform that represents the next evolution of venture capital infrastructure. EdinOS creates an insurmountable competitive advantage through intelligent automation, real-time monitoring, and predictive analytics.
-        </p>
-      </div>
-
-     
+    <div>
+      {/* Enhanced Hero Section */}
+      <EdinOSHero />
 
       {/* Platform Core Components */}
-      <div className={styles.contentGrid}>
-        <div className={styles.platformSection}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionIcon}>💳</div>
-            <h2 className={styles.sectionTitle}>Financial Infrastructure</h2>
-          </div>
-          <div className={styles.capabilitiesList}>
-            <div className={styles.capabilityItem}>
-              <div className={styles.capabilityIcon}>🔄</div>
-              <div className={styles.capabilityContent}>
-                <div className={styles.capabilityTitle}>Real-time Profit Calculations</div>
-                <div className={styles.capabilityDescription}>Automated quarterly profit-sharing calculations with intelligent trigger monitoring</div>
-              </div>
-            </div>
-            <div className={styles.capabilityItem}>
-              <div className={styles.capabilityIcon}>📡</div>
-              <div className={styles.capabilityContent}>
-                <div className={styles.capabilityTitle}>Smart Distribution Engine</div>
-                <div className={styles.capabilityDescription}>Seamless execution of distributions with tiered percentage structures</div>
-              </div>
-            </div>
-            <div className={styles.capabilityItem}>
-              <div className={styles.capabilityIcon}>🔒</div>
-              <div className={styles.capabilityContent}>
-                <div className={styles.capabilityTitle}>Secure Payment Rails</div>
-                <div className={styles.capabilityDescription}>Bank-grade security with automated reconciliation and audit trails</div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className={styles.platformSection}>
-          <div className={styles.sectionHeader}>
-            <div className={styles.sectionIcon}>📊</div>
-            <h2 className={styles.sectionTitle}>Portfolio Intelligence</h2>
-          </div>
-          <div className={styles.capabilitiesList}>
-            <div className={styles.capabilityItem}>
-              <div className={styles.capabilityIcon}>🎯</div>
-              <div className={styles.capabilityContent}>
-                <div className={styles.capabilityTitle}>Health Scoring</div>
-                <div className={styles.capabilityDescription}>Real-time company health metrics with predictive risk assessment</div>
-              </div>
-            </div>
-            <div className={styles.capabilityItem}>
-              <div className={styles.capabilityIcon}>🔮</div>
-              <div className={styles.capabilityContent}>
-                <div className={styles.capabilityTitle}>Predictive Analytics</div>
-                <div className={styles.capabilityDescription}>AI-powered forecasting for revenue, growth, and market trends</div>
-              </div>
-            </div>
-            <div className={styles.capabilityItem}>
-              <div className={styles.capabilityIcon}>💡</div>
-              <div className={styles.capabilityContent}>
-                <div className={styles.capabilityTitle}>Prescriptive Insights</div>
-                <div className={styles.capabilityDescription}>Actionable recommendations for operational improvements</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <EdinOSFeatures />
 
       {/* Intelligence Ecosystem */}
-      <div className={styles.fullWidthSection}>
-        <div className={styles.sectionHeader}>
-          <div className={styles.sectionIcon}>🧠</div>
-          <h2 className={styles.sectionTitle}>Intelligence Ecosystem</h2>
-        </div>
-        
-        <div className={styles.ecosystemDiagram}>
-          <div className={styles.ecosystemCenter}>
-            EdinOS<br/>
-            Intelligence<br/>
-            Core
-          </div>
-          
-          <div className={styles.ecosystemNodes}>
-            <div className={styles.ecosystemNode}>
-              <div className={styles.nodeIcon}>📊</div>
-              <div className={styles.nodeTitle}>Data Capture</div>
-              <div className={styles.nodeDescription}>Comprehensive data harvesting from portfolio interactions</div>
-            </div>
-            
-            <div className={styles.ecosystemNode}>
-              <div className={styles.nodeIcon}>🤖</div>
-              <div className={styles.nodeTitle}>AI Processing</div>
-              <div className={styles.nodeDescription}>Machine learning algorithms for pattern recognition</div>
-            </div>
-            
-            <div className={styles.ecosystemNode}>
-              <div className={styles.nodeIcon}>🔮</div>
-              <div className={styles.nodeTitle}>Predictive Models</div>
-              <div className={styles.nodeDescription}>Forecasting company needs and market opportunities</div>
-            </div>
-            
-            <div className={styles.ecosystemNode}>
-              <div className={styles.nodeIcon}>⚡</div>
-              <div className={styles.nodeTitle}>Automated Actions</div>
-              <div className={styles.nodeDescription}>Intelligent responses and operational optimizations</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <IntelligenceEcosystem />
 
       {/* Operations Architecture */}
-      <div className={styles.fullWidthSection}>
-        <div className={styles.sectionHeader}>
-          <div className={styles.sectionIcon}>⚙️</div>
-          <h2 className={styles.sectionTitle}>Operations Architecture</h2>
-        </div>
-        
-        <div className={styles.operationsOverview}>
-          <div className={styles.operationsColumn}>
-            <h3 className={styles.operationsTitle}>Front Office</h3>
-            <ul className={styles.operationsList}>
-              <li>Sourcing & Screening</li>
-              <li>Due Diligence</li>
-              <li>Decision Making</li>
-              <li>Investor Relations</li>
-            </ul>
-          </div>
-          
-          <div className={styles.operationsColumn}>
-            <h3 className={styles.operationsTitle}>Middle Office</h3>
-            <ul className={styles.operationsList}>
-              <li>Portfolio Monitoring</li>
-              <li>Risk Management</li>
-              <li>Compliance</li>
-              <li>Governance</li>
-            </ul>
-          </div>
-          
-          <div className={styles.operationsColumn}>
-            <h3 className={styles.operationsTitle}>Back Office</h3>
-            <ul className={styles.operationsList}>
-              <li>Tax & Accounting</li>
-              <li>Treasury Management</li>
-              <li>Reporting</li>
-              <li>Fund Administration</li>
-            </ul>
-          </div>
-        </div>
-      </div>
+      <OperationsArchitecture />
 
       {/* Competitive Advantages */}
-      <div className={styles.competitiveAdvantages}>
-        <div className={styles.sectionHeader}>
-          <div className={styles.sectionIcon}>🏆</div>
-          <h2 className={styles.sectionTitle}>Competitive Advantages</h2>
-        </div>
-        
-        <div className={styles.advantagesGrid}>
-          <div className={styles.advantageCard}>
-            <div className={styles.advantageHeader}>
-              <div className={styles.advantageIcon}>🚀</div>
-              <div className={styles.advantageTitle}>First-Mover Technology</div>
-            </div>
-            <div className={styles.advantageDescription}>
-              Proprietary platform capabilities that create massive barriers to entry while generating exponential value for portfolio companies.
-            </div>
-          </div>
-          
-          <div className={styles.advantageCard}>
-            <div className={styles.advantageHeader}>
-              <div className={styles.advantageIcon}>🔗</div>
-              <div className={styles.advantageTitle}>Network Effects</div>
-            </div>
-            <div className={styles.advantageDescription}>
-              Each portfolio company increases platform intelligence and value, creating compounding advantages that become more powerful over time.
-            </div>
-          </div>
-          
-          <div className={styles.advantageCard}>
-            <div className={styles.advantageHeader}>
-              <div className={styles.advantageIcon}>📈</div>
-              <div className={styles.advantageTitle}>Operational Excellence</div>
-            </div>
-            <div className={styles.advantageDescription}>
-              AI-driven insights and automation that predict company needs and prescribe solutions before problems emerge.
-            </div>
-          </div>
-          
-          <div className={styles.advantageCard}>
-            <div className={styles.advantageHeader}>
-              <div className={styles.advantageIcon}>🎯</div>
-              <div className={styles.advantageTitle}>Market Leadership</div>
-            </div>
-            <div className={styles.advantageDescription}>
-              Systematic positioning as the default choice for exceptional companies seeking intelligent capital and operational support.
-            </div>
-          </div>
-        </div>
-        
-      </div>
+      <CompetitiveAdvantages />
     </div>
   );
 };

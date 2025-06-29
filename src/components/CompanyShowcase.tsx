@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, MapPin, Building2, CheckCircle, TrendingUp, Users } from 'lucide-react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { PortfolioApiResponse, AirtableRecord, PortfolioCompanyUI } from '@/types/portfolio';
+import PortfolioCTA from './PortfolioCTA';
 
 // Stats Component that fetches from Grid View
 const StatsComponent = () => {
@@ -533,6 +534,8 @@ export default function CompanyShowcase() {
             </span>
           </div>
         </div>
+
+        <PortfolioCTA />
       </div>
     </div>
   );

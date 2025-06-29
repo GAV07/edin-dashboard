@@ -155,18 +155,18 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
   return data;
 }
 
-const getCachedData = unstable_cache(
-  async (scenario: string) => fetchProFormaData(scenario),
-  ['pro-forma-data'],
-  { revalidate: 300 } // Cache for 5 minutes
-);
-
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const scenario = searchParams.get('scenario') || 'base';
     
-    const data = await getCachedData(scenario);
+    const getCachedData = unstable_cache(
+      async () => fetchProFormaData(scenario),
+      ['pro-forma-data', scenario],
+      { revalidate: 300 } // Cache for 5 minutes
+    );
+    
+    const data = await getCachedData();
     return NextResponse.json(data);
   } catch (error: any) {
     console.error('Error in pro-forma API route:', error);

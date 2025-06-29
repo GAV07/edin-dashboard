@@ -117,6 +117,7 @@ const VentureBondCalculator = () => {
   const [inputs, setInputs] = useState<InputValues>(defaultValues);
   const [results, setResults] = useState<Results | null>(null);
   const [chartData, setChartData] = useState<YearlyData[]>([]);
+  const [activeScenario, setActiveScenario] = useState<keyof Scenarios | 'custom'>('normal');
 
   // Handle input changes with number formatting
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -127,6 +128,9 @@ const VentureBondCalculator = () => {
       ...inputs,
       [name]: isNaN(numericValue) ? 0 : numericValue
     });
+    
+    // Mark as custom when user manually changes inputs
+    setActiveScenario('custom');
   };
 
   // Format number inputs with commas
@@ -138,11 +142,13 @@ const VentureBondCalculator = () => {
   // Reset to defaults
   const handleReset = () => {
     setInputs(defaultValues);
+    setActiveScenario('normal');
   };
 
   // Apply scenario preset
   const applyScenario = (scenarioType: keyof Scenarios) => {
     setInputs(scenarios[scenarioType]);
+    setActiveScenario(scenarioType);
   };
 
   // Calculate results
@@ -290,6 +296,14 @@ const VentureBondCalculator = () => {
     return new Intl.NumberFormat('en-US').format(value);
   };
 
+  // Get button styling based on active scenario
+  const getButtonStyle = (scenarioType: keyof Scenarios) => {
+    const isActive = activeScenario === scenarioType;
+    return isActive 
+      ? "bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm border-2 border-blue-500 hover:border-blue-600"
+      : "bg-white border-2 border-blue-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm";
+  };
+
   return (
     <div className="w-full p-6 bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-2xl font-semibold tracking-tight text-gray-800 mb-6 sm:text-3xl">Edin Capital Venture Bond</h1>
@@ -366,7 +380,7 @@ const VentureBondCalculator = () => {
             <div className="flex flex-col gap-3 min-w-36">
               <div className="bg-white border-2 border-gray-300 rounded-lg p-3 text-center shadow-md">
                 <h4 className="m-0 mb-1 text-xs font-semibold text-gray-800">🔄 Continue</h4>
-                <p className="m-0 text-xs leading-tight text-gray-600">Keep profit sharing until 6x cap reached</p>
+                <p className="m-0 text-xs leading-tight text-gray-600">Keep profit sharing at 1% beyond 6x cap</p>
               </div>
               
               <div className="bg-white border-2 border-gray-300 rounded-lg p-3 text-center shadow-md">
@@ -393,7 +407,7 @@ const VentureBondCalculator = () => {
           <h2 className="text-xl font-semibold text-gray-800 mb-3">Interactive Calculator</h2>
           <p className="text-gray-600 mb-4">
             Use the calculator below to model different scenarios and see how the venture bond structure 
-            performs under various business conditions. Start with a preset scenario or customize the 
+            performs under various business conditions. Start with a preset scenarios or customize the 
             parameters to match your specific situation.
           </p>
           
@@ -408,19 +422,19 @@ const VentureBondCalculator = () => {
             <div className="flex flex-wrap gap-3">
               <button
                 onClick={() => applyScenario('conservative')}
-                className="bg-white border-2 border-blue-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm"
+                className={getButtonStyle('conservative')}
               >
                 Conservative Scenario
               </button>
               <button
                 onClick={() => applyScenario('normal')}
-                className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm border-2 border-blue-500 hover:border-blue-600"
+                className={getButtonStyle('normal')}
               >
                 Normal Scenario
               </button>
               <button
                 onClick={() => applyScenario('optimistic')}
-                className="bg-white border-2 border-blue-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm"
+                className={getButtonStyle('optimistic')}
               >
                 Optimistic Scenario
               </button>
@@ -789,7 +803,7 @@ const VentureBondCalculator = () => {
         <p>
           This calculator provides estimates based on the inputs provided and simplified growth assumptions. 
           Actual results may vary based on company performance, market conditions, and other factors. 
-          The Venture Bond is designed with a 6x profit-sharing cap (20% until 2x, 10% until 4x, 5% until 6x), 
+          The Venture Bond is designed with thresholds (20% until 2x, 10% until 4x, 5% until 6x, 1% beyond 6x), 
           with potential additional upside through the equity component.
         </p>
       </div>

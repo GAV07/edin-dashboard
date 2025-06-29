@@ -107,19 +107,30 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
-      <div className="max-w-md w-full">
+    <div 
+      className="min-h-screen flex items-center justify-center p-4 relative"
+      style={{
+        backgroundImage: 'url(/images/trees.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
+      }}
+    >
+      {/* Background overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-40"></div>
+      
+      <div className="max-w-md w-full relative z-10">
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-green-700 rounded-xl mb-4">
             <Lock className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-gray-900">Welcome Back</h1>
-          <p className="text-gray-600 mt-2">Sign in to access Edin Capital Dashboard</p>
+          <h1 className="text-3xl font-bold text-white">Investor Portal</h1>
+          <p className="text-gray-200 mt-2">Dive deeper into what we are building here at Edin</p>
         </div>
 
         {/* Sign In Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+        <div className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8">
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email Field */}
             <div>
@@ -192,15 +203,6 @@ export default function SignIn() {
               {isLoading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
-
-          {/* Demo Credentials */}
-          <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-            <h3 className="text-sm font-medium text-gray-700 mb-2">Demo Credentials</h3>
-            <div className="text-xs text-gray-600 space-y-1">
-              <p><strong>Admin:</strong> admin@edincapital.com / password123</p>
-              <p><strong>Investor:</strong> investor@edincapital.com / password123</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

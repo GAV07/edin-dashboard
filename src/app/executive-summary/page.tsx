@@ -72,14 +72,14 @@ const EdinCapitalSummary = () => {
         <div className="bg-white rounded-lg p-4 border border-gray-200">
           <p className="text-gray-700 mb-4">Edin Capital introduces the <span className="font-semibold">Venture Bond</span> — a new financial instrument combining equity with profit sharing that aims to:</p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <StrategyPoint text="Increase returns & liquidity" />
-            <StrategyPoint text="Decrease risk" />
-            <StrategyPoint text="Better align founders and investors" />
-            <StrategyPoint text="Enhance economic development" />
+            <StrategyPoint text="Increase investor returns & liquidity" />
+            <StrategyPoint text="Decrease portfolio risk" />
+            <StrategyPoint text="Better align founders and investors interest" />
+            <StrategyPoint text="Increased market size for potential companies" />
           </div>
           <div className="mt-6 bg-warmLight p-4 rounded-lg">
             <h3 className="text-md font-semibold text-primary mb-2">Target Profile</h3>
-            <p className="text-gray-700">Grounded companies pursuing profitability at an early growth stage with a clear path to a 7-figure annual revenue. Industry agnostic, tech-enabled businesses with strong operators scaling to the next level.</p>
+            <p className="text-gray-700">We invest in 'Goldilocks companies—profitable businesses with $1M+ revenue led by domain experts who are positioned perfectly between early-stage uncertainty and late-stage maturity, seeking patient capital and technology-enabled growth without the constraints of traditional venture capital&apos;s boom-or-bust model.</p>
           </div>
         </div>
       </div>
@@ -185,7 +185,7 @@ const EdinCapitalSummary = () => {
               <h3 className="text-md font-semibold text-gray-800 mb-3">Portfolio Performance</h3>
               <table className="w-full">
                 <tbody>
-                  <TableRow label="Portfolio Success Rate" value="70% (average)" />
+                  <TableRow label="Portfolio Success Rate" value="75% (average)" />
                   <TableRow label="Expected Number of Exits" value="3" />
                   <TableRow label="Average Entry Ownership" value="16%" />
                   <TableRow label="Average Exit Ownership" value="11%" />
@@ -261,16 +261,11 @@ const EdinCapitalSummary = () => {
             </div>
           </div>
         </div>
-        <p className="mt-6 text-lg/8 text-gray-600">
-          We&apos;re a dynamic group of individuals who are passionate about what we do and dedicated to delivering the
-          best results for our clients.
-        </p>
       </div>
 
       {/* Footer */}
       <div className="p-6 bg-gray-100 border-t border-gray-200">
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-600">This executive summary is based on information available as of May 13, 2025.</p>
           <button className="mt-3 md:mt-0 flex items-center text-blue-600 hover:text-blue-800 transition">
             <span className="font-medium">View Full Investment Memo</span>
             <ArrowUpRight className="ml-1 h-4 w-4" />

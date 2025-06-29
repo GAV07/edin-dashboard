@@ -6,7 +6,14 @@ export default withAuth(
   },
   {
     callbacks: {
-      authorized: ({ token }) => !!token,
+      authorized: ({ token }) => {
+        // In development, bypass authentication completely
+        if (process.env.NODE_ENV === 'development') {
+          return true
+        }
+        // In production, require valid token
+        return !!token
+      },
     },
   }
 )

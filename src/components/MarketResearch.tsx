@@ -93,7 +93,7 @@ const MarketAnalysisDashboard: React.FC = () => {
       title: "Founder Relations",
       value: "77%",
       subtitle: "Bootstrap over VC",
-      change: "Systemic change",
+      change: "Change singal",
       color: "text-orange-600"
     }
   ];
@@ -396,9 +396,8 @@ const MarketAnalysisDashboard: React.FC = () => {
       {/* Footer */}
       <div className="p-6 bg-gray-100 border-t border-gray-200">
         <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-600">This market analysis is based on information available as of May 13, 2025.</p>
           <a 
-            href="https://www.dropbox.com/scl/fi/4ib9m7ko49bg5sri0wy9i/Market-Analysis_-An-Emerging-Market-Beyond-Venture-Capital.pdf?rlkey=p2s1i9s8z67zbmjhz59ojo3hd&st=8elz7o13&dl=0" 
+            href="https://www.dropbox.com/scl/fi/4ib9m7ko49bg5sri0wy9i/Market-Analysis-An-Emerging-Market-Beyond-Venture-Capital.pdf?rlkey=p2s1i9s8z67zbmjhz59ojo3hd&st=vkjsjo7s&dl=0" 
             target="_blank" 
             rel="noopener noreferrer"
             className="mt-3 md:mt-0 flex items-center text-blue-600 hover:text-blue-800 transition"
