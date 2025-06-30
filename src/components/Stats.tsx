@@ -14,8 +14,8 @@ interface StatsProps {
 }
 
 export default function Stats({ 
-  title = "Trusted by creators worldwide",
-  description = "Lorem ipsum dolor sit amet consect adipisicing possimus.",
+  title = "",
+  description = "",
   stats,
   className = ""
 }: StatsProps) {

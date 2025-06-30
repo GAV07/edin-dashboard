@@ -13,6 +13,7 @@ import {
   ReferenceLine
 } from 'recharts';
 import Stats from './Stats';
+import JoinTeamCTA from './JoinTeamCTA';
 
 interface DashboardProps {
   fundOverview: {
@@ -82,31 +83,13 @@ export default function Dashboard({
   });
 
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <Stats
-        title="Edin Capital: a new beginning in venture capital"
-        description={
-          <div className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Our Mission</h3>
-              <p className="text-gray-600">
-                We partner with exceptional founders to build profitable, sustainable businesses through our breakthrough Venture Bond instrument — providing patient capital, operational excellence, and aligned incentives that enable companies to thrive without the constraints of traditional venture capital&apos;s boom-or-bust model.
-              </p>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">Our Vision</h3>
-              <p className="text-gray-600">
-                To establish Integrated Capital as the defining investment category of the next generation — where financial innovation, technological excellence, and socioeconomic impact converge to create regenerative ecosystems that transcend traditional venture capital limitations and redefine what&apos;s possible in early-stage investing.
-              </p>
-            </div>
-            <p className="text-gray-600">
-              Edin Capital introduces the Venture Bond, a revolutionary financial instrument combining equity and profit sharing that delivers superior risk-adjusted returns with increased liquidity for investors and better alignment for founders.
-            </p>
-          </div>
-        }
-        stats={keyMetricsStats}
-        className="bg-white shadow-sm mb-4"
-      />
+    <div className="bg-gray-50 min-h-screen">
+      <JoinTeamCTA />
+      <div className="p-6">
+        <Stats
+          stats={keyMetricsStats}
+          className="bg-white shadow-sm mb-4"
+        />
       <div className="gap-6 mb-6">
         
         
@@ -199,6 +182,7 @@ export default function Dashboard({
       
       <div className="mt-8 text-center text-gray-500 text-xs">
         <p>Data based on Edin Capital Fund I financial projections. $86M model.</p>
+      </div>
       </div>
     </div>
   );
