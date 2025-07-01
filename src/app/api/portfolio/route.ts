@@ -1,42 +1,90 @@
 import { NextResponse } from 'next/server';
-import Airtable from 'airtable';
+import { Client } from '@notionhq/client';
 
 export async function GET() {
   try {
     // Check for required environment variables
-    if (!process.env.AIRTABLE_API_KEY) {
+    if (!process.env.NOTION_TOKEN) {
       return NextResponse.json(
-        { error: 'AIRTABLE_API_KEY is not configured' },
+        { error: 'NOTION_TOKEN is not configured' },
         { status: 500 }
       );
     }
 
-    if (!process.env.AIRTABLE_BASE_ID) {
+    if (!process.env.NOTION_DATABASE_ID) {
       return NextResponse.json(
-        { error: 'AIRTABLE_BASE_ID is not configured' },
+        { error: 'NOTION_DATABASE_ID is not configured' },
         { status: 500 }
       );
     }
 
-    // Initialize Airtable
-    const base = new Airtable({ 
-      apiKey: process.env.AIRTABLE_API_KEY 
-    }).base(process.env.AIRTABLE_BASE_ID);
+    // Initialize Notion client
+    const notion = new Client({
+      auth: process.env.NOTION_TOKEN,
+    });
     
-    // Fetch records from the specified table and view
-    const records = await base('Deal Pipeline')
-      .select({
-        view: 'Investor Portal View',
-        // Only fetch records where Investor Portal Display is true
-        filterByFormula: '{Investor Portal Display} = TRUE()'
-      })
-      .all();
+    // Fetch records from Notion database with filter
+    const response = await notion.databases.query({
+      database_id: process.env.NOTION_DATABASE_ID,
+      filter: {
+        property: 'Investor Portal Display',
+        checkbox: {
+          equals: true,
+        },
+      },
+    });
 
-    // Transform the data to a more usable format
-    const companies = records.map(record => ({
-      id: record.id,
-      fields: record.fields,
-    }));
+    // Transform Notion records to expected format
+    const companies = response.results.map((page: any) => {
+      const fields: any = {};
+      
+      // Extract properties and convert to expected format
+      Object.entries(page.properties).forEach(([key, value]: [string, any]) => {
+        switch (value.type) {
+          case 'title':
+            fields[key] = value.title?.[0]?.plain_text || '';
+            break;
+          case 'rich_text':
+            fields[key] = value.rich_text?.[0]?.plain_text || '';
+            break;
+          case 'select':
+            fields[key] = value.select?.name || '';
+            break;
+          case 'multi_select':
+            fields[key] = value.multi_select?.map((item: any) => item.name).join(', ') || '';
+            break;
+          case 'checkbox':
+            fields[key] = value.checkbox;
+            break;
+          case 'url':
+            fields[key] = value.url || '';
+            break;
+          case 'email':
+            fields[key] = value.email || '';
+            break;
+          case 'phone_number':
+            fields[key] = value.phone_number || '';
+            break;
+          case 'number':
+            fields[key] = value.number || 0;
+            break;
+          default:
+            // For other types, try to extract plain text
+            if (value.plain_text !== undefined) {
+              fields[key] = value.plain_text;
+            } else if (value.name !== undefined) {
+              fields[key] = value.name;
+            } else {
+              fields[key] = '';
+            }
+        }
+      });
+
+      return {
+        id: page.id,
+        fields: fields,
+      };
+    });
 
     return NextResponse.json({ companies, total: companies.length });
   } catch (error) {

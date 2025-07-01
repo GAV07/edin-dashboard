@@ -6,6 +6,8 @@ import {
   Legend, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area,
   ComposedChart, Scatter, ReferenceLine
 } from 'recharts';
+import { useSessionAwareFetch } from '@/hooks/useSessionAwareFetch';
+import { useRouter } from 'next/navigation';
 
 // Color palette
 const colors = {
@@ -94,12 +96,48 @@ const ProFormaDashboard = () => {
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [selectedScenario, setSelectedScenario] = useState('base');
   const [isClient, setIsClient] = useState(false);
+  const router = useRouter();
+
+  const { safeFetch, createInterval, isSessionValid, saveToCache, getFromCache } = useSessionAwareFetch({
+    onSessionExpired: () => {
+      console.log('Session expired, but keeping cached data visible...');
+      // Don't redirect immediately - let user see cached data
+    },
+    cacheKey: `proforma_${selectedScenario}`
+  });
 
   useEffect(() => {
     setIsClient(true);
+    
+    // Try to load cached data immediately for better UX
+    const cachedData = getFromCache();
+    if (cachedData && !isSessionValid) {
+      console.log('Loading cached data on mount...');
+      setData(cachedData);
+      setError('Session expired. Showing cached data. Please sign in to refresh.');
+      setLoading(false);
+    }
   }, []);
 
   const loadData = async (isRefresh: boolean = false) => {
+    // If session is invalid, try to use cached data instead of erroring
+    if (!isSessionValid) {
+      const cachedData = getFromCache();
+      if (cachedData) {
+        console.log('Session expired, using cached data...');
+        setData(cachedData);
+        setError('Session expired. Showing cached data. Please sign in to refresh.');
+        setLoading(false);
+        setIsRefreshing(false);
+        return;
+      } else {
+        setError('Session expired and no cached data available. Please sign in again.');
+        setLoading(false);
+        setIsRefreshing(false);
+        return;
+      }
+    }
+
     if (isRefresh) {
       setIsRefreshing(true);
     } else {
@@ -108,7 +146,7 @@ const ProFormaDashboard = () => {
     setError(null);
 
     try {
-      const response = await fetch(`/api/pro-forma?scenario=${selectedScenario}`);
+      const response = await safeFetch(`/api/pro-forma?scenario=${selectedScenario}`);
       const result = await response.json();
 
       if (!response.ok) {
@@ -117,8 +155,25 @@ const ProFormaDashboard = () => {
 
       setData(result);
       setLastUpdated(new Date());
+      
+      // Save successful data to cache
+      saveToCache(result);
     } catch (err: any) {
       console.error('Error fetching data:', err);
+      
+      // Handle session expiration gracefully by using cached data
+      if (err.message.includes('Session expired')) {
+        const cachedData = getFromCache();
+        if (cachedData) {
+          console.log('Using cached data due to session expiration...');
+          setData(cachedData);
+          setError('Session expired. Showing cached data. Please sign in to refresh.');
+        } else {
+          setError('Your session has expired and no cached data is available. Please sign in again.');
+        }
+        return;
+      }
+      
       setError(err.message || 'An error occurred while fetching data');
     } finally {
       if (isRefresh) {
@@ -134,12 +189,15 @@ const ProFormaDashboard = () => {
   };
 
   useEffect(() => {
-    loadData();
-    const intervalId = setInterval(() => {
-      loadData(true);
-    }, 5 * 60 * 1000); // Refresh every 5 minutes
-    return () => clearInterval(intervalId);
-  }, [selectedScenario]);
+    if (isSessionValid) {
+      loadData();
+      
+      // Create session-aware interval that will auto-cleanup on session expiry
+      createInterval(() => {
+        loadData(true);
+      }, 5 * 60 * 1000); // Refresh every 5 minutes
+    }
+  }, [selectedScenario, isSessionValid]);
 
   if (!isClient) {
     return null; // or a loading state that matches server-side
@@ -156,19 +214,37 @@ const ProFormaDashboard = () => {
     );
   }
 
-  if (error) {
+  if (error && !data) {
+    // Only show full-screen error if we don't have any data to show
+    const isSessionError = error.includes('Session expired') || error.includes('sign in');
+    
     return (
       <div className="flex items-center justify-center h-screen bg-background">
         <div className="text-center p-6 bg-white rounded-lg shadow-lg">
-          <div className="text-danger text-5xl mb-4">⚠️</div>
-          <h2 className="text-xl font-semibold text-dark mb-2">Error</h2>
-          <p className="text-dark">{error}</p>
-          <button 
-            onClick={refreshData}
-            className="mt-4 px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
-          >
-            Try Again
-          </button>
+          <div className="text-danger text-5xl mb-4">
+            {isSessionError ? '🔒' : '⚠️'}
+          </div>
+          <h2 className="text-xl font-semibold text-dark mb-2">
+            {isSessionError ? 'Session Expired' : 'Error'}
+          </h2>
+          <p className="text-dark mb-4">{error}</p>
+          <div className="space-x-2">
+            {isSessionError ? (
+              <button 
+                onClick={() => router.push('/auth/signin')}
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
+              >
+                Sign In Again
+              </button>
+            ) : (
+              <button 
+                onClick={refreshData}
+                className="px-4 py-2 bg-primary text-white rounded-md hover:bg-opacity-90 transition-colors"
+              >
+                Try Again
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -179,6 +255,9 @@ const ProFormaDashboard = () => {
   }
 
   console.log('Yearly Data:', data.yearlyData);
+
+  // Show session warning banner if we have data but session errors
+  const showSessionWarning = error && error.includes('Session expired') && data;
 
   // Debug log for rendered data
   console.log('Rendering with IRR data:', data.yearlyData.map(d => ({ year: d.year, irr: d.irr })));
@@ -234,6 +313,38 @@ const ProFormaDashboard = () => {
             </div>
           </div>
         </div>
+
+        {/* Session Warning Banner */}
+        {showSessionWarning && (
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <svg className="h-5 w-5 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                  </svg>
+                </div>
+                <div className="ml-3">
+                  <h3 className="text-sm font-medium text-yellow-800">
+                    Session Expired - Viewing Cached Data
+                  </h3>
+                  <div className="mt-1 text-sm text-yellow-700">
+                    Your session has expired, but you can continue viewing the last cached data. Sign in again to refresh the data.
+                  </div>
+                </div>
+              </div>
+              <div className="flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => router.push('/auth/signin')}
+                  className="bg-yellow-50 rounded-md px-3 py-2 text-sm font-medium text-yellow-800 hover:bg-yellow-100 border border-yellow-300 transition-colors"
+                >
+                  Sign In
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <div className="bg-white rounded-lg shadow-sm mb-6">

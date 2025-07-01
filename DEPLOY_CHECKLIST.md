@@ -20,8 +20,8 @@ NEXTAUTH_SECRET=generate-a-32-character-secret-key-here
 GOOGLE_SERVICE_ACCOUNT_EMAIL=your-email-here
 GOOGLE_PRIVATE_KEY=your-private-key-here
 GOOGLE_SHEET_ID=your-sheet-id-here
-AIRTABLE_API_KEY=your-airtable-key-here
-AIRTABLE_BASE_ID=your-base-id-here
+NOTION_TOKEN=your-notion-token-here
+NOTION_DATABASE_ID=your-database-id-here
 ```
 
 ### 2. Generate NEXTAUTH_SECRET

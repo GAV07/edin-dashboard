@@ -22,9 +22,9 @@ GOOGLE_SERVICE_ACCOUNT_EMAIL=your-google-service-account-email
 GOOGLE_PRIVATE_KEY=your-google-private-key-here
 GOOGLE_SHEET_ID=your-google-sheet-id
 
-# Your existing Airtable variables  
-AIRTABLE_API_KEY=your-airtable-api-key
-AIRTABLE_BASE_ID=your-airtable-base-id
+# Your existing Notion variables  
+NOTION_TOKEN=your-notion-token
+NOTION_DATABASE_ID=your-notion-database-id
 ```
 
 #### **Important Notes:**

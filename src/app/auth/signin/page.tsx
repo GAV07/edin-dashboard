@@ -125,7 +125,7 @@ export default function SignIn() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-green-700 rounded-xl mb-4">
             <Lock className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Investor Portal</h1>
+          <h1 className="text-3xl font-bold text-white">Edin Investor Portal</h1>
           <p className="text-gray-200 mt-2">Dive deeper into what we are building here at Edin</p>
         </div>
 

@@ -5,19 +5,29 @@ import { ChevronLeft, ChevronRight, MapPin, Building2, CheckCircle, TrendingUp, 
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { PortfolioApiResponse, AirtableRecord, PortfolioCompanyUI } from '@/types/portfolio';
 import PortfolioCTA from './PortfolioCTA';
+import { useSessionAwareFetch } from '@/hooks/useSessionAwareFetch';
+import { useRouter } from 'next/navigation';
 
 // Stats Component that fetches from Grid View
 const StatsComponent = () => {
   const [statsData, setStatsData] = useState<PortfolioCompanyUI[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
   const [statsError, setStatsError] = useState<string | null>(null);
+  const router = useRouter();
 
-  // Transform Airtable record to UI format for stats
+  const { safeFetch, isSessionValid } = useSessionAwareFetch({
+    onSessionExpired: () => {
+      console.log('Session expired, redirecting to login...');
+      router.push('/auth/signin');
+    }
+  });
+
+  // Transform Notion record to UI format for stats
   const transformStatsCompany = (record: AirtableRecord): PortfolioCompanyUI => {
     const fields = record.fields;
     return {
       id: record.id,
-      companyName: fields['Company name'] || fields['Company Name'] || '',
+      companyName: fields['Company Name'] || '',
       description: fields['Description'] || '',
       sector: fields['Sector'] || '',
       website: fields['Website'] || '',
@@ -28,7 +38,7 @@ const StatsComponent = () => {
       dataRoom: fields['Data room'] || fields['Data Room'] || '',
       location: fields['Location'] || '',
       highlights: fields['Highlights'] || '',
-      nextSteps: fields['Next steps'] || fields['Next Steps'] || '',
+      nextSteps: fields['Next Steps'] || '',
       investorPortalDisplay: fields['Investor Portal Display'] || false,
     };
   };
@@ -36,11 +46,18 @@ const StatsComponent = () => {
   // Fetch all companies from Grid View for stats
   useEffect(() => {
     const fetchStatsData = async () => {
+      // Don't attempt to fetch data if session is invalid
+      if (!isSessionValid) {
+        setStatsError('Session expired. Please sign in again.');
+        setStatsLoading(false);
+        return;
+      }
+
       try {
         setStatsLoading(true);
         setStatsError(null);
         
-        const response = await fetch('/api/portfolio-stats');
+        const response = await safeFetch('/api/portfolio-stats');
         
         if (!response.ok) {
           const errorData = await response.json();
@@ -52,14 +69,23 @@ const StatsComponent = () => {
         setStatsData(transformedCompanies);
       } catch (err) {
         console.error('Error fetching stats:', err);
+        
+        // Handle session expiration gracefully
+        if (err instanceof Error && err.message.includes('Session expired')) {
+          setStatsError('Your session has expired. Please sign in again to continue.');
+          return;
+        }
+        
         setStatsError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setStatsLoading(false);
       }
     };
 
-    fetchStatsData();
-  }, []);
+    if (isSessionValid) {
+      fetchStatsData();
+    }
+  }, [isSessionValid]);
 
   if (statsLoading) {
     return (
@@ -301,13 +327,21 @@ export default function CompanyShowcase() {
   const [companies, setCompanies] = useState<PortfolioCompanyUI[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  // Transform Airtable record to UI format
+  const { safeFetch, isSessionValid } = useSessionAwareFetch({
+    onSessionExpired: () => {
+      console.log('Session expired, redirecting to login...');
+      router.push('/auth/signin');
+    }
+  });
+
+  // Transform Notion record to UI format
   const transformCompany = (record: AirtableRecord): PortfolioCompanyUI => {
     const fields = record.fields;
     return {
       id: record.id,
-      companyName: fields['Company name'] || fields['Company Name'] || '',
+      companyName: fields['Company Name'] || '',
       description: fields['Description'] || '',
       sector: fields['Sector'] || '',
       website: fields['Website'] || '',
@@ -318,6 +352,7 @@ export default function CompanyShowcase() {
       dataRoom: fields['Data room'] || fields['Data Room'] || '',
       location: fields['Location'] || '',
       highlights: fields['Highlights'] || '',
+      nextSteps: fields['Next Steps'] || '',
       investorPortalDisplay: fields['Investor Portal Display'] || false,
     };
   };
@@ -356,14 +391,21 @@ export default function CompanyShowcase() {
     return firstSector ? `${firstSector} Company` : 'Company';
   };
 
-  // Fetch companies from Airtable
+  // Fetch companies from Notion
   useEffect(() => {
     const fetchCompanies = async () => {
+      // Don't attempt to fetch data if session is invalid
+      if (!isSessionValid) {
+        setError('Session expired. Please sign in again.');
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         setError(null);
         
-        const response = await fetch('/api/portfolio');
+        const response = await safeFetch('/api/portfolio');
         
         if (!response.ok) {
           const errorData = await response.json();
@@ -375,14 +417,23 @@ export default function CompanyShowcase() {
         setCompanies(transformedCompanies);
       } catch (err) {
         console.error('Error fetching companies:', err);
+        
+        // Handle session expiration gracefully
+        if (err instanceof Error && err.message.includes('Session expired')) {
+          setError('Your session has expired. Please sign in again to continue.');
+          return;
+        }
+        
         setError(err instanceof Error ? err.message : 'An error occurred');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchCompanies();
-  }, []);
+    if (isSessionValid) {
+      fetchCompanies();
+    }
+  }, [isSessionValid]);
 
   if (loading) {
     return (
@@ -396,17 +447,35 @@ export default function CompanyShowcase() {
   }
 
   if (error) {
+    const isSessionError = error.includes('Session expired') || error.includes('sign in');
+    
     return (
       <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-500 mb-4 text-xl font-semibold">Error loading companies</div>
+          <div className="text-red-500 mb-4 text-5xl">
+            {isSessionError ? '🔒' : '⚠️'}
+          </div>
+          <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
+            {isSessionError ? 'Session Expired' : 'Error loading companies'}
+          </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 rounded-lg font-medium transition-colors"
-          >
-            Try Again
-          </button>
+          <div className="space-x-2">
+            {isSessionError ? (
+              <button
+                onClick={() => router.push('/auth/signin')}
+                className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 rounded-lg font-medium transition-colors"
+              >
+                Sign In Again
+              </button>
+            ) : (
+              <button
+                onClick={() => window.location.reload()}
+                className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 rounded-lg font-medium transition-colors"
+              >
+                Try Again
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );

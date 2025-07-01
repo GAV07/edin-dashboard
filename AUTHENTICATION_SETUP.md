@@ -39,8 +39,8 @@ NEXTAUTH_URL=http://localhost:3000
 GOOGLE_SERVICE_ACCOUNT_EMAIL=your-google-service-account-email
 GOOGLE_PRIVATE_KEY=your-google-private-key
 GOOGLE_SHEET_ID=your-google-sheet-id
-AIRTABLE_API_KEY=your-airtable-api-key
-AIRTABLE_BASE_ID=your-airtable-base-id
+NOTION_TOKEN=your-notion-token
+NOTION_DATABASE_ID=your-notion-database-id
 ```
 
 ### 2. Generate a Strong Secret
