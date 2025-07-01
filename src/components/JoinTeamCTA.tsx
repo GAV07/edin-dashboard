@@ -3,14 +3,14 @@ export default function JoinTeamCTA() {
     <div className="bg-white py-12 sm:py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-4xl bg-gray-50 px-6 py-12 ring-1 ring-gray-200 sm:rounded-3xl sm:p-8">
-          {/* Image and Title Side by Side */}
-          <div className="flex items-center gap-4 mb-8">
+          {/* Image and Title - Stacked on mobile, side by side on larger screens */}
+          <div className="flex flex-col sm:flex-row items-center sm:gap-4 gap-6 mb-8">
             <img
-              alt="Forest landscape representing growth and sustainability"
-              src="/images/forest.jpg"
-              className="h-16 w-16 rounded-xl object-cover shadow-lg flex-shrink-0"
+              alt="Edin Capital Logo"
+              src="/images/logos/edincapital_logo.jpeg"
+              className="h-16 w-16 rounded-full object-cover shadow-lg flex-shrink-0"
             />
-            <h2 className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
+            <h2 className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl text-center sm:text-left">
               Redefining Venture Capital
             </h2>
           </div>

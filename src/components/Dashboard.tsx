@@ -97,12 +97,12 @@ export default function Dashboard({
           {/* CTA Content */}
           <div className="px-6 py-12 sm:px-8">
             <div className="mx-auto max-w-4xl">
-              {/* Image and Title Side by Side */}
-              <div className="flex items-center gap-4 mb-8">
+              {/* Logo Above Title */}
+              <div className="flex flex-col items-center gap-6 mb-8 text-center">
                 <img
-                  alt="Forest landscape representing growth and sustainability"
-                  src="/images/forest.jpg"
-                  className="h-16 w-16 rounded-xl object-cover shadow-lg flex-shrink-0"
+                  alt="Edin Capital Logo"
+                  src="/images/logos/edin logo - gray stacked.png"
+                  className="h-20 w-auto object-contain"
                 />
                 <h2 className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">
                   Redefining Venture Capital
