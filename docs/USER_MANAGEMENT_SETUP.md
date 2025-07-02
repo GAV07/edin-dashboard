@@ -47,7 +47,7 @@ CREATE TRIGGER update_users_updated_at
 
 -- Insert initial admin user (password is 'password123')
 INSERT INTO users (email, password_hash, name, role) VALUES 
-('admin@edincapital.com', '$2b$12$6/.4/lJbAxylYEA3Ght5neBkQ/ZkI3SxXVLnjYBk8ufQPuieQ3J.C', 'Admin User', 'admin');
+('demo-admin@example.com', '$2b$12$6/.4/lJbAxylYEA3Ght5neBkQ/ZkI3SxXVLnjYBk8ufQPuieQ3J.C', 'Demo Admin', 'admin');
 ```
 
 #### **3. Add Environment Variables**
@@ -68,7 +68,7 @@ For development, the system automatically falls back to in-memory users if no da
 ### **Method 1: Admin Interface (Recommended)**
 
 1. **Sign in as Admin**
-   - Email: `admin@edincapital.com`
+   - Email: `demo-admin@example.com`
    - Password: `password123`
 
 2. **Access User Management**

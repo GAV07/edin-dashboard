@@ -8,16 +8,16 @@ import type { JWT } from "next-auth/jwt"
 const fallbackUsers = [
   {
     id: "1",
-    email: "admin@edincapital.com",
+    email: "demo-admin@example.com",
     password: "$2b$12$6/.4/lJbAxylYEA3Ght5neBkQ/ZkI3SxXVLnjYBk8ufQPuieQ3J.C", // "password123"
-    name: "Admin User",
+    name: "Demo Admin",
     role: "admin"
   },
   {
     id: "2", 
-    email: "investor@edincapital.com",
+    email: "demo-investor@example.com",
     password: "$2b$12$6/.4/lJbAxylYEA3Ght5neBkQ/ZkI3SxXVLnjYBk8ufQPuieQ3J.C", // "password123"
-    name: "Investor User",
+    name: "Demo Investor",
     role: "investor"
   }
 ]

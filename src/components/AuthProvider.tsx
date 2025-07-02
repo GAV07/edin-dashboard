@@ -17,9 +17,9 @@ function DevAutoLogin() {
     
     // Only auto-login if not already authenticated and not currently loading
     if (status === 'unauthenticated') {
-      console.log('🔧 Development mode: Auto-logging in as admin user')
+      console.log('🔧 Development mode: Auto-logging in as demo admin user')
       signIn('credentials', {
-        email: 'admin@edincapital.com',
+        email: 'demo-admin@example.com',
         password: 'password123',
         redirect: false,
       }).catch(console.error)

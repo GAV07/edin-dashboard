@@ -76,8 +76,8 @@ After deployment:
 
 1. **Visit your live site**
 2. **Test sign-in** with demo credentials:
-   - `admin@edincapital.com` / `password123`
-   - `investor@edincapital.com` / `password123`
+   - `demo-admin@example.com` / `password123`
+   - `demo-investor@example.com` / `password123`
 3. **Verify session persistence** - navigate between pages
 4. **Check Google Analytics** - confirm user tracking works
 
@@ -176,8 +176,8 @@ Your authentication system should now be fully functional on Netlify with:
 
 ## **Demo Credentials for Testing:**
 
-- **Admin:** `admin@edincapital.com` / `password123`
-- **Investor:** `investor@edincapital.com` / `password123`
+- **Admin:** `demo-admin@example.com` / `password123`
+- **Investor:** `demo-investor@example.com` / `password123`
 
 ## **Support**
 
