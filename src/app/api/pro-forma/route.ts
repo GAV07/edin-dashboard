@@ -49,33 +49,25 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
                    scenario === 'conservative' ? 'Conservative_API' : 
                    'Optimistic_API';
 
-  const [assumptionsResponse, yearlyDataResponse, columnLResponse] = await Promise.all([
+  const [assumptionsResponse, yearlyDataResponse] = await Promise.all([
     // Get all assumptions in one call
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
       range: `'${sheetName}'!B2:B7`  // Assumptions from B2 to B7
     }),
-    // Get all yearly data in one call
+    // Get all yearly data in one call - updated to start from line 17 (data starts after headers on line 16)
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: `'${sheetName}'!A16:V40`  // Updated range to include column V for IRR
-    }),
-    // Get column L specifically
-    sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range: `'${sheetName}'!L16:L40`  // Column L data
+      range: `'${sheetName}'!A15:Z41`  // Updated range to start from line 17 and include all columns through Z
     })
   ]);
 
   const assumptionsValues = assumptionsResponse.data.values || [];
   const yearlyValues = yearlyDataResponse.data.values || [];
-  const columnLValues = columnLResponse.data.values || [];
 
   // Log raw responses for debugging
-  console.log('Column L raw response:', JSON.stringify(columnLResponse.data, null, 2));
-  console.log('Column L values:', columnLValues);
   console.log('Yearly data sample:', yearlyValues.slice(0, 3));
-  console.log('IRR column (V) values:', yearlyValues.map(row => row[21]));
+  console.log('IRR column (Z) values:', yearlyValues.map(row => row[25])); // Column Z is index 25
 
   const data: ProFormaData = {
     assumptions: {
@@ -115,35 +107,38 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
         return numValue;
       };
 
-      // Remove any currency formatting and convert to number
-      const cumulativeDistributions = parseCurrencyValue(row[11]);
-
-      // Calculate average revenue per company
-      const portfolioRevenue = parseCurrencyValue(row[6]);  // Column G
-      const activePortcos = Number(row[2] || 1);  // Column C, default to 1 to avoid division by zero
+      // New column mappings based on the updated order:
+      // A: Year, B: Investments made, C: Active portcos, D: Avg revenue per company, 
+      // E: Avg annual growth rate, F-I: Investment Cohorts, J: Portfolio total revenue,
+      // K: Portfolio avg margins, L: Portfolio net income, M: Avg profit sharing %,
+      // N: Annual profit sharing distributions, O: Cumulative profit sharing distributions,
+      // P: Gross profit sharing return multiple, Q: Net profit sharing return multiple,
+      // R: % of capital returned, S: Portfolio residual value (revenue multiple),
+      // T: Portfolio residual value (net income multiple), U: Total residual value,
+      // V: Total value, W: Gross TVPI, X: Net TVPI, Y: RVPI, Z: IRR
 
       return {
         year: `Year ${index + 1}`,
-        activePortcos: Number(row[2] || 0),         // Column C
-        companiesProfitSharing: Number(row[5] || 0), // Column D
-        portfolioRevenue: portfolioRevenue,       // Column G
-        portfolioProfit: parseCurrencyValue(row[8]),        // Column I
-        avgMargins: parsePercentageValue(row[7]),           // Column H - Percentage value
-        avgRevenuePerCompany: parseCurrencyValue(row[3]), //Column D
-        avgAnnualGrowthRate: parsePercentageValue(row[4]),  // Column E - Percentage value
-        investmentsMade: Number(row[9] || 0),        // Column J
-        annualProfitSharing: parseCurrencyValue(row[10]),   // Column K
-        cumulativeProfitSharingDistributions: cumulativeDistributions, // Column L
-        cumulativeResidualValue: parseCurrencyValue(row[17]),         // Column R
-        residualValueEstimateRevenue: parseCurrencyValue(row[15]), // Column P
-        residualValueEstimateProfit: parseCurrencyValue(row[16]),  // Column Q
-        totalValue: parseCurrencyValue(row[18]),            // Column S
-        grossTVPI: Number(row[19] || 0),             // Column T - Gross TVPI
-        netTVPI: Number(row[20] || 0),               // Column U - Net TVPI
-        percentageCapitalReturned: parseCurrencyValue(row[14]), // Column O
-        grossProfitSharingReturnMultiple: Number(row[12] || 0), // Column M
-        netProfitSharingReturnMultiple: Number(row[13] || 0),   // Column N
-        irr: parseIRRValue(row[21]), // Column V - IRR
+        activePortcos: Number(row[2] || 0),                    // Column C - Active portcos
+        companiesProfitSharing: Number(row[5] || 0),           // Column F - Investment Cohort 1 (using as proxy for companies profit sharing)
+        portfolioRevenue: parseCurrencyValue(row[9]),          // Column J - Portfolio total revenue
+        portfolioProfit: parseCurrencyValue(row[11]),          // Column L - Portfolio net income
+        avgMargins: parsePercentageValue(row[10]),             // Column K - Portfolio avg margins
+        avgRevenuePerCompany: parseCurrencyValue(row[3]),      // Column D - Avg revenue per company
+        avgAnnualGrowthRate: parsePercentageValue(row[4]),     // Column E - Avg annual growth rate
+        investmentsMade: Number(row[1] || 0),                  // Column B - Investments made
+        annualProfitSharing: parseCurrencyValue(row[13]),      // Column N - Annual profit sharing distributions
+        cumulativeProfitSharingDistributions: parseCurrencyValue(row[14]), // Column O - Cumulative profit sharing distributions
+        cumulativeResidualValue: parseCurrencyValue(row[20]),  // Column U - Total residual value
+        residualValueEstimateRevenue: parseCurrencyValue(row[18]), // Column S - Portfolio residual value (revenue multiple)
+        residualValueEstimateProfit: parseCurrencyValue(row[19]),  // Column T - Portfolio residual value (net income multiple)
+        totalValue: parseCurrencyValue(row[21]),               // Column V - Total value
+        grossTVPI: Number(row[22] || 0),                       // Column W - Gross TVPI
+        netTVPI: Number(row[23] || 0),                         // Column X - Net TVPI
+        percentageCapitalReturned: parseCurrencyValue(row[17]), // Column R - % of capital returned
+        grossProfitSharingReturnMultiple: Number(row[15] || 0), // Column P - Gross profit sharing return multiple
+        netProfitSharingReturnMultiple: Number(row[16] || 0),   // Column Q - Net profit sharing return multiple
+        irr: parseIRRValue(row[25]), // Column Z - IRR
       };
     })
   };

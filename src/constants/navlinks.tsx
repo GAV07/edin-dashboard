@@ -43,8 +43,8 @@ export const navlinks = [
     icon: IconBuildingStore,
   },
   {
-    href: "/portfolio",
-    label: "Portfolio",
+    href: "/deal-flow",
+    label: "Deal Flow",
     icon: IconUsersGroup,
   },
   {

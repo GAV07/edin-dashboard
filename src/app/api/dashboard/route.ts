@@ -36,32 +36,32 @@ async function fetchDashboardData(): Promise<DashboardData> {
 
   const { sheets } = await getGoogleSheet(sheetId);
 
-  // Fetch 10-year data from Base_API tab (Year 10 is at row 25, since data starts at row 16)
+  // Fetch 10-year data from Base_API tab (Year 10 is at row 34, since data starts at row 25)
   const [year10DataResponse, assumptionsResponse, returnsResponse, irrResponse, lpDistributionsResponse] = await Promise.all([
-    // Get Year 10 data from Base_API (row 25)
-    sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range: "'Base_API'!A25:V25"  // Year 10 data across all columns
-    }),
+    // Get Year 10 data from Base_API (row 34)
+          sheets.spreadsheets.values.get({
+        spreadsheetId: sheetId,
+        range: "'Base_API'!A34:Y34"  // Year 10 data across all columns (extended to Y for IRR)
+      }),
     // Get assumptions from Base_API
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
       range: "'Base_API'!B2:B7"  // Assumptions
     }),
-    // Get annual returns data
+    // Get annual returns data - Annual profit sharing distributions
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Base_API'!K16:K40"
+      range: "'Base_API'!M25:M49"
     }),
-    // Get specific IRR value from V25
+    // Get specific IRR value from Y34 (shifted from V25)
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Base_API'!V25"  // Year 10 IRR
+      range: "'Base_API'!Y34"  // Year 10 IRR
     }),
-    // Get cumulative profit sharing distributions from L25
+    // Get cumulative profit sharing distributions from N34 - Cumulative profit sharing distributions
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Base_API'!L25"  // Year 10 Cumulative Profit Sharing Distributions
+      range: "'Base_API'!N34"  // Year 10 Cumulative Profit Sharing Distributions
     })
   ]);
 
@@ -72,7 +72,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
   const lpDistributionsValue = lpDistributionsResponse.data.values?.[0]?.[0] || 0;
 
   // Debug logging for LP distributions
-  console.log('Raw LP Distributions Value from L25:', lpDistributionsValue);
+  console.log('Raw LP Distributions Value from N34:', lpDistributionsValue);
   console.log('LP Distributions Response:', JSON.stringify(lpDistributionsResponse.data, null, 2));
 
   // Helper function to parse currency values
@@ -117,15 +117,15 @@ async function fetchDashboardData(): Promise<DashboardData> {
 
   // Extract Year 10 metrics from the row data
   const year10Metrics = {
-    activePortcos: Number(year10Data[2] || 0),  // Column C
-    portfolioRevenue: parseCurrencyValue(year10Data[6]),  // Column G
-    portfolioProfit: parseCurrencyValue(year10Data[8]),   // Column I
-    annualProfitSharing: parseCurrencyValue(year10Data[10]), // Column K
-    cumulativeProfitSharingDistributions: cumulativeProfitSharingDistributions, // From L25
-    cumulativeResidualValue: parseCurrencyValue(year10Data[17]), // Column R
-    totalValue: parseCurrencyValue(year10Data[18]), // Column S
-    grossTVPI: Number(year10Data[19] || 0), // Column T
-    netTVPI: Number(year10Data[20] || 0),   // Column U
+    activePortcos: Number(year10Data[2] || 0),  // Column C - Active portcos
+    portfolioRevenue: parseCurrencyValue(year10Data[3]),  // Column D - Revenue
+    portfolioProfit: parseCurrencyValue(year10Data[10]),   // Column K - Portfolio net income
+    annualProfitSharing: parseCurrencyValue(year10Data[12]), // Column M - Annual profit sharing distributions
+    cumulativeProfitSharingDistributions: cumulativeProfitSharingDistributions, // From N34 - Cumulative profit sharing distributions
+    cumulativeResidualValue: parseCurrencyValue(year10Data[19]), // Column T - Avg Residual value
+    totalValue: parseCurrencyValue(year10Data[20]), // Column U - Total value
+    grossTVPI: Number(year10Data[21] || 0), // Column V - Gross TVPI
+    netTVPI: Number(year10Data[22] || 0),   // Column W - Net TVPI
     irr: parseIRRValue(irrValue),
   };
 
@@ -151,7 +151,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
       gpCarry: formatCurrency(totalDistributions * 0.2), // 20% carry
       moic: `${year10Metrics.netTVPI.toFixed(2)}x`,
       grossTvpi: `${year10Metrics.grossTVPI.toFixed(2)}x`,
-      dpi: `${((year10Metrics.cumulativeProfitSharingDistributions) / 85000000).toFixed(2)}x`,
+      dpi: `${(totalDistributions / 86000000).toFixed(2)}x`,
       irr: `${year10Metrics.irr.toFixed(1)}%`,
     },
     distributionSourcesData: [

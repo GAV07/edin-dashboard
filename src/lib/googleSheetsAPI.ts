@@ -66,14 +66,14 @@ export async function fetchProFormaDataFromBottomUpSheet(): Promise<{ assumption
   // Fetch yearly data (up to 25 years)
   const yearlyData: ProFormaYearlyDataEntry[] = [];
   for (let i = 0; i < 25; i++) {
-    const rowIndex = i + 11; // Data starts from row 11
+    const rowIndex = i + 25; // Data starts from row 25
     const entry: ProFormaYearlyDataEntry = {
       year: i + 1,
-      "Annual Profit Sharing": await getNumberValue(sheetId, `'Base_API'!K${rowIndex}`),
-      "Cumulative Distributions": await getNumberValue(sheetId, `'Base_API'!L${rowIndex}`),
-      "Gross TVPI": await getNumberValue(sheetId, `'Base_API'!S${rowIndex}`),
-      "Net TVPI": await getNumberValue(sheetId, `'Base_API'!T${rowIndex}`),
-      "Annual Returns": await getNumberValue(sheetId, `'Base_API'!U${rowIndex}`)
+      "Annual Profit Sharing": await getNumberValue(sheetId, `'Base_API'!M${rowIndex}`), // Column M - Annual profit sharing distributions
+      "Cumulative Distributions": await getNumberValue(sheetId, `'Base_API'!N${rowIndex}`), // Column N - Cumulative profit sharing distributions
+      "Gross TVPI": await getNumberValue(sheetId, `'Base_API'!V${rowIndex}`), // Column V - Gross TVPI
+      "Net TVPI": await getNumberValue(sheetId, `'Base_API'!W${rowIndex}`), // Column W - Net TVPI
+      "Annual Returns": await getNumberValue(sheetId, `'Base_API'!M${rowIndex}`) // Column M - Annual profit sharing distributions (same as Annual Profit Sharing)
     };
     yearlyData.push(entry);
   }
@@ -100,13 +100,13 @@ export async function fetchBottomUpMetrics(): Promise<BottomUpMetrics> {
 
   // Fetch yearly data (up to 25 years)
   for (let i = 0; i < 25; i++) {
-    const rowIndex = i + 11; // Data starts from row 11
+    const rowIndex = i + 25; // Data starts from row 25
     const yearData = {
       year: `Year ${i + 1}`,
-      annualProfitSharing: await getNumberValue(sheetId, `'Base_API'!K${rowIndex}`),
-      cumulativeDistributions: await getNumberValue(sheetId, `'Base_API'!L${rowIndex}`),
-      grossTVPI: await getNumberValue(sheetId, `'Base_API'!S${rowIndex}`),
-      netTVPI: await getNumberValue(sheetId, `'Base_API'!T${rowIndex}`)
+      annualProfitSharing: await getNumberValue(sheetId, `'Base_API'!M${rowIndex}`), // Column M - Annual profit sharing distributions
+      cumulativeDistributions: await getNumberValue(sheetId, `'Base_API'!N${rowIndex}`), // Column N - Cumulative profit sharing distributions
+      grossTVPI: await getNumberValue(sheetId, `'Base_API'!V${rowIndex}`), // Column V - Gross TVPI
+      netTVPI: await getNumberValue(sheetId, `'Base_API'!W${rowIndex}`) // Column W - Net TVPI
     };
     metrics.yearlyData.push(yearData);
   }

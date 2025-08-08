@@ -1,609 +1,556 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, MapPin, Building2, CheckCircle, TrendingUp, Users } from 'lucide-react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { PortfolioApiResponse, AirtableRecord, PortfolioCompanyUI } from '@/types/portfolio';
+import React from 'react';
 import PortfolioCTA from './PortfolioCTA';
-import { useSessionAwareFetch } from '@/hooks/useSessionAwareFetch';
-import { useRouter } from 'next/navigation';
-
-// Stats Component that fetches from Grid View
-const StatsComponent = () => {
-  const [statsData, setStatsData] = useState<PortfolioCompanyUI[]>([]);
-  const [statsLoading, setStatsLoading] = useState(true);
-  const [statsError, setStatsError] = useState<string | null>(null);
-  const router = useRouter();
-
-  const { safeFetch, isSessionValid } = useSessionAwareFetch({
-    onSessionExpired: () => {
-      console.log('Session expired, redirecting to login...');
-      router.push('/auth/signin');
-    }
-  });
-
-  // Transform Notion record to UI format for stats
-  const transformStatsCompany = (record: AirtableRecord): PortfolioCompanyUI => {
-    const fields = record.fields;
-    return {
-      id: record.id,
-      companyName: fields['Company Name'] || '',
-      description: fields['Description'] || '',
-      sector: fields['Sector'] || '',
-      website: fields['Website'] || '',
-      deck: fields['Deck'] || '',
-      founders: fields['Founder(s)'] || fields['Founders'] || '',
-      founderLinkedIn: fields['Founder LinkedIn'] || '',
-      memosOverviews: fields['Memos & Overviews'] || '',
-      dataRoom: fields['Data room'] || fields['Data Room'] || '',
-      location: fields['Location'] || '',
-      highlights: fields['Highlights'] || '',
-      nextSteps: fields['Next Steps'] || '',
-      investorPortalDisplay: fields['Investor Portal Display'] || false,
-    };
-  };
-
-  // Fetch all companies from Grid View for stats
-  useEffect(() => {
-    const fetchStatsData = async () => {
-      // Don't attempt to fetch data if session is invalid
-      if (!isSessionValid) {
-        setStatsError('Session expired. Please sign in again.');
-        setStatsLoading(false);
-        return;
-      }
-
-      try {
-        setStatsLoading(true);
-        setStatsError(null);
-        
-        const response = await safeFetch('/api/portfolio-stats');
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch portfolio stats');
-        }
-        
-        const data: PortfolioApiResponse = await response.json();
-        const transformedCompanies = data.companies.map(transformStatsCompany);
-        setStatsData(transformedCompanies);
-      } catch (err) {
-        console.error('Error fetching stats:', err);
-        
-        // Handle session expiration gracefully
-        if (err instanceof Error && err.message.includes('Session expired')) {
-          setStatsError('Your session has expired. Please sign in again to continue.');
-          return;
-        }
-        
-        setStatsError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setStatsLoading(false);
-      }
-    };
-
-    if (isSessionValid) {
-      fetchStatsData();
-    }
-  }, [isSessionValid]);
-
-  if (statsLoading) {
-    return (
-      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700 mb-8">
-                 <div className="animate-pulse">
-           <div className="h-8 bg-gray-200 dark:bg-gray-600 rounded-lg mb-6 w-48"></div>
-           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-             <div className="min-h-80 flex flex-col justify-between">
-               <div className="grid grid-cols-2 gap-4 flex-1">
-                 {[...Array(2)].map((_, i) => (
-                   <div key={i} className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 flex flex-col justify-center items-center text-center">
-                     <div className="h-12 w-16 bg-gray-200 dark:bg-gray-600 rounded mb-3"></div>
-                     <div className="h-6 w-24 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                   </div>
-                 ))}
-               </div>
-               <div className="grid grid-cols-2 gap-4 flex-1 mt-4">
-                 {[...Array(2)].map((_, i) => (
-                   <div key={i + 2} className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 flex flex-col justify-center items-center text-center">
-                     <div className="h-12 w-16 bg-gray-200 dark:bg-gray-600 rounded mb-3"></div>
-                     <div className="h-6 w-24 bg-gray-200 dark:bg-gray-600 rounded"></div>
-                   </div>
-                 ))}
-               </div>
-             </div>
-             <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 min-h-80">
-               <div className="h-6 bg-gray-200 dark:bg-gray-600 rounded mb-4"></div>
-               <div className="h-64 bg-gray-200 dark:bg-gray-600 rounded"></div>
-             </div>
-           </div>
-         </div>
-      </div>
-    );
-  }
-
-  if (statsError) {
-    return (
-      <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700 mb-8">
-        <div className="text-center text-red-500">
-          <p>Error loading portfolio stats: {statsError}</p>
-        </div>
-      </div>
-    );
-  }
-
-  const totalCompanies = statsData.length;
-  const investorPortalCompanies = statsData.filter(company => company.investorPortalDisplay).length;
-  
-  // Process sector data to find most common sector
-  const sectorCounts = statsData.reduce((acc, company) => {
-    if (company.sector) {
-      let sectors: string[] = [];
-      
-      // Handle different sector formats
-      if (Array.isArray(company.sector)) {
-        sectors = company.sector.map(s => String(s).trim()).filter(s => s.length > 0);
-      } else if (typeof company.sector === 'string') {
-        sectors = company.sector.split(/[,;|]/).map(s => s.trim()).filter(s => s.length > 0);
-      }
-      
-      // Count each sector
-      sectors.forEach(sector => {
-        acc[sector] = (acc[sector] || 0) + 1;
-      });
-    }
-    return acc;
-  }, {} as Record<string, number>);
-
-  // Find the most common sector
-  const mostCommonSector = Object.entries(sectorCounts)
-    .sort(([,a], [,b]) => b - a)[0]?.[0] || 'N/A';
-
-  // Count companies in diligence
-  const companiesInDiligence = statsData.filter(company => {
-    if (!company.nextSteps) return false;
-    
-    let nextStepsText = '';
-    
-    // Handle different data types for nextSteps
-    if (Array.isArray(company.nextSteps)) {
-      nextStepsText = company.nextSteps.map(step => String(step)).join(' ').toLowerCase();
-    } else if (typeof company.nextSteps === 'string') {
-      nextStepsText = company.nextSteps.toLowerCase();
-    } else {
-      nextStepsText = String(company.nextSteps).toLowerCase();
-    }
-    
-    return nextStepsText.includes('team calls') || 
-           nextStepsText.includes('meetings') || 
-           nextStepsText.includes('reviews') || 
-           nextStepsText.includes('diligence');
-  }).length;
-  
-  // Process location data for donut chart
-  const locationCounts = statsData.reduce((acc, company) => {
-    if (company.location) {
-      const location = company.location.trim();
-      acc[location] = (acc[location] || 0) + 1;
-    }
-    return acc;
-  }, {} as Record<string, number>);
-
-  const locationData = Object.entries(locationCounts)
-    .map(([name, value]) => ({ name, value }))
-    .sort((a, b) => b.value - a.value);
-
-  // Green-inspired colors for the pie chart
-  const COLORS = ['#2d5016', '#4a7c59', '#6bb6ff', '#00b894', '#74b9ff', '#55a3ff'];
-
-  // Custom tooltip for the pie chart
-  const CustomTooltip = ({ active, payload }: any) => {
-    if (active && payload && payload.length) {
-      const data = payload[0];
-      return (
-        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-3 shadow-lg">
-          <p className="text-gray-900 dark:text-white font-medium">{data.name}</p>
-          <p className="text-gray-600 dark:text-gray-300">
-            Companies: <span className="font-semibold">{data.value}</span>
-          </p>
-          <p className="text-gray-600 dark:text-gray-300">
-            Percentage: <span className="font-semibold">{((data.value / totalCompanies) * 100).toFixed(1)}%</span>
-          </p>
-        </div>
-      );
-    }
-    return null;
-  };
-
-  return (
-    <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 border border-gray-200 dark:border-gray-700 mb-8">
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Portfolio Overview</h2>
-      
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Stats Blocks in 2x2 Grid - Matching Chart Height */}
-        <div className="min-h-80 flex flex-col justify-between">
-          <div className="grid grid-cols-2 gap-4 flex-1">
-            {/* Total Companies */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 flex flex-col justify-center items-center text-center">
-              <div className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{totalCompanies}</div>
-              <div className="flex items-center gap-2">
-                                      <Building2 className="w-5 h-5 text-accent dark:text-skyConnect" />
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Total Companies</span>
-              </div>
-            </div>
-
-            {/* Term Negotiations */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 flex flex-col justify-center items-center text-center">
-              <div className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{investorPortalCompanies}</div>
-              <div className="flex items-center gap-2">
-                                      <CheckCircle className="w-5 h-5 text-mintAccent dark:text-secondary" />
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Term Negotiations (below)</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 flex-1 mt-4">
-            {/* Most Common Sector */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 flex flex-col justify-center items-center text-center">
-              <div className="text-4xl font-bold text-gray-900 dark:text-white mb-3 leading-tight px-2">{mostCommonSector}</div>
-              <div className="flex items-center gap-2">
-                <TrendingUp className="w-5 h-5 text-purple-600 dark:text-purple-400" />
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">Top Sector</span>
-              </div>
-            </div>
-
-            {/* Companies in Diligence */}
-            <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 flex flex-col justify-center items-center text-center">
-              <div className="text-4xl font-bold text-gray-900 dark:text-white mb-3">{companiesInDiligence}</div>
-              <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-orange-600 dark:text-orange-400" />
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">In Diligence</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Location Donut Chart with Recharts - Now Larger */}
-        <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600 min-h-96">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Companies by Location</h3>
-          
-          {locationData.length > 0 ? (
-            <div className="flex flex-col h-full">
-              <div className="flex-shrink-0 mb-4">
-                <ResponsiveContainer width="100%" height={240}>
-                  <PieChart width={400} height={240}>
-                    <Pie
-                      data={locationData}
-                      cx="50%"
-                      cy="50%"
-                      innerRadius={60}
-                      outerRadius={100}
-                      paddingAngle={2}
-                      dataKey="value"
-                    >
-                      {locationData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip content={<CustomTooltip />} />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-              
-              {/* Top 3 Locations Legend */}
-              <div className="flex-grow">
-                <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Top 3 Locations</h4>
-                <div className="space-y-2">
-                  {locationData.slice(0, 3).map((item, index) => (
-                    <div key={item.name} className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2">
-                        <div 
-                          className="w-3 h-3 rounded-full" 
-                          style={{ backgroundColor: COLORS[index % COLORS.length] }}
-                        ></div>
-                        <span className="text-gray-700 dark:text-gray-300 truncate">{item.name}</span>
-                      </div>
-                      <span className="text-gray-600 dark:text-gray-400 font-medium">
-                        {((item.value / totalCompanies) * 100).toFixed(1)}%
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ) : (
-            <div className="text-center text-gray-500 dark:text-gray-400 py-8">
-              <MapPin className="w-8 h-8 mx-auto mb-2 opacity-50" />
-              <p className="text-sm">No location data available</p>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
 
 export default function CompanyShowcase() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [companies, setCompanies] = useState<PortfolioCompanyUI[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
-
-  const { safeFetch, isSessionValid } = useSessionAwareFetch({
-    onSessionExpired: () => {
-      console.log('Session expired, redirecting to login...');
-      router.push('/auth/signin');
-    }
-  });
-
-  // Transform Notion record to UI format
-  const transformCompany = (record: AirtableRecord): PortfolioCompanyUI => {
-    const fields = record.fields;
-    return {
-      id: record.id,
-      companyName: fields['Company Name'] || '',
-      description: fields['Description'] || '',
-      sector: fields['Sector'] || '',
-      website: fields['Website'] || '',
-      deck: fields['Deck'] || '',
-      founders: fields['Founder(s)'] || fields['Founders'] || '',
-      founderLinkedIn: fields['Founder LinkedIn'] || '',
-      memosOverviews: fields['Memos & Overviews'] || '',
-      dataRoom: fields['Data room'] || fields['Data Room'] || '',
-      location: fields['Location'] || '',
-      highlights: fields['Highlights'] || '',
-      nextSteps: fields['Next Steps'] || '',
-      investorPortalDisplay: fields['Investor Portal Display'] || false,
-    };
-  };
-
-  // Generate initials for company logo
-  const getInitials = (name?: string) => {
-    if (!name) return '?';
-    return name
-      .split(' ')
-      .map(word => word.charAt(0))
-      .join('')
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  // Format sectors to show only first sector with "Company"
-  const formatSectorCompany = (sectors?: string | string[] | null) => {
-    if (!sectors) return 'Company';
-    
-    let firstSector = '';
-    
-    // If it's already an array, take the first element
-    if (Array.isArray(sectors)) {
-      firstSector = sectors[0] ? String(sectors[0]).trim() : '';
-    } 
-    // If it's a string, split and take the first part
-    else if (typeof sectors === 'string') {
-      const sectorArray = sectors.split(/[,;|]/);
-      firstSector = sectorArray[0] ? sectorArray[0].trim() : '';
-    }
-    // Fallback for other types
-    else {
-      firstSector = String(sectors).trim();
-    }
-    
-    return firstSector ? `${firstSector} Company` : 'Company';
-  };
-
-  // Fetch companies from Notion
-  useEffect(() => {
-    const fetchCompanies = async () => {
-      // Don't attempt to fetch data if session is invalid
-      if (!isSessionValid) {
-        setError('Session expired. Please sign in again.');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        setLoading(true);
-        setError(null);
-        
-        const response = await safeFetch('/api/portfolio');
-        
-        if (!response.ok) {
-          const errorData = await response.json();
-          throw new Error(errorData.error || 'Failed to fetch portfolio companies');
-        }
-        
-        const data: PortfolioApiResponse = await response.json();
-        const transformedCompanies = data.companies.map(transformCompany);
-        setCompanies(transformedCompanies);
-      } catch (err) {
-        console.error('Error fetching companies:', err);
-        
-        // Handle session expiration gracefully
-        if (err instanceof Error && err.message.includes('Session expired')) {
-          setError('Your session has expired. Please sign in again to continue.');
-          return;
-        }
-        
-        setError(err instanceof Error ? err.message : 'An error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isSessionValid) {
-      fetchCompanies();
-    }
-  }, [isSessionValid]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-gray-900 dark:border-white mx-auto mb-4"></div>
-          <p className="text-gray-900 dark:text-white text-lg">Loading portfolio companies...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    const isSessionError = error.includes('Session expired') || error.includes('sign in');
-    
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-red-500 mb-4 text-5xl">
-            {isSessionError ? '🔒' : '⚠️'}
-          </div>
-          <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">
-            {isSessionError ? 'Session Expired' : 'Error loading companies'}
-          </h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">{error}</p>
-          <div className="space-x-2">
-            {isSessionError ? (
-              <button
-                onClick={() => router.push('/auth/signin')}
-                className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 rounded-lg font-medium transition-colors"
-              >
-                Sign In Again
-              </button>
-            ) : (
-              <button
-                onClick={() => window.location.reload()}
-                className="px-6 py-3 bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-gray-700 dark:hover:bg-gray-100 rounded-lg font-medium transition-colors"
-              >
-                Try Again
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (companies.length === 0) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-6xl mb-4">🏢</div>
-          <h3 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-white">No Companies Available</h3>
-          <p className="text-gray-600 dark:text-gray-300">No companies are currently displayed in the investor portal.</p>
-        </div>
-      </div>
-    );
-  }
-
-  const currentCompany = companies[currentIndex];
-
-  const nextCompany = () => {
-    setCurrentIndex((prevIndex) => (prevIndex + 1) % companies.length);
-  };
-
-  const prevCompany = () => {
-    setCurrentIndex((prevIndex) => (prevIndex - 1 + companies.length) % companies.length);
-  };
-
-  const goToCompany = (index: number) => {
-    setCurrentIndex(index);
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
-      <div className="max-w-6xl w-full">
-        {/* Title and Description */}
-        <div className="text-left mb-8 pt-8">
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 dark:text-white mb-4 sm:text-3xl">
-            Portfolio Companies
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-8 py-10">
+        {/* Header */}
+        <div className="mb-10">
+          <h1 className="text-4xl md:text-5xl font-semibold text-gray-800 dark:text-white mb-4">
+            Deal Flow & Pipeline
           </h1>
-          <p className="text-md text-gray-600 dark:text-gray-300 max-w-4xl">
-            Explore our portfolio of innovative companies that represent some of the deal flow for Edin Capital. Navigate through each company to learn about their mission, founders, and access important resources.
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-4xl leading-relaxed">
+            Explore our systematic approach to capturing and leading a new market through our multidimensional sourcing strategy and AI-enhanced intelligence platform.
           </p>
         </div>
 
-                 <StatsComponent />
-
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 border border-gray-200 dark:border-gray-700">
-          {/* Header */}
-          <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-8 gap-4">
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 bg-gradient-to-br from-gray-800 to-gray-600 dark:from-gray-200 dark:to-gray-400 rounded-2xl flex items-center justify-center text-white dark:text-gray-900 text-2xl font-bold">
-                {getInitials(formatSectorCompany(currentCompany.companyName))}
-              </div>
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">{formatSectorCompany(currentCompany.sector)}</h1>
-                {currentCompany.description && (
-                  <p className="text-lg text-gray-600 dark:text-gray-300 leading-relaxed">{currentCompany.description}</p>
-                )}
-              </div>
-            </div>
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-700"></div>
+            <div className="text-4xl font-bold text-gray-800 dark:text-white mb-2">1000+</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide font-medium">Annual Deal Flow</div>
           </div>
-
-          {/* Company Info */}
-          <div className="space-y-6 mb-8">
-            {/* Highlights */}
-            {currentCompany.highlights && (
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Highlights</h3>
-                <p className="text-gray-700 dark:text-gray-300 leading-relaxed">{currentCompany.highlights}</p>
-              </div>
-            )}
-
-            {/* Location */}
-            {currentCompany.location && (
-              <div className="bg-gray-50 dark:bg-gray-700/50 rounded-xl p-6 border border-gray-200 dark:border-gray-600">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">Location</h3>
-                <div className="flex items-center gap-2 text-gray-700 dark:text-gray-300">
-                  <MapPin className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                  {currentCompany.location}
-                </div>
-              </div>
-            )}
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-700"></div>
+            <div className="text-4xl font-bold text-gray-800 dark:text-white mb-2">50+</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide font-medium">Venture Feeders</div>
           </div>
-
-          {/* Navigation */}
-          {companies.length > 1 && (
-            <div className="flex items-center justify-between">
-              <button
-                onClick={prevCompany}
-                className="p-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-gray-900 dark:text-white transition-all"
-                aria-label="Previous company"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-
-              <div className="flex gap-2">
-                {companies.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => goToCompany(index)}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      index === currentIndex 
-                        ? 'bg-gray-900 dark:bg-white w-8' 
-                        : 'bg-gray-400 dark:bg-gray-600 hover:bg-gray-600 dark:hover:bg-gray-400'
-                    }`}
-                    aria-label={`Go to company ${index + 1}`}
-                  />
-                ))}
-              </div>
-
-              <button
-                onClick={nextCompany}
-                className="p-3 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full text-gray-900 dark:text-white transition-all"
-                aria-label="Next company"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
-            </div>
-          )}
-
-          {/* Company Counter */}
-          <div className="text-center mt-4">
-            <span className="text-gray-500 dark:text-gray-400 text-sm">
-              Company {currentIndex + 1} of {companies.length}
-            </span>
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-700"></div>
+            <div className="text-4xl font-bold text-gray-800 dark:text-white mb-2">4 Weeks</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide font-medium">Due Diligence Process</div>
+          </div>
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 text-center relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 to-blue-700"></div>
+            <div className="text-4xl font-bold text-gray-800 dark:text-white mb-2">35</div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 uppercase tracking-wide font-medium">Target Portfolio Companies</div>
           </div>
         </div>
 
+        {/* Investment Process Excellence Banner */}
+        <div className="bg-gradient-to-r from-blue-700 to-blue-500 text-white p-10 rounded-xl text-center mb-8">
+          <h2 className="text-3xl font-semibold mb-4">Investment Process Excellence</h2>
+          <p className="text-lg opacity-90 max-w-3xl mx-auto leading-relaxed">
+            From initial meeting to funding in 4 weeks through our disciplined, data-driven approach. Our systematic evaluation process ensures we identify founder-product-market-timing fit while providing founders with speed and clarity.
+          </p>
+        </div>
+
+        {/* Deal Flow Pipeline & Funnel */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-10 mb-8 shadow-sm border border-gray-200 dark:border-gray-700">
+          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-5 relative pl-6">
+            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-5 bg-gradient-to-b from-blue-500 to-blue-700 rounded"></div>
+            Deal Flow Pipeline & Funnel
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+            Our systematic approach to deal sourcing and evaluation ensures we identify the highest-quality opportunities through a disciplined funnel process powered by our network of 50+ venture feeders.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">1000+ Annual Deals</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Comprehensive deal flow from our network of incubators, accelerators, angel groups, venture studios, and strategic partners including Miami Angels and similar organizations.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Universities and Research Institutions
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Strategically aligned Angel Investors
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    VC/PE Firms and Service Providers
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Direct founder outreach and referrals
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">500 Screened Opportunities</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Initial screening process focuses on companies in our target sectors with strong fundamentals, operating between seed and growth stages.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    2-5 years operating experience
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    $1M+ ARR or clear path within 12 months
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    50%+ annual growth rate plan
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Strong team and market positioning
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">100 Discovery Meetings</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Deep-dive evaluation process with founding teams, including pitch deck reviews, team meetings, and comprehensive due diligence.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    4-week due diligence timeline
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Team, PMF, and traction analysis
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Financial and capital strategy review
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Strategic exit mapping
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">35 Portfolio Companies</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Final portfolio construction with $2M average investment per company, deployed through milestone-based tranches over 5-year period.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    $2M average cumulative investment
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    4 tranches of $500K each
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Performance-based milestone triggers
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Clear path to exit within 3-5 years
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Target Company Profile */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-10 mb-8 shadow-sm border border-gray-200 dark:border-gray-700">
+          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-5 relative pl-6">
+            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-5 bg-gradient-to-b from-blue-500 to-blue-700 rounded"></div>
+            Target Company Profile
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+            We focus on mature founders leading early-stage growth companies in our "sweet spot" between seed and growth stage - companies that traditional VC often overlooks but represent exceptional opportunities for sustainable, profitable growth.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Financial Criteria</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Strong unit economics and clear path to profitability with demonstrated traction and growth potential.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    $1M+ ARR with path to $20M+ ARR
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    40%+ gross margins capability
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    25%+ net margins within 2 years
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Capital efficient growth (Burn Multiple &lt;1)
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Stage & Experience</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Companies with proven operational history and strong fundamentals, positioned for scaled growth.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    2-5 years operating experience
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    DE S-Corp structure preferred
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Bootstrapped → F&F → Angel trajectory
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Clean cap table with limited debt
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Sector Focus</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Human flourishing through technology-enabled services with strong competitive advantages and defensible moats.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    AI/ML, Robotics, Commercial R&D
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Industrial, Finance, Blue Tech
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Health & Wellness, Hospitality
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Media/Entertainment
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Geographic Focus</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Southeast/Florida emphasis with national reach, leveraging our deep regional network and economic development alignment.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    FL/Southeast operational preference
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Regional economic development alignment
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    National investment capability
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Strong local ecosystem support
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Multidimensional Sourcing Strategy */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-10 mb-8 shadow-sm border border-gray-200 dark:border-gray-700">
+          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-5 relative pl-6">
+            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-5 bg-gradient-to-b from-blue-500 to-blue-700 rounded"></div>
+            Multidimensional Sourcing Strategy
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Content & PR</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Flooding the market with thought leadership and content, positioning the Venture Bond as a breakthrough financial innovation while building media relationships that drive qualified deal flow.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Long-form analysis for intellectual credibility
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Short-form video for accessibility
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Strategic media partnerships
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Conference speaking opportunities
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Network Gravity</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Access to 1000+ deals annually through our network of 50+ venture feeders, creating bidirectional value with ecosystem partners who want us to succeed.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Miami Angels and regional angel groups
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Universities and Research Institutions
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Venture Studios and Accelerators
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Service providers and strategic partners
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Strategic Events</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Participating in and hosting events from small, intimate gatherings to large conferences to evangelize our model, build community, and engage with prospective portfolio companies.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Small dinners and intimate gatherings
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Industry conferences and speaking
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Regional and sector-specific events
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Annual summit hosting opportunity
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">AI Enhancement</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Proprietary EdinOS platform automates company discovery and market intelligence at unprecedented scale through our AI-native operation.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Daily data source scanning
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Market signals and intelligence
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Media stakeholder identification
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Event optimization and follow-up
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Tranche-Based Investment Strategy */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-10 mb-8 shadow-sm border border-gray-200 dark:border-gray-700">
+          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-5 relative pl-6">
+            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-5 bg-gradient-to-b from-blue-500 to-blue-700 rounded"></div>
+            Tranche-Based Investment Strategy
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
+            Our performance-based investment approach deploys capital systematically through milestone-triggered tranches, aligning our success with portfolio company growth while minimizing risk.
+          </p>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Tranche 1 - Initial ($500K)</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                25% initial guaranteed funding to achieve first critical milestones and validate investment thesis.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Product development or market expansion
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Team scaling and operational setup
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Initial traction and validation
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Foundation for subsequent growth
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Tranches 2-4 ($1.5M)</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Performance-based follow-on funding tied to specific operational milestones and projected metrics.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Revenue and profitability targets
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Customer acquisition milestones
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Product development checkpoints
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Market expansion achievements
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Portfolio Construction</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Systematic deployment across 35 companies over 5-year period with built-in risk management and performance optimization.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    $2M average per company
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    5-year deployment timeline
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Performance-based progression
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Clear exit strategy within 3-5 years
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-700 dark:to-gray-800 p-8 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+              <h3 className="text-xl font-semibold text-gray-800 dark:text-white mb-4">Risk Mitigation</h3>
+              <p className="text-gray-600 dark:text-gray-300 mb-4 leading-relaxed">
+                Tranche structure provides natural downside protection while maintaining upside potential through our Venture Bond model.
+              </p>
+              <div className="mt-4">
+                <ul className="space-y-2">
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Milestone-gated capital deployment
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Right to hold back investment
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Preferential position preservation
+                  </li>
+                  <li className="text-gray-700 dark:text-gray-400 relative pl-5">
+                    <span className="absolute left-0 text-blue-500 font-bold">→</span>
+                    Performance-based value creation
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Market Creation & Category Leadership */}
+        <div className="bg-white dark:bg-gray-800 rounded-xl p-10 mb-8 shadow-sm border border-gray-200 dark:border-gray-700">
+          <h2 className="text-3xl font-semibold text-gray-800 dark:text-white mb-5 relative pl-6">
+            <div className="absolute left-0 top-1/2 transform -translate-y-1/2 w-1 h-5 bg-gradient-to-b from-blue-500 to-blue-700 rounded"></div>
+            Market Creation & Category Leadership
+          </h2>
+          <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+            We stand at a generational moment where venture capital's structural challenges converge with massive untapped opportunity. Our multidimensional sourcing strategy establishes us as category creators with structural advantages competitors cannot replicate without fundamental changes to their investment approach.
+          </p>
+          
+          <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 rounded-lg text-center mb-6">
+            <strong className="text-lg">The Reality:</strong> Traditional venture funds chase 15,000 VC-backed startups while hundreds of thousands of high-potential, revenue-producing, cash-flowing businesses remain systematically underserved.
+          </div>
+          
+          <p className="text-gray-600 dark:text-gray-400 italic mt-5 leading-relaxed">
+            The systematic advantages we'll have will compound exponentially across every channel, while tech enhancements will accelerate our ability to identify, engage, and close the companies that'll shape the future of sustainable business growth.
+          </p>
+        </div>
+
+        {/* Keep the existing PortfolioCTA component */}
         <PortfolioCTA />
       </div>
     </div>
