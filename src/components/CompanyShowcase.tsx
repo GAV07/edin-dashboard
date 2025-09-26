@@ -178,7 +178,7 @@ export default function CompanyShowcase() {
             Target Company Profile
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-8 leading-relaxed">
-            We focus on mature founders leading early-stage growth companies in our "sweet spot" between seed and growth stage - companies that traditional VC often overlooks but represent exceptional opportunities for sustainable, profitable growth.
+            We focus on mature founders leading early-stage growth companies in our &ldquo;sweet spot&rdquo; between seed and growth stage - companies that traditional VC often overlooks but represent exceptional opportunities for sustainable, profitable growth.
           </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
@@ -538,7 +538,7 @@ export default function CompanyShowcase() {
             Market Creation & Category Leadership
           </h2>
           <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
-            We stand at a generational moment where venture capital's structural challenges converge with massive untapped opportunity. Our multidimensional sourcing strategy establishes us as category creators with structural advantages competitors cannot replicate without fundamental changes to their investment approach.
+            We stand at a generational moment where venture capital&apos;s structural challenges converge with massive untapped opportunity. Our multidimensional sourcing strategy establishes us as category creators with structural advantages competitors cannot replicate without fundamental changes to their investment approach.
           </p>
           
           <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white p-6 rounded-lg text-center mb-6">
@@ -546,7 +546,7 @@ export default function CompanyShowcase() {
           </div>
           
           <p className="text-gray-600 dark:text-gray-400 italic mt-5 leading-relaxed">
-            The systematic advantages we'll have will compound exponentially across every channel, while tech enhancements will accelerate our ability to identify, engage, and close the companies that'll shape the future of sustainable business growth.
+            The systematic advantages we&apos;ll have will compound exponentially across every channel, while tech enhancements will accelerate our ability to identify, engage, and close the companies that&apos;ll shape the future of sustainable business growth.
           </p>
         </div>
 

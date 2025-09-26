@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { 
   PieChart, Pie, Cell, 
   BarChart, Bar, 
@@ -94,9 +95,11 @@ export default function Dashboard({
             <div className="mx-auto max-w-4xl">
               {/* Logo Above Title */}
               <div className="flex flex-col items-center gap-6 mb-8 text-center">
-                <img
+                <Image
                   alt="Edin Capital Logo"
                   src="/images/logos/edin logo - gray stacked.png"
+                  width={200}
+                  height={80}
                   className="h-20 w-auto object-contain"
                 />
                 <h2 className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl">

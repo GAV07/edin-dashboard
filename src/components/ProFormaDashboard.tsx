@@ -61,6 +61,7 @@ interface ProFormaData {
     profitSharingStartYear: string;
     netIncomeMultiple: string;
     revenueMultiple: string;
+    startingAverageMargin: string;
   };
   yearlyData: Array<{
     year: string;
@@ -117,7 +118,7 @@ const ProFormaDashboard = () => {
       setError('Session expired. Showing cached data. Please sign in to refresh.');
       setLoading(false);
     }
-  }, []);
+  }, [getFromCache, isSessionValid]);
 
   const loadData = async (isRefresh: boolean = false) => {
     // If session is invalid, try to use cached data instead of erroring
@@ -197,7 +198,7 @@ const ProFormaDashboard = () => {
         loadData(true);
       }, 5 * 60 * 1000); // Refresh every 5 minutes
     }
-  }, [selectedScenario, isSessionValid]);
+  }, [selectedScenario, isSessionValid, createInterval, loadData]);
 
   if (!isClient) {
     return null; // or a loading state that matches server-side

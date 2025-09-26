@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function JoinTeamCTA() {
   return (
     <div className="bg-white py-12 sm:py-16">
@@ -5,9 +7,11 @@ export default function JoinTeamCTA() {
         <div className="mx-auto max-w-4xl bg-gray-50 px-6 py-12 ring-1 ring-gray-200 sm:rounded-3xl sm:p-8">
           {/* Image and Title - Stacked on mobile, side by side on larger screens */}
           <div className="flex flex-col sm:flex-row items-center sm:gap-4 gap-6 mb-8">
-            <img
+            <Image
               alt="Edin Capital Logo"
               src="/images/logos/edincapital_logo.jpeg"
+              width={64}
+              height={64}
               className="h-16 w-16 rounded-full object-cover shadow-lg flex-shrink-0"
             />
             <h2 className="text-3xl font-semibold tracking-tight text-gray-900 sm:text-4xl text-center sm:text-left">

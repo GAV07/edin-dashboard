@@ -85,7 +85,7 @@ export default function DashboardClient() {
       // Create session-aware interval that will auto-cleanup on session expiry
       createInterval(fetchData, 5 * 60 * 1000); // Refresh every 5 minutes
     }
-  }, [isSessionValid]);
+  }, [isSessionValid, createInterval, safeFetch]);
 
   if (loading) {
     return (
