@@ -29,7 +29,7 @@ interface DashboardData {
     irr: string;
   };
   distributionSourcesData: Array<{ name: string; value: number }>;
-  annualReturnsData: Array<{ year: string; returns: number }>;
+  annualReturnsData: Array<{ year: string; returns: number; cumulative: number }>;
 }
 
 export default function DashboardClient() {

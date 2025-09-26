@@ -36,7 +36,7 @@ interface DashboardProps {
     irr: string;
   };
   distributionSourcesData: Array<{ name: string; value: number }>;
-  annualReturnsData: Array<{ year: string; returns: number }>;
+  annualReturnsData: Array<{ year: string; returns: number; cumulative: number }>;
 }
 
 const COLORS = ['#2d5016', '#4a7c59', '#6bb6ff', '#00b894', '#74b9ff'];
@@ -62,8 +62,8 @@ export default function Dashboard({
     { id: 'numInv', name: 'Number of Investments', value: portfolioAllocation.numberOfInvestments },
     { id: 'checkSize', name: 'Average Check Size', value: portfolioAllocation.averageCheckSize },
     { id: 'distributions', name: 'Cum. Profit Sharing Dist. (10y)', value: returnMetrics.lpDistributions },
-    { id: 'moic', name: 'MOIC (10y)', value: returnMetrics.moic },
-    { id: 'tvpi', name: 'Gross TVPI (10y)', value: returnMetrics.grossTvpi },
+    { id: 'moic', name: 'RVPI (10y)', value: returnMetrics.moic },
+    { id: 'tvpi', name: 'TVPI (10y)', value: returnMetrics.grossTvpi },
     { id: 'dpi', name: 'DPI (10y)', value: returnMetrics.dpi },
     { id: 'irr', name: 'IRR (10y)', value: returnMetrics.irr },
   ];
@@ -77,17 +77,12 @@ export default function Dashboard({
     stat.value.toString().trim() !== '0'
   );
 
-  // Calculate cumulative returns
-  const cumulativeReturnsData = annualReturnsData.map((item, index) => {
-    const previousCumulative = index > 0 
-      ? annualReturnsData.slice(0, index).reduce((sum, curr) => sum + curr.returns, 0) 
-      : 0;
-    return {
-      year: item.year,
-      annual: item.returns,
-      cumulative: previousCumulative + item.returns
-    };
-  });
+  // Use cumulative returns data directly from API
+  const cumulativeReturnsData = annualReturnsData.map((item) => ({
+    year: item.year,
+    annual: item.returns,
+    cumulative: item.cumulative
+  }));
 
   return (
     <div className="bg-gray-50 min-h-screen">

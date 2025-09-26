@@ -25,6 +25,7 @@ export const config = {
      * Only protect main application pages:
      * - / (home page)
      * - /portfolio
+     * - /deal-flow
      * - /venture-bond
      * - /pro-forma
      * - /team
@@ -36,6 +37,7 @@ export const config = {
      */
     '/',
     '/portfolio/:path*',
+    '/deal-flow/:path*',
     '/venture-bond/:path*', 
     '/pro-forma/:path*',
     '/team/:path*',

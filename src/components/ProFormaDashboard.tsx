@@ -367,6 +367,12 @@ const ProFormaDashboard = () => {
             >
               Profit Sharing
             </button>
+            <button 
+              className={`px-4 py-3 font-medium text-sm ${activeTab === 'companyLevel' ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}
+              onClick={() => setActiveTab('companyLevel')}
+            >
+              Company Level
+            </button>
             {/* <button 
               className={`px-4 py-3 font-medium text-sm ${activeTab === 'assumptions' ? 'text-primary border-b-2 border-primary' : 'text-gray-500'}`}
               onClick={() => setActiveTab('assumptions')}
@@ -992,6 +998,284 @@ const ProFormaDashboard = () => {
                   </ResponsiveContainer>
                 </div>
               </div> */}
+            </div>
+          )}
+          {activeTab === 'companyLevel' && (
+            <div className="space-y-6">
+              {/* Company Level Metrics Overview */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-base font-semibold text-dark mb-4">Portfolio Company Performance Overview</h2>
+                <p className="text-sm text-gray-600 mb-6">Aggregate view of portfolio companies showing average performance metrics and total portfolio impact.</p>
+                
+                {/* Key Metrics Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-background rounded-lg p-4">
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Starting Average Revenue</h3>
+                    <p className="text-2xl font-bold text-primary">
+                      {data.yearlyData.length > 0 ? formatCurrency(data.yearlyData[0].avgRevenuePerCompany) : '-'}
+                    </p>
+                    <p className="text-xs text-gray-500">Per Company (Year 1)</p>
+                  </div>
+                  <div className="bg-background rounded-lg p-4">
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Starting Growth Rate</h3>
+                    <p className="text-2xl font-bold text-success">
+                      {data.yearlyData.length > 0 ? formatPercent(data.yearlyData[0].avgAnnualGrowthRate * 100) : '-'}
+                    </p>
+                    <p className="text-xs text-gray-500">Annual (Year 1)</p>
+                  </div>
+                  <div className="bg-background rounded-lg p-4">
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Starting Average Margin</h3>
+                    <p className="text-2xl font-bold text-accent">
+                      {(() => {
+                        console.log('Starting margin value:', data.assumptions.startingAverageMargin);
+                        if (!data.assumptions.startingAverageMargin) return '-';
+                        
+                        const value = data.assumptions.startingAverageMargin;
+                        console.log('Raw value type:', typeof value, 'Raw value:', value);
+                        
+                        // Handle both percentage and decimal formats
+                        if (typeof value === 'string') {
+                          const cleanValue = value.replace('%', '').trim();
+                          const numValue = Number(cleanValue);
+                          console.log('Cleaned value:', cleanValue, 'Parsed number:', numValue);
+                          // If value is already a percentage (e.g., "25"), display as is
+                          // If value is a decimal (e.g., "0.25"), convert to percentage
+                          return numValue > 1 ? `${numValue}%` : `${(numValue * 100).toFixed(1)}%`;
+                        }
+                        return formatPercent(value * 100);
+                      })()}
+                    </p>
+                    <p className="text-xs text-gray-500">From B10</p>
+                  </div>
+                  <div className="bg-background rounded-lg p-4">
+                    <h3 className="text-sm font-medium text-gray-500 mb-1">Total Portfolio Revenue</h3>
+                    <p className="text-2xl font-bold text-secondary">
+                      {data.yearlyData.length > 0 ? formatCurrency(data.yearlyData[data.yearlyData.length - 1].portfolioRevenue) : '-'}
+                    </p>
+                    <p className="text-xs text-gray-500">Cumulative</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Company Level Charts */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-base font-semibold text-dark mb-4">Average Revenue Per Company</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
+                        <Tooltip 
+                          formatter={(value: number) => [formatCurrency(value), "Average Revenue"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: '10y Benchmark', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="avgRevenuePerCompany" 
+                          stroke={colors.primary} 
+                          strokeWidth={3}
+                          dot={{ r: 6, fill: colors.primary }}
+                          name="Average Revenue per Company" 
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-base font-semibold text-dark mb-4">Average Annual Growth Rate</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisPercent} fontSize={12} className="text-[10px] md:text-xs" />
+                        <Tooltip 
+                          formatter={(value: number) => [formatPercent(value * 100), "Average Growth Rate"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: '10y Benchmark', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="avgAnnualGrowthRate" 
+                          stroke={colors.success} 
+                          strokeWidth={3}
+                          dot={{ r: 6, fill: colors.success }}
+                          name="Average Growth Rate" 
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-base font-semibold text-dark mb-4">Total Portfolio Revenue</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
+                        <Tooltip 
+                          formatter={(value: number) => [formatCurrency(value), "Total Portfolio Revenue"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: '10y Benchmark', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="portfolioRevenue" 
+                          stroke={colors.secondary} 
+                          strokeWidth={3}
+                          dot={{ r: 6, fill: colors.secondary }}
+                          name="Total Portfolio Revenue" 
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                <div className="bg-white rounded-lg shadow-sm p-6">
+                  <h2 className="text-base font-semibold text-dark mb-4">Portfolio Net Income</h2>
+                  <div className="h-64">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={data.yearlyData}
+                        margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                      >
+                        <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                        <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
+                        <Tooltip 
+                          formatter={(value: number) => [formatCurrency(value), "Portfolio Net Income"]}
+                          labelFormatter={(label) => `${label}`}
+                        />
+                        <ReferenceLine 
+                          x="Year 10"
+                          stroke="#666" 
+                          strokeDasharray="3 3"
+                          label={{ 
+                            value: '10y Benchmark', 
+                            position: 'top',
+                            fill: '#666',
+                            fontSize: 12,
+                            fontWeight: 'bold',
+                            offset: 10
+                          }}
+                        />
+                        <Line 
+                          type="monotone" 
+                          dataKey="portfolioProfit" 
+                          stroke={colors.warning} 
+                          strokeWidth={3}
+                          dot={{ r: 6, fill: colors.warning }}
+                          name="Portfolio Net Income" 
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+
+              {/* Combined Company Performance Chart */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <h2 className="text-base font-semibold text-dark mb-4">Company Performance Trends</h2>
+                <div className="h-64">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart
+                      data={data.yearlyData}
+                      margin={{ top: 25, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <XAxis dataKey="year" fontSize={12} className="text-[10px] md:text-xs" />
+                      <YAxis tickFormatter={formatYAxisCurrency} fontSize={12} className="text-[10px] md:text-xs" />
+                      <Tooltip 
+                        formatter={(value: number, name: string) => {
+                          if (name === "Average Growth Rate") return [formatPercent(value * 100), name];
+                          return [formatCurrency(value), name];
+                        }}
+                        labelFormatter={(label) => `${label}`}
+                      />
+                      <Legend 
+                        wrapperStyle={{
+                          fontSize: '10px',
+                          paddingTop: '10px'
+                        }}
+                        layout="horizontal"
+                        verticalAlign="bottom"
+                        align="center"
+                        iconSize={8}
+                        iconType="circle"
+                      />
+                      <ReferenceLine 
+                        x="Year 10"
+                        stroke="#666" 
+                        strokeDasharray="3 3"
+                        label={{ 
+                          value: '10y Benchmark', 
+                          position: 'top',
+                          fill: '#666',
+                          fontSize: 12,
+                          fontWeight: 'bold',
+                          offset: 10
+                        }}
+                      />
+                      <Line 
+                        type="monotone" 
+                        dataKey="avgRevenuePerCompany" 
+                        stroke={colors.primary} 
+                        strokeWidth={2}
+                        dot={{ r: 4 }}
+                        name="Average Revenue per Company" 
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
             </div>
           )}
           {activeTab === 'assumptions' && (

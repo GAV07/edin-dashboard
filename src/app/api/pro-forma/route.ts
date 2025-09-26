@@ -10,6 +10,7 @@ interface ProFormaData {
     profitSharingStartYear: string;
     netIncomeMultiple: string;
     revenueMultiple: string;
+    startingAverageMargin: string;
   };
   yearlyData: Array<{
     year: string;
@@ -49,11 +50,16 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
                    scenario === 'conservative' ? 'Conservative_API' : 
                    'Optimistic_API';
 
-  const [assumptionsResponse, yearlyDataResponse] = await Promise.all([
+  const [assumptionsResponse, startingMarginResponse, yearlyDataResponse] = await Promise.all([
     // Get all assumptions in one call
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
       range: `'${sheetName}'!B2:B7`  // Assumptions from B2 to B7
+    }),
+    // Get starting average margin from B10
+    sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: `'${sheetName}'!B10`  // Starting average margin from B10
     }),
     // Get all yearly data in one call - updated to start from line 17 (data starts after headers on line 16)
     sheets.spreadsheets.values.get({
@@ -63,11 +69,11 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
   ]);
 
   const assumptionsValues = assumptionsResponse.data.values || [];
+  const startingMarginValues = startingMarginResponse.data.values || [];
   const yearlyValues = yearlyDataResponse.data.values || [];
 
   // Log raw responses for debugging
-  console.log('Yearly data sample:', yearlyValues.slice(0, 3));
-  console.log('IRR column (Z) values:', yearlyValues.map(row => row[25])); // Column Z is index 25
+  console.log('Starting margin values from B10:', startingMarginValues);
 
   const data: ProFormaData = {
     assumptions: {
@@ -77,6 +83,7 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
       profitSharingStartYear: assumptionsValues[3]?.[0] || '',
       netIncomeMultiple: assumptionsValues[4]?.[0] || '',
       revenueMultiple: assumptionsValues[5]?.[0] || '',
+      startingAverageMargin: startingMarginValues[0]?.[0] || '',
     },
     yearlyData: yearlyValues.slice(1).map((row, index) => {
       // Helper function to parse currency values

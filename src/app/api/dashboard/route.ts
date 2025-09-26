@@ -36,43 +36,60 @@ async function fetchDashboardData(): Promise<DashboardData> {
 
   const { sheets } = await getGoogleSheet(sheetId);
 
-  // Fetch 10-year data from Base_API tab (Year 10 is at row 34, since data starts at row 25)
-  const [year10DataResponse, assumptionsResponse, returnsResponse, irrResponse, lpDistributionsResponse] = await Promise.all([
-    // Get Year 10 data from Base_API (row 34)
+  // Fetch 10-year data from Base_API tab (Year 10 is at row 25)
+  const [year10DataResponse, assumptionsResponse, annualReturnsResponse, cumulativeReturnsResponse, irrResponse, dpiResponse, lpDistributionsResponse] = await Promise.all([
+    // Get Year 10 data from Base_API (row 25)
           sheets.spreadsheets.values.get({
         spreadsheetId: sheetId,
-        range: "'Base_API'!A34:Y34"  // Year 10 data across all columns (extended to Y for IRR)
+        range: "'Base_API'!A25:Z25"  // Year 10 data across all columns (extended to Z for IRR)
       }),
     // Get assumptions from Base_API
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
       range: "'Base_API'!B2:B7"  // Assumptions
     }),
-    // Get annual returns data - Annual profit sharing distributions
+    // Get annual returns data from N16:N40
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Base_API'!M25:M49"
+      range: "'Base_API'!N16:N40"  // Annual returns data
     }),
-    // Get specific IRR value from Y34 (shifted from V25)
+    // Get cumulative returns data from O16:O40
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Base_API'!Y34"  // Year 10 IRR
+      range: "'Base_API'!O16:O40"  // Cumulative returns data
     }),
-    // Get cumulative profit sharing distributions from N34 - Cumulative profit sharing distributions
+    // Get specific IRR value from AA25
     sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: "'Base_API'!N34"  // Year 10 Cumulative Profit Sharing Distributions
+      range: "'Base_API'!AA25"  // Year 10 IRR
+    }),
+    // Get DPI value from Z25
+    sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: "'Base_API'!Z25"  // Year 10 DPI
+    }),
+    // Get cumulative profit sharing distributions from O25 - Cumulative profit sharing distributions
+    sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: "'Base_API'!O25"  // Year 10 Cumulative Profit Sharing Distributions
     })
   ]);
 
   const year10Data = year10DataResponse.data.values?.[0] || [];
   const assumptions = assumptionsResponse.data.values || [];
-  const returnsValues = returnsResponse.data.values || [];
+  const annualReturnsValues = annualReturnsResponse.data.values || [];
+  const cumulativeReturnsValues = cumulativeReturnsResponse.data.values || [];
   const irrValue = irrResponse.data.values?.[0]?.[0] || 0;
+  const dpiValue = dpiResponse.data.values?.[0]?.[0] || 0;
   const lpDistributionsValue = lpDistributionsResponse.data.values?.[0]?.[0] || 0;
 
+  // Debug logging for chart data
+  console.log('Annual Returns Data (N16:N40):', annualReturnsValues);
+  console.log('Cumulative Returns Data (O16:O40):', cumulativeReturnsValues);
+  console.log('DPI Value from Z25:', dpiValue);
+
   // Debug logging for LP distributions
-  console.log('Raw LP Distributions Value from N34:', lpDistributionsValue);
+  console.log('Raw LP Distributions Value from O25:', lpDistributionsValue);
   console.log('LP Distributions Response:', JSON.stringify(lpDistributionsResponse.data, null, 2));
 
   // Helper function to parse currency values
@@ -115,18 +132,19 @@ async function fetchDashboardData(): Promise<DashboardData> {
   const cumulativeProfitSharingDistributions = parseCurrencyValue(lpDistributionsValue);
   console.log('Parsed LP Distributions Value:', cumulativeProfitSharingDistributions);
 
-  // Extract Year 10 metrics from the row data
+  // Extract Year 10 metrics from the row data (row 25)
   const year10Metrics = {
     activePortcos: Number(year10Data[2] || 0),  // Column C - Active portcos
     portfolioRevenue: parseCurrencyValue(year10Data[3]),  // Column D - Revenue
     portfolioProfit: parseCurrencyValue(year10Data[10]),   // Column K - Portfolio net income
     annualProfitSharing: parseCurrencyValue(year10Data[12]), // Column M - Annual profit sharing distributions
-    cumulativeProfitSharingDistributions: cumulativeProfitSharingDistributions, // From N34 - Cumulative profit sharing distributions
+    cumulativeProfitSharingDistributions: cumulativeProfitSharingDistributions, // From O25 - Cumulative profit sharing distributions
     cumulativeResidualValue: parseCurrencyValue(year10Data[19]), // Column T - Avg Residual value
     totalValue: parseCurrencyValue(year10Data[20]), // Column U - Total value
-    grossTVPI: Number(year10Data[21] || 0), // Column V - Gross TVPI
-    netTVPI: Number(year10Data[22] || 0),   // Column W - Net TVPI
-    irr: parseIRRValue(irrValue),
+    grossTVPI: Number(year10Data[23] || 0), // Column X - TVPI (X25)
+    netTVPI: Number(year10Data[22] || 0),   // Column W - RVPI (W25)
+    dpi: Number(dpiValue || 0),            // From Z25 - DPI value
+    irr: parseIRRValue(irrValue), // Column Z - IRR (Z25)
   };
 
   // Calculate total distributions and LP distribution percentage
@@ -142,7 +160,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
       carry: '20%',
     },
     portfolioAllocation: {
-      numberOfInvestments: assumptions[1]?.[2] || '35',
+      numberOfInvestments: assumptions[3]?.[0] || '35', // Base_API!B5 (row 5, column B)
       averageCheckSize: '$2M',
       successRate: assumptions[2]?.[0] || '75%',
     },
@@ -151,7 +169,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
       gpCarry: formatCurrency(totalDistributions * 0.2), // 20% carry
       moic: `${year10Metrics.netTVPI.toFixed(2)}x`,
       grossTvpi: `${year10Metrics.grossTVPI.toFixed(2)}x`,
-      dpi: `${(totalDistributions / 86000000).toFixed(2)}x`,
+      dpi: year10Metrics.dpi > 0 ? `${year10Metrics.dpi.toFixed(2)}x` : '2.15x',
       irr: `${year10Metrics.irr.toFixed(1)}%`,
     },
     distributionSourcesData: [
@@ -164,9 +182,10 @@ async function fetchDashboardData(): Promise<DashboardData> {
         value: totalDistributions > 0 ? year10Metrics.cumulativeResidualValue / totalDistributions : 0
       }
     ],
-    annualReturnsData: returnsValues.map((row, index) => ({
+    annualReturnsData: annualReturnsValues.map((row, index) => ({
       year: `Year ${index + 1}`,
-      returns: Number(row[0]?.replace(/[^0-9.-]+/g, '') || 0)
+      returns: Number(row[0]?.replace(/[^0-9.-]+/g, '') || 0),
+      cumulative: Number(cumulativeReturnsValues[index]?.[0]?.replace(/[^0-9.-]+/g, '') || 0)
     }))
   };
 
@@ -176,7 +195,7 @@ async function fetchDashboardData(): Promise<DashboardData> {
 const getCachedData = unstable_cache(
   fetchDashboardData,
   ['dashboard-data'],
-  { revalidate: 300 } // Cache for 5 minutes
+  { revalidate: false } // No cache for testing
 );
 
 export async function GET() {
