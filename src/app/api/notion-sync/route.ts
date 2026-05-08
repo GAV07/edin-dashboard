@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { Client } from '@notionhq/client'
-import { supabase } from '@/lib/database'
+import { getDb } from '@/lib/database'
 
 const notion = new Client({
   auth: process.env.NOTION_TOKEN,
@@ -11,15 +11,10 @@ export async function GET() {
   try {
     // Test Notion connection
     const me = await notion.users.me({})
-    
-    // Test Supabase connection
-    const { data: users, error } = await supabase
-      .from('users')
-      .select('*', { count: 'exact' })
 
-    if (error) {
-      throw error
-    }
+    // Test database connection
+    const sql = getDb()
+    const rows = await sql`SELECT COUNT(*) as count FROM users`
 
     return NextResponse.json({
       success: true,
@@ -27,16 +22,16 @@ export async function GET() {
         connected: true,
         user: me.type === 'person' ? me.person?.email || 'Connected' : 'Bot connected'
       },
-      supabase: {
+      database: {
         connected: true,
-        usersCount: users?.length || 0
+        usersCount: parseInt(rows[0].count as string, 10)
       }
     })
   } catch (error) {
     console.error('Connection test error:', error)
     return NextResponse.json(
-      { error: 'Failed to test connections' }, 
+      { error: 'Failed to test connections' },
       { status: 500 }
     )
   }
-} 
+}

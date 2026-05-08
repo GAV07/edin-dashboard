@@ -44,7 +44,7 @@ export const authOptions = {
 
         try {
           // Try to get user from database first
-          if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+          if (process.env.DATABASE_PUBLIC_URL) {
             const user = await UserManagement.getUserByEmail(credentials.email)
             
             if (user) {

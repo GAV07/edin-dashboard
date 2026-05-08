@@ -1,142 +1,81 @@
 import bcrypt from 'bcryptjs'
-import { supabase, User, CreateUserData, UpdateUserData } from './database'
+import { getDb, User, CreateUserData, UpdateUserData } from './database'
 
 export class UserManagement {
-  
+
   // Get all users
   static async getAllUsers(): Promise<User[]> {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      throw new Error(`Failed to fetch users: ${error.message}`)
-    }
-
-    return data || []
+    const sql = getDb()
+    const rows = await sql`SELECT * FROM users ORDER BY created_at DESC`
+    return rows as User[]
   }
 
   // Get user by email
   static async getUserByEmail(email: string): Promise<User | null> {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('email', email)
-      .eq('is_active', true)
-      .single()
-
-    if (error) {
-      if (error.code === 'PGRST116') {
-        return null // User not found
-      }
-      throw new Error(`Failed to fetch user: ${error.message}`)
-    }
-
-    return data
+    const sql = getDb()
+    const rows = await sql`SELECT * FROM users WHERE email = ${email} AND is_active = true LIMIT 1`
+    return (rows[0] as User) || null
   }
 
   // Create new user
   static async createUser(userData: CreateUserData): Promise<User> {
-    // Check if user already exists
     const existingUser = await this.getUserByEmail(userData.email)
     if (existingUser) {
       throw new Error('User with this email already exists')
     }
 
-    // Hash password
     const hashedPassword = await bcrypt.hash(userData.password, 12)
 
-    // Create user in database
-    const { data, error } = await supabase
-      .from('users')
-      .insert([
-        {
-          email: userData.email,
-          password_hash: hashedPassword,
-          name: userData.name,
-          role: userData.role,
-          is_active: true,
-        }
-      ])
-      .select()
-      .single()
-
-    if (error) {
-      throw new Error(`Failed to create user: ${error.message}`)
-    }
-
-    return data
+    const sql = getDb()
+    const rows = await sql`
+      INSERT INTO users (email, password_hash, name, role, is_active)
+      VALUES (${userData.email}, ${hashedPassword}, ${userData.name}, ${userData.role}, true)
+      RETURNING *
+    `
+    return rows[0] as User
   }
 
   // Update user
   static async updateUser(userId: string, updates: UpdateUserData): Promise<User> {
-    const { data, error } = await supabase
-      .from('users')
-      .update({
-        ...updates,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId)
-      .select()
-      .single()
+    const sql = getDb()
+    const rows = await sql`
+      UPDATE users
+      SET name = COALESCE(${updates.name ?? null}, name),
+          role = COALESCE(${updates.role ?? null}, role),
+          is_active = COALESCE(${updates.is_active ?? null}, is_active),
+          updated_at = now()
+      WHERE id = ${userId}
+      RETURNING *
+    `
 
-    if (error) {
-      throw new Error(`Failed to update user: ${error.message}`)
+    if (!rows[0]) {
+      throw new Error('Failed to update user: not found')
     }
 
-    return data
+    return rows[0] as User
   }
 
   // Delete user (soft delete by setting is_active to false)
   static async deactivateUser(userId: string): Promise<void> {
-    const { error } = await supabase
-      .from('users')
-      .update({ 
-        is_active: false,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId)
-
-    if (error) {
-      throw new Error(`Failed to deactivate user: ${error.message}`)
-    }
+    const sql = getDb()
+    await sql`UPDATE users SET is_active = false, updated_at = now() WHERE id = ${userId}`
   }
 
   // Activate user
   static async activateUser(userId: string): Promise<void> {
-    const { error } = await supabase
-      .from('users')
-      .update({ 
-        is_active: true,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId)
-
-    if (error) {
-      throw new Error(`Failed to activate user: ${error.message}`)
-    }
+    const sql = getDb()
+    await sql`UPDATE users SET is_active = true, updated_at = now() WHERE id = ${userId}`
   }
 
   // Change user password
   static async changePassword(userId: string, newPassword: string): Promise<void> {
     const hashedPassword = await bcrypt.hash(newPassword, 12)
-
-    const { error } = await supabase
-      .from('users')
-      .update({ 
-        password_hash: hashedPassword,
-        updated_at: new Date().toISOString(),
-      })
-      .eq('id', userId)
-
-    if (error) {
-      throw new Error(`Failed to update password: ${error.message}`)
-    }
+    const sql = getDb()
+    await sql`UPDATE users SET password_hash = ${hashedPassword}, updated_at = now() WHERE id = ${userId}`
   }
 
   // Verify password
   static async verifyPassword(user: User, password: string): Promise<boolean> {
     return await bcrypt.compare(password, user.password_hash)
   }
-} 
+}

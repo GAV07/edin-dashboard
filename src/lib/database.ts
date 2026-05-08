@@ -1,10 +1,13 @@
-import { createClient } from '@supabase/supabase-js'
+import postgres from 'postgres'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+let sql: ReturnType<typeof postgres>
 
-// Create a single supabase client for interacting with your database
-export const supabase = createClient(supabaseUrl!, supabaseKey!)
+export function getDb() {
+  if (!sql) {
+    sql = postgres(process.env.DATABASE_PUBLIC_URL!, { ssl: 'require' })
+  }
+  return sql
+}
 
 export interface User {
   id: string
@@ -28,4 +31,4 @@ export interface UpdateUserData {
   name?: string
   role?: 'admin' | 'investor'
   is_active?: boolean
-} 
+}
