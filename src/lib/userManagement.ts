@@ -7,14 +7,14 @@ export class UserManagement {
   static async getAllUsers(): Promise<User[]> {
     const sql = getDb()
     const rows = await sql`SELECT * FROM users ORDER BY created_at DESC`
-    return rows as User[]
+    return rows as unknown as User[]
   }
 
   // Get user by email
   static async getUserByEmail(email: string): Promise<User | null> {
     const sql = getDb()
     const rows = await sql`SELECT * FROM users WHERE email = ${email} AND is_active = true LIMIT 1`
-    return (rows[0] as User) || null
+    return (rows[0] as unknown as User) || null
   }
 
   // Create new user
@@ -32,7 +32,7 @@ export class UserManagement {
       VALUES (${userData.email}, ${hashedPassword}, ${userData.name}, ${userData.role}, true)
       RETURNING *
     `
-    return rows[0] as User
+    return rows[0] as unknown as User
   }
 
   // Update user
@@ -52,7 +52,7 @@ export class UserManagement {
       throw new Error('Failed to update user: not found')
     }
 
-    return rows[0] as User
+    return rows[0] as unknown as User
   }
 
   // Delete user (soft delete by setting is_active to false)
