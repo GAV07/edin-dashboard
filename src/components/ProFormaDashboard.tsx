@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { 
   LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, 
   Legend, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area,
@@ -120,12 +120,11 @@ const ProFormaDashboard = () => {
     }
   }, [getFromCache, isSessionValid]);
 
-  const loadData = async (isRefresh: boolean = false) => {
+  const loadData = useCallback(async (isRefresh: boolean = false) => {
     // If session is invalid, try to use cached data instead of erroring
     if (!isSessionValid) {
       const cachedData = getFromCache();
       if (cachedData) {
-        console.log('Session expired, using cached data...');
         setData(cachedData);
         setError('Session expired. Showing cached data. Please sign in to refresh.');
         setLoading(false);
@@ -156,17 +155,16 @@ const ProFormaDashboard = () => {
 
       setData(result);
       setLastUpdated(new Date());
-      
+
       // Save successful data to cache
       saveToCache(result);
     } catch (err: any) {
       console.error('Error fetching data:', err);
-      
+
       // Handle session expiration gracefully by using cached data
       if (err.message.includes('Session expired')) {
         const cachedData = getFromCache();
         if (cachedData) {
-          console.log('Using cached data due to session expiration...');
           setData(cachedData);
           setError('Session expired. Showing cached data. Please sign in to refresh.');
         } else {
@@ -174,7 +172,7 @@ const ProFormaDashboard = () => {
         }
         return;
       }
-      
+
       setError(err.message || 'An error occurred while fetching data');
     } finally {
       if (isRefresh) {
@@ -183,11 +181,11 @@ const ProFormaDashboard = () => {
         setLoading(false);
       }
     }
-  };
+  }, [isSessionValid, selectedScenario, getFromCache, safeFetch, saveToCache]);
 
-  const refreshData = () => {
+  const refreshData = useCallback(() => {
     loadData(true);
-  };
+  }, [loadData]);
 
   useEffect(() => {
     if (isSessionValid) {
@@ -255,13 +253,8 @@ const ProFormaDashboard = () => {
     return null;
   }
 
-  console.log('Yearly Data:', data.yearlyData);
-
   // Show session warning banner if we have data but session errors
   const showSessionWarning = error && error.includes('Session expired') && data;
-
-  // Debug log for rendered data
-  console.log('Rendering with IRR data:', data.yearlyData.map(d => ({ year: d.year, irr: d.irr })));
 
   return (
     <div className="bg-background min-h-screen p-6">

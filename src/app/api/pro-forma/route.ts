@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getGoogleSheet } from '@/lib/googleSheets';
-import { unstable_cache } from 'next/cache';
+import { getCachedData, setCachedData } from '@/lib/database';
 
 interface ProFormaData {
   assumptions: {
@@ -157,18 +157,26 @@ async function fetchProFormaData(scenario: string = 'base'): Promise<ProFormaDat
   return data;
 }
 
+const CACHE_TTL_SECONDS = 3600; // 1 hour
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const scenario = searchParams.get('scenario') || 'base';
-    
-    const getCachedData = unstable_cache(
-      async () => fetchProFormaData(scenario),
-      ['pro-forma-data', scenario],
-      { revalidate: 300 } // Cache for 5 minutes
-    );
-    
-    const data = await getCachedData();
+    const cacheKey = `pro-forma-${scenario}`;
+
+    // Try DB cache first
+    const cached = await getCachedData<ProFormaData>(cacheKey, CACHE_TTL_SECONDS);
+    if (cached) {
+      return NextResponse.json(cached);
+    }
+
+    // Cache miss — fetch from Google Sheets
+    const data = await fetchProFormaData(scenario);
+
+    // Store in DB cache (non-blocking)
+    setCachedData(cacheKey, data);
+
     return NextResponse.json(data);
   } catch (error: any) {
     console.error('Error in pro-forma API route:', error);

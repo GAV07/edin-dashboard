@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getGoogleSheet } from '@/lib/googleSheets';
-import { unstable_cache } from 'next/cache';
+import { getCachedData, setCachedData } from '@/lib/database';
 
 interface DashboardData {
   fundOverview: {
@@ -192,15 +192,24 @@ async function fetchDashboardData(): Promise<DashboardData> {
   return data;
 }
 
-const getCachedData = unstable_cache(
-  fetchDashboardData,
-  ['dashboard-data'],
-  { revalidate: false } // No cache for testing
-);
+const CACHE_TTL_SECONDS = 3600; // 1 hour
 
 export async function GET() {
   try {
-    const data = await getCachedData();
+    const cacheKey = 'dashboard-data';
+
+    // Try DB cache first
+    const cached = await getCachedData<DashboardData>(cacheKey, CACHE_TTL_SECONDS);
+    if (cached) {
+      return NextResponse.json(cached);
+    }
+
+    // Cache miss — fetch from Google Sheets
+    const data = await fetchDashboardData();
+
+    // Store in DB cache (non-blocking)
+    setCachedData(cacheKey, data);
+
     return NextResponse.json(data);
   } catch (error: any) {
     console.error('Error in dashboard API route:', error);

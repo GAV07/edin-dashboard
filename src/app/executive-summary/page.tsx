@@ -225,12 +225,6 @@ const EdinCapitalSummary = () => {
             location="Broward County, FL"
           />
           <TeamMember
-              name="Nelson T"
-              title="General Partner"
-              bio="Global exec with 25+ yrs Fortune 10-100 & founder of accelerator. Built business from inception to $1B+ in 4yrs @ Sompo. Led ops to $600M - 16 countries, serving 1k multinationals @ AIG. Created first VC/PE asset protection instruments @ Chubb"
-              location="Broward County, FL"
-            />
-          <TeamMember
             name="Erick Gavin"
             title="General Partner"
             bio="10 years of Ecosystem Development in Miami. Former Executive Director at Venture Miami and built Florida&apos;s largest incubator. Partner at Reefside Ventures."
