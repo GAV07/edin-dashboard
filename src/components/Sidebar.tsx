@@ -10,7 +10,7 @@ import { Heading } from "./Heading";
 import { socials } from "@/constants/socials";
 import { Badge } from "./Badge";
 import { AnimatePresence, motion } from "framer-motion";
-import { IconLayoutSidebarRightCollapse, IconMail, IconLogout, IconUser, IconSettings } from "@tabler/icons-react";
+import { IconLayoutSidebarRightCollapse, IconMail, IconLogout, IconUser, IconSettings, IconDatabaseImport } from "@tabler/icons-react";
 import { isMobile } from "@/lib/utils";
 import { useSession, signOut } from "next-auth/react";
 
@@ -128,8 +128,6 @@ export const Navigation = ({
           key={link.href}
           href={link.href}
           onClick={() => isMobile() && setOpen(false)}
-          target={link.label === "Documents" ? "_blank" : undefined}
-          rel={link.label === "Documents" ? "noopener noreferrer" : undefined}
           className={twMerge(
             "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
             isActive(link.href) && "bg-white shadow-lg text-primary"
@@ -166,6 +164,22 @@ export const Navigation = ({
               )}
             />
             <span>Manage Users</span>
+          </Link>
+          <Link
+            href="/admin/data"
+            onClick={() => isMobile() && setOpen(false)}
+            className={twMerge(
+              "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
+              isActive('/admin/data') && "bg-white shadow-lg text-primary"
+            )}
+          >
+            <IconDatabaseImport
+              className={twMerge(
+                "h-4 w-4 flex-shrink-0",
+                isActive('/admin/data') && "text-accent"
+              )}
+            />
+            <span>Sync Data</span>
           </Link>
         </>
       )}

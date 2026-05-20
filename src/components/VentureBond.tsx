@@ -307,6 +307,25 @@ const VentureBondCalculator = () => {
   return (
     <div className="w-full p-6 bg-gray-50 rounded-lg shadow-md">
       <h1 className="text-2xl font-semibold tracking-tight text-gray-800 mb-6 sm:text-3xl">Edin Capital Venture Bond</h1>
+
+      {/* Disclaimer Banner */}
+      <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
+        <div className="flex items-start gap-3">
+          <svg className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.814-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+          </svg>
+          <div className="text-sm text-amber-800">
+            <p className="font-semibold mb-1">For Simulation Purposes Only</p>
+            <p>
+              The projections and scenarios presented in this calculator are hypothetical illustrations based on simplified assumptions.
+              They do not represent guaranteed returns, promises of performance, or investment advice.
+              Actual results will vary based on company performance, market conditions, and numerous other factors.
+              All investments carry risk, including the potential loss of the entire investment.
+              The Venture Bond is an illiquid instrument and may not be suitable for all investors.
+            </p>
+          </div>
+        </div>
+      </div>
       
       <div className="mb-8">
         <div className="bg-white rounded-lg p-8 shadow-lg mb-6">
@@ -799,12 +818,21 @@ const VentureBondCalculator = () => {
         </div>
       )}
 
-      <div className="mt-8 text-sm text-gray-500">
+      <div className="mt-8 rounded-lg border border-gray-200 bg-gray-100 p-4 text-xs text-gray-600 space-y-2">
+        <p className="font-semibold text-gray-700">Important Disclosures</p>
         <p>
-          This calculator provides estimates based on the inputs provided and simplified growth assumptions. 
-          Actual results may vary based on company performance, market conditions, and other factors. 
-          The Venture Bond is designed with thresholds (20% until 2x, 10% until 4x, 5% until 6x, 1% beyond 6x), 
-          with potential additional upside through the equity component.
+          This interactive calculator is provided for educational and illustrative purposes only. The scenarios, projections, and estimated
+          returns displayed are hypothetical and based on simplified growth assumptions. They do not constitute investment advice,
+          an offer to sell, or a solicitation of an offer to buy any securities.
+        </p>
+        <p>
+          Past performance is not indicative of future results. All investments involve risk, including the potential loss of
+          principal. The Venture Bond is an illiquid investment with no guaranteed market for resale. Investors should consult
+          their own financial, legal, and tax advisors before making any investment decisions.
+        </p>
+        <p>
+          The Venture Bond profit-sharing thresholds (20% until 2x, 10% until 4x, 5% until 6x, 1% beyond 6x) and equity
+          component are subject to the terms of the applicable investment agreements.
         </p>
       </div>
     </div>

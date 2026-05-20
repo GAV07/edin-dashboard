@@ -9,7 +9,6 @@ const nextConfig = {
   },
   experimental: {
     mdxRs: true,
-    serverActions: true,
   },
   env: {
     GOOGLE_SERVICE_ACCOUNT_EMAIL: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,

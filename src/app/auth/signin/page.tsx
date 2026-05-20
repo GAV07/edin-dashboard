@@ -16,6 +16,7 @@ export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [disclaimerAccepted, setDisclaimerAccepted] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
@@ -194,10 +195,30 @@ export default function SignIn() {
               </div>
             )}
 
+            {/* Disclaimer Acknowledgment */}
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+              <label className="flex items-start gap-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={disclaimerAccepted}
+                  onChange={(e) => setDisclaimerAccepted(e.target.checked)}
+                  className="mt-1 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500 flex-shrink-0"
+                />
+                <span className="text-xs text-gray-600 leading-relaxed">
+                  I acknowledge that the information contained in this portal is confidential and intended solely
+                  for authorized investors. All projections, financial models, and scenarios presented are hypothetical
+                  and for illustrative purposes only. They do not constitute investment advice, guarantees of returns,
+                  or an offer to sell securities. All investments involve substantial risk, including the potential loss
+                  of principal. I agree to consult my own financial, legal, and tax advisors before making any
+                  investment decisions.
+                </span>
+              </label>
+            </div>
+
             {/* Submit Button */}
             <button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !disclaimerAccepted}
               className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-medium hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
               {isLoading ? 'Signing in...' : 'Sign In'}

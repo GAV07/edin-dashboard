@@ -62,6 +62,10 @@ export default function DashboardClient() {
           throw new Error(result.error || 'Failed to fetch data');
         }
 
+        if (!result.fundOverview || !result.returnMetrics || !result.portfolioAllocation) {
+          throw new Error('Invalid dashboard data received');
+        }
+
         setData(result);
         setError(null); // Clear any previous errors
       } catch (err: any) {

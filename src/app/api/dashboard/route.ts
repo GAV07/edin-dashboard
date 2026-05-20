@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getGoogleSheet } from '@/lib/googleSheets';
-import { getCachedData, setCachedData } from '@/lib/database';
+import { getCachedData } from '@/lib/database';
 
 interface DashboardData {
   fundOverview: {
@@ -28,198 +27,52 @@ interface DashboardData {
   annualReturnsData: Array<{ year: string; returns: number }>;
 }
 
-async function fetchDashboardData(): Promise<DashboardData> {
-  const sheetId = process.env.GOOGLE_SHEET_ID;
-  if (!sheetId) {
-    throw new Error('GOOGLE_SHEET_ID is not defined');
-  }
+const FALLBACK_DATA: DashboardData = {
+  fundOverview: {
+    committedCapital: '$86M',
+    investableCapital: '$70,000,000',
+    managementFee: '2.5%',
+    fundLife: '15 years',
+    deploymentPeriod: '5 years',
+    carry: '20%',
+  },
+  portfolioAllocation: {
+    numberOfInvestments: '35',
+    averageCheckSize: '$2M',
+    successRate: '75%',
+  },
+  returnMetrics: {
+    lpDistributions: '$0M',
+    gpCarry: '$0',
+    moic: '0.00x',
+    grossTvpi: '0.00x',
+    dpi: '0.00x',
+    irr: '0.0%',
+  },
+  distributionSourcesData: [
+    { name: 'Profit Sharing', value: 0 },
+    { name: 'Exit Liquidity', value: 0 },
+  ],
+  annualReturnsData: [],
+};
 
-  const { sheets } = await getGoogleSheet(sheetId);
-
-  // Fetch 10-year data from Base_API tab (Year 10 is at row 25)
-  const [year10DataResponse, assumptionsResponse, annualReturnsResponse, cumulativeReturnsResponse, irrResponse, dpiResponse, lpDistributionsResponse] = await Promise.all([
-    // Get Year 10 data from Base_API (row 25)
-          sheets.spreadsheets.values.get({
-        spreadsheetId: sheetId,
-        range: "'Base_API'!A25:Z25"  // Year 10 data across all columns (extended to Z for IRR)
-      }),
-    // Get assumptions from Base_API
-    sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range: "'Base_API'!B2:B7"  // Assumptions
-    }),
-    // Get annual returns data from N16:N40
-    sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range: "'Base_API'!N16:N40"  // Annual returns data
-    }),
-    // Get cumulative returns data from O16:O40
-    sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range: "'Base_API'!O16:O40"  // Cumulative returns data
-    }),
-    // Get specific IRR value from AA25
-    sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range: "'Base_API'!AA25"  // Year 10 IRR
-    }),
-    // Get DPI value from Z25
-    sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range: "'Base_API'!Z25"  // Year 10 DPI
-    }),
-    // Get cumulative profit sharing distributions from O25 - Cumulative profit sharing distributions
-    sheets.spreadsheets.values.get({
-      spreadsheetId: sheetId,
-      range: "'Base_API'!O25"  // Year 10 Cumulative Profit Sharing Distributions
-    })
-  ]);
-
-  const year10Data = year10DataResponse.data.values?.[0] || [];
-  const assumptions = assumptionsResponse.data.values || [];
-  const annualReturnsValues = annualReturnsResponse.data.values || [];
-  const cumulativeReturnsValues = cumulativeReturnsResponse.data.values || [];
-  const irrValue = irrResponse.data.values?.[0]?.[0] || 0;
-  const dpiValue = dpiResponse.data.values?.[0]?.[0] || 0;
-  const lpDistributionsValue = lpDistributionsResponse.data.values?.[0]?.[0] || 0;
-
-  // Debug logging for chart data
-  console.log('Annual Returns Data (N16:N40):', annualReturnsValues);
-  console.log('Cumulative Returns Data (O16:O40):', cumulativeReturnsValues);
-  console.log('DPI Value from Z25:', dpiValue);
-
-  // Debug logging for LP distributions
-  console.log('Raw LP Distributions Value from O25:', lpDistributionsValue);
-  console.log('LP Distributions Response:', JSON.stringify(lpDistributionsResponse.data, null, 2));
-
-  // Helper function to parse currency values
-  const parseCurrencyValue = (value: any) => {
-    if (!value) return 0;
-    // Convert to string and remove currency symbols, commas, spaces
-    const cleanValue = value.toString().replace(/[$,\s]/g, '').replace(/[^0-9.-]+/g, '');
-    const numValue = Number(cleanValue);
-    console.log(`Parsing currency: "${value}" -> "${cleanValue}" -> ${numValue}`);
-    return numValue || 0;
-  };
-  
-  // Helper function to parse IRR percentage values
-  const parseIRRValue = (value: any) => {
-    if (!value) return 0;
-    // Remove % symbol and convert to string
-    const cleanValue = value.toString().replace('%', '').trim();
-    // Convert to number
-    const numValue = Number(cleanValue);
-    // Return the value as is (assuming it's already in percentage form)
-    return numValue;
-  };
-  
-  // Helper function to format currency
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0
-    }).format(value);
-  };
-
-  // Helper function to format as millions (whole number only)
-  const formatAsMillions = (value: number) => {
-    return `$${Math.round(value / 1000000)}M`;
-  };
-
-  // Parse the LP distributions value with debugging
-  const cumulativeProfitSharingDistributions = parseCurrencyValue(lpDistributionsValue);
-  console.log('Parsed LP Distributions Value:', cumulativeProfitSharingDistributions);
-
-  // Extract Year 10 metrics from the row data (row 25)
-  const year10Metrics = {
-    activePortcos: Number(year10Data[2] || 0),  // Column C - Active portcos
-    portfolioRevenue: parseCurrencyValue(year10Data[3]),  // Column D - Revenue
-    portfolioProfit: parseCurrencyValue(year10Data[10]),   // Column K - Portfolio net income
-    annualProfitSharing: parseCurrencyValue(year10Data[12]), // Column M - Annual profit sharing distributions
-    cumulativeProfitSharingDistributions: cumulativeProfitSharingDistributions, // From O25 - Cumulative profit sharing distributions
-    cumulativeResidualValue: parseCurrencyValue(year10Data[19]), // Column T - Avg Residual value
-    totalValue: parseCurrencyValue(year10Data[20]), // Column U - Total value
-    grossTVPI: Number(year10Data[23] || 0), // Column X - TVPI (X25)
-    netTVPI: Number(year10Data[22] || 0),   // Column W - RVPI (W25)
-    dpi: Number(dpiValue || 0),            // From Z25 - DPI value
-    irr: parseIRRValue(irrValue), // Column Z - IRR (Z25)
-  };
-
-  // Calculate total distributions and LP distribution percentage
-  const totalDistributions = year10Metrics.cumulativeProfitSharingDistributions + year10Metrics.cumulativeResidualValue;
-
-  const data: DashboardData = {
-    fundOverview: {
-      committedCapital: '$86M',
-      investableCapital: formatCurrency(parseCurrencyValue(assumptions[1]?.[0]) || 70000000),
-      managementFee: assumptions[1]?.[0] || '2.5%',
-      fundLife: '15 years',
-      deploymentPeriod: '5 years',
-      carry: '20%',
-    },
-    portfolioAllocation: {
-      numberOfInvestments: assumptions[3]?.[0] || '35', // Base_API!B5 (row 5, column B)
-      averageCheckSize: '$2M',
-      successRate: assumptions[2]?.[0] || '75%',
-    },
-    returnMetrics: {
-      lpDistributions: formatAsMillions(cumulativeProfitSharingDistributions),
-      gpCarry: formatCurrency(totalDistributions * 0.2), // 20% carry
-      moic: `${year10Metrics.netTVPI.toFixed(2)}x`,
-      grossTvpi: `${year10Metrics.grossTVPI.toFixed(2)}x`,
-      dpi: year10Metrics.dpi > 0 ? `${year10Metrics.dpi.toFixed(2)}x` : '2.15x',
-      irr: `${year10Metrics.irr.toFixed(1)}%`,
-    },
-    distributionSourcesData: [
-      {
-        name: 'Profit Sharing',
-        value: totalDistributions > 0 ? year10Metrics.cumulativeProfitSharingDistributions / totalDistributions : 0
-      },
-      {
-        name: 'Exit Liquidity',
-        value: totalDistributions > 0 ? year10Metrics.cumulativeResidualValue / totalDistributions : 0
-      }
-    ],
-    annualReturnsData: annualReturnsValues.map((row, index) => ({
-      year: `Year ${index + 1}`,
-      returns: Number(row[0]?.replace(/[^0-9.-]+/g, '') || 0),
-      cumulative: Number(cumulativeReturnsValues[index]?.[0]?.replace(/[^0-9.-]+/g, '') || 0)
-    }))
-  };
-
-  return data;
-}
-
-const CACHE_TTL_SECONDS = 3600; // 1 hour
+// No TTL — data only updates when admin manually refreshes
+const MAX_AGE = 60 * 60 * 24 * 365; // effectively infinite
 
 export async function GET() {
   try {
     const cacheKey = 'dashboard-data';
 
-    // Try DB cache first
-    const cached = await getCachedData<DashboardData>(cacheKey, CACHE_TTL_SECONDS);
+    const cached = await getCachedData<DashboardData>(cacheKey, MAX_AGE);
     if (cached) {
       return NextResponse.json(cached);
     }
 
-    // Cache miss — fetch from Google Sheets
-    const data = await fetchDashboardData();
-
-    // Store in DB cache (non-blocking)
-    setCachedData(cacheKey, data);
-
-    return NextResponse.json(data);
+    // No data in DB yet — return fallback
+    console.warn('No dashboard data in database. Use admin panel to sync from Google Sheets.');
+    return NextResponse.json(FALLBACK_DATA);
   } catch (error: any) {
     console.error('Error in dashboard API route:', error);
-    return NextResponse.json(
-      {
-        error: error.message || 'Failed to fetch dashboard data',
-        details: error.stack,
-        timestamp: new Date().toISOString()
-      },
-      { status: 500 }
-    );
+    return NextResponse.json(FALLBACK_DATA);
   }
 } 

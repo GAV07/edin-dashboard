@@ -2,13 +2,12 @@ import {
   IconBolt,
   IconBriefcase2,
   IconChartBar,
-  IconFile,
   IconDeviceLaptop,
-  IconHelp,
   IconClipboardData,
   IconUsers,
   IconUsersGroup,
   IconBuildingStore,
+  IconHeartHandshake,
 } from "@tabler/icons-react";
 
 export const navlinks = [
@@ -18,8 +17,8 @@ export const navlinks = [
     icon: IconBolt,
   },
   {
-    href: "/executive-summary",
-    label: "Executive Summary",
+    href: "/thesis",
+    label: "Thesis",
     icon: IconClipboardData,
   },
   {
@@ -53,13 +52,8 @@ export const navlinks = [
     icon: IconUsers,
   },
   {
-    href: "/faq",
-    label: "FAQ",
-    icon: IconHelp,
-  },
-  {
-    href: "https://www.dropbox.com/scl/fo/xnzximqrp7kkf0wyybrcy/AF5aobDNhC5iuzgOK4l8jQE?rlkey=aepgz84yt58ffysnw73fqwqv5&st=hxb02boc&dl=0",
-    label: "Documents",
-    icon: IconFile,
+    href: "/portfolio-support",
+    label: "Portfolio Support",
+    icon: IconHeartHandshake,
   },
 ];
