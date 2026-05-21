@@ -113,14 +113,23 @@ async function fetchProFormaData(scenario: string) {
   const sheetName = scenario === 'base' ? 'Base_API' :
     scenario === 'conservative' ? 'Conservative_API' : 'Optimistic_API';
 
-  const [assumptionsResponse, startingMarginResponse, yearlyDataResponse] = await Promise.all([
+  const [assumptionsResponse, yearlyDataResponse] = await Promise.all([
     sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: `'${sheetName}'!B2:B7` }),
-    sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: `'${sheetName}'!B10` }),
     sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: `'${sheetName}'!A15:Z41` }),
   ]);
 
+  // B10 (starting average margin) may not exist in all scenario sheets
+  let startingMarginValues: any[][] = [];
+  try {
+    const startingMarginResponse = await sheets.spreadsheets.values.get({
+      spreadsheetId: sheetId, range: `'${sheetName}'!B10`
+    });
+    startingMarginValues = startingMarginResponse.data.values || [];
+  } catch {
+    // Cell doesn't exist in this sheet — use empty
+  }
+
   const assumptionsValues = assumptionsResponse.data.values || [];
-  const startingMarginValues = startingMarginResponse.data.values || [];
   const yearlyValues = yearlyDataResponse.data.values || [];
 
   const parseCurrencyValue = (value: any) => value ? Number(value.toString().replace(/[^0-9.-]+/g, '')) : 0;
