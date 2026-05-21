@@ -64,8 +64,13 @@ export async function GET() {
     const cacheKey = 'dashboard-data';
 
     const cached = await getCachedData<DashboardData>(cacheKey, MAX_AGE);
+    console.log('Dashboard cache lookup result:', cached ? 'found' : 'miss', cached ? `keys: ${Object.keys(cached).join(',')}` : '');
     if (cached) {
-      return NextResponse.json(cached);
+      // Validate the cached data has required fields
+      if (cached.fundOverview && cached.returnMetrics && cached.portfolioAllocation) {
+        return NextResponse.json(cached);
+      }
+      console.warn('Cached dashboard data is malformed, returning fallback. Type:', typeof cached);
     }
 
     // No data in DB yet — return fallback

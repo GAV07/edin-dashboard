@@ -65,11 +65,12 @@ export async function setCachedData(key: string, data: unknown): Promise<void> {
   try {
     await ensureCacheTableOnce()
     const db = getDb()
+    // Use postgres.js sql.json() to properly handle JSONB serialization
     await db`
       INSERT INTO data_cache (cache_key, data, updated_at)
-      VALUES (${key}, ${JSON.stringify(data)}::jsonb, NOW())
+      VALUES (${key}, ${db.json(data as any)}, NOW())
       ON CONFLICT (cache_key)
-      DO UPDATE SET data = ${JSON.stringify(data)}::jsonb, updated_at = NOW()
+      DO UPDATE SET data = ${db.json(data as any)}, updated_at = NOW()
     `
   } catch (error) {
     console.error('Cache write error:', error)
