@@ -7,7 +7,7 @@ import { RefreshCw, Database, CheckCircle, XCircle, Clock } from 'lucide-react'
 
 interface RefreshResult {
   success: boolean
-  results: Record<string, { success: boolean; error?: string }>
+  results: Record<string, { success: boolean; skipped?: boolean; error?: string }>
   refreshedAt: string
 }
 
@@ -157,6 +157,11 @@ export default function DataManagement() {
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
                         <CheckCircle className="w-3 h-3" />
                         Synced
+                      </span>
+                    ) : result.skipped ? (
+                      <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600" title={result.error}>
+                        <Clock className="w-3 h-3" />
+                        Sheet Not Found - Skipped
                       </span>
                     ) : (
                       <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800" title={result.error}>

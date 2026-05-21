@@ -104,6 +104,14 @@ async function fetchDashboardData() {
 
 // --- Pro-forma data fetching (moved from /api/pro-forma) ---
 
+async function getAvailableSheetNames(sheets: any, sheetId: string): Promise<string[]> {
+  const spreadsheet = await sheets.spreadsheets.get({
+    spreadsheetId: sheetId,
+    fields: 'sheets.properties.title',
+  });
+  return spreadsheet.data.sheets?.map((s: any) => s.properties.title) || [];
+}
+
 async function fetchProFormaData(scenario: string) {
   const sheetId = process.env.GOOGLE_SHEET_ID;
   if (!sheetId) throw new Error('GOOGLE_SHEET_ID is not defined');
@@ -112,6 +120,12 @@ async function fetchProFormaData(scenario: string) {
 
   const sheetName = scenario === 'base' ? 'Base_API' :
     scenario === 'conservative' ? 'Conservative_API' : 'Optimistic_API';
+
+  // Verify the sheet tab exists before fetching
+  const availableSheets = await getAvailableSheetNames(sheets, sheetId);
+  if (!availableSheets.includes(sheetName)) {
+    throw new Error(`Sheet "${sheetName}" not found. Available sheets: ${availableSheets.join(', ')}`);
+  }
 
   const [assumptionsResponse, yearlyDataResponse] = await Promise.all([
     sheets.spreadsheets.values.get({ spreadsheetId: sheetId, range: `'${sheetName}'!B2:B7` }),
@@ -189,7 +203,7 @@ export async function POST() {
     return NextResponse.json({ error: 'Unauthorized - Admin access required' }, { status: 401 });
   }
 
-  const results: Record<string, { success: boolean; error?: string }> = {};
+  const results: Record<string, { success: boolean; skipped?: boolean; error?: string }> = {};
 
   // Fetch and store dashboard data
   try {
@@ -201,19 +215,24 @@ export async function POST() {
     results['dashboard'] = { success: false, error: error.message };
   }
 
-  // Fetch and store all 3 pro-forma scenarios
+  // Fetch and store pro-forma scenarios (skip sheets that don't exist)
   for (const scenario of SCENARIOS) {
     try {
       const proFormaData = await fetchProFormaData(scenario);
       await setCachedData(`pro-forma-${scenario}`, proFormaData);
       results[`pro-forma-${scenario}`] = { success: true };
     } catch (error: any) {
+      const isSheetMissing = error.message?.includes('not found');
       console.error(`Failed to refresh pro-forma ${scenario}:`, error);
-      results[`pro-forma-${scenario}`] = { success: false, error: error.message };
+      results[`pro-forma-${scenario}`] = {
+        success: false,
+        skipped: isSheetMissing,
+        error: error.message,
+      };
     }
   }
 
-  const allSuccess = Object.values(results).every(r => r.success);
+  const allSuccess = Object.values(results).every(r => r.success || r.skipped);
 
   return NextResponse.json({
     success: allSuccess,
