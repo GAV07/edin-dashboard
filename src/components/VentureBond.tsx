@@ -304,536 +304,324 @@ const VentureBondCalculator = () => {
       : "bg-white border-2 border-blue-200 text-gray-700 hover:border-blue-300 hover:bg-blue-50 py-2 px-4 rounded-lg transition duration-200 font-medium shadow-sm";
   };
 
+  const [activeResultTab, setActiveResultTab] = useState<'table' | 'chart'>('chart');
+
   return (
-    <div className="w-full p-6 bg-gray-50 rounded-lg shadow-md">
-      <h1 className="text-2xl font-semibold tracking-tight text-gray-800 mb-6 sm:text-3xl">Edin Capital Venture Bond</h1>
-
-      {/* Disclaimer Banner */}
-      <div className="mb-6 rounded-lg border border-amber-200 bg-amber-50 p-4">
-        <div className="flex items-start gap-3">
-          <svg className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.814-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-          </svg>
-          <div className="text-sm text-amber-800">
-            <p className="font-semibold mb-1">For Simulation Purposes Only</p>
-            <p>
-              The projections and scenarios presented in this calculator are hypothetical illustrations based on simplified assumptions.
-              They do not represent guaranteed returns, promises of performance, or investment advice.
-              Actual results will vary based on company performance, market conditions, and numerous other factors.
-              All investments carry risk, including the potential loss of the entire investment.
-              The Venture Bond is an illiquid instrument and may not be suitable for all investors.
-            </p>
-          </div>
-        </div>
-      </div>
-      
-      <div className="mb-8">
-        <div className="bg-white rounded-lg p-8 shadow-lg mb-6">
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-3">Venture Bond Founder Journey</h2>
-            <p className="text-gray-600 mb-6">
-              A step-by-step guide showing how founders progress through the venture bond structure, 
-              from initial investment to various exit opportunities while maintaining control and providing 
-              sustainable returns to investors.
-            </p>
-          </div>
-          
-          <div className="flex items-center justify-between overflow-x-auto py-5 px-0 gap-4 min-h-96">
-            {/* Step 1 */}
-            <div className="bg-white border-2 border-blue-200 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
-              <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">📈 Investment</h3>
-              <p className="m-0 text-xs leading-relaxed text-gray-600">Receive Venture Bond investment</p>
-              <div className="bg-gray-50 rounded p-2 mt-2 text-xs text-gray-700">
-                <strong className="block mb-1">Components:</strong>
-                Convertible equity + Profit sharing
-              </div>
-            </div>
-            
-            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
-            
-            {/* Step 2 */}
-            <div className="bg-white border-2 border-blue-200 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
-              <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">🚀 Growth</h3>
-              <p className="m-0 text-xs leading-relaxed text-gray-600">Scale business & operations</p>
-              <div className="bg-gray-50 rounded p-2 mt-2 text-xs text-gray-700">
-                <strong className="block mb-1">Focus:</strong>
-                Revenue, margins, efficiency
-              </div>
-            </div>
-            
-            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
-            
-            {/* Step 3 */}
-            <div className="bg-white border-2 border-blue-200 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
-              <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">🎯 Triggers</h3>
-              <p className="m-0 text-xs leading-relaxed text-gray-600">Hit all required conditions</p>
-              <div className="bg-gray-50 rounded p-2 mt-2 text-xs text-gray-700">
-                <strong className="block mb-1">Required:</strong>
-                Time + Revenue + Margins
-              </div>
-            </div>
-            
-            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
-            
-            {/* Step 4 */}
-            <div className="bg-white border-2 border-blue-200 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
-              <h3 className="m-0 mb-2 text-sm font-semibold text-gray-800">💰 Profit Sharing</h3>
-              <p className="m-0 text-xs leading-relaxed text-gray-600">Quarterly distributions begin</p>
-              <div className="bg-gray-50 rounded p-2 mt-2 text-xs text-gray-700">
-                <strong className="block mb-1">Tranches:</strong>
-                20% → 10% → 5%
-              </div>
-            </div>
-            
-            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
-            
-            {/* Decision Point */}
-            <div className="bg-blue-50 border-2 border-blue-300 rounded-lg p-4 min-w-36 max-w-40 text-center shadow-md flex-shrink-0">
-              <h3 className="m-0 mb-2 text-sm font-semibold text-blue-800">🔀 Paths</h3>
-              <p className="m-0 text-xs leading-relaxed text-blue-700">Multiple options</p>
-            </div>
-            
-            <div className="text-2xl text-blue-500 flex-shrink-0">→</div>
-            
-            {/* Branches */}
-            <div className="flex flex-col gap-3 min-w-36">
-              <div className="bg-white border-2 border-gray-300 rounded-lg p-3 text-center shadow-md">
-                <h4 className="m-0 mb-1 text-xs font-semibold text-gray-800">🔄 Continue</h4>
-                <p className="m-0 text-xs leading-tight text-gray-600">Keep profit sharing at 1% beyond 6x cap</p>
-              </div>
-              
-              <div className="bg-white border-2 border-gray-300 rounded-lg p-3 text-center shadow-md">
-                <h4 className="m-0 mb-1 text-xs font-semibold text-gray-800">💼 Equity Round</h4>
-                <p className="m-0 text-xs leading-tight text-gray-600">Auto-convert to preferred stock + continue profit sharing</p>
-              </div>
-              
-              <div className="bg-white border-2 border-gray-300 rounded-lg p-3 text-center shadow-md">
-                <h4 className="m-0 mb-1 text-xs font-semibold text-gray-800">🏆 Exit Event</h4>
-                <p className="m-0 text-xs leading-tight text-gray-600">Acquisition/IPO triggers payout</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="mt-5 p-4 bg-gray-50 rounded-lg text-center">
-            <p className="m-0 text-sm text-gray-600">
-              <strong>Key Benefit:</strong> Founders maintain control while providing continuous returns to investors through sustainable growth
-            </p>
-          </div>
-        </div>
-
-        {/* Calculator Introduction */}
-        <div className="bg-white rounded-lg p-6 shadow mb-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-3">Interactive Calculator</h2>
-          <p className="text-gray-600 mb-4">
-            Use the calculator below to model different scenarios and see how the venture bond structure 
-            performs under various business conditions. Start with a preset scenarios or customize the 
-            parameters to match your specific situation.
+    <div className="bg-white min-h-screen">
+      <div className="max-w-6xl mx-auto px-6 py-12 lg:py-16">
+        {/* Header */}
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+            Venture Bond
+          </h1>
+          <p className="mt-3 text-gray-600 max-w-3xl leading-relaxed">
+            A hybrid instrument combining convertible equity with structured profit-sharing,
+            delivering returns as companies grow — not just when they exit.
           </p>
-          
-          <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-4">
-            <h3 className="text-sm font-medium text-blue-800 mb-2">Quick Start Scenarios</h3>
-            <p className="text-sm text-blue-700 mb-4">
-              Choose a scenario below to populate the calculator with realistic assumptions, 
-              or scroll down to customize all parameters manually.
-            </p>
-            
-            {/* Scenario Buttons */}
-            <div className="flex flex-wrap gap-3">
-              <button
-                onClick={() => applyScenario('conservative')}
-                className={getButtonStyle('conservative')}
-              >
-                Conservative Scenario
-              </button>
-              <button
-                onClick={() => applyScenario('normal')}
-                className={getButtonStyle('normal')}
-              >
-                Normal Scenario
-              </button>
-              <button
-                onClick={() => applyScenario('optimistic')}
-                className={getButtonStyle('optimistic')}
-              >
-                Optimistic Scenario
-              </button>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
-        <div className="col-span-1 bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Investment Parameters</h2>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Investment Amount
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                <input
-                  type="text"
-                  name="investmentAmount"
-                  value={formatInputValue(inputs.investmentAmount)}
-                  onChange={handleInputChange}
-                  className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Valuation Cap
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                <input
-                  type="text"
-                  name="valCap"
-                  value={formatInputValue(inputs.valCap)}
-                  onChange={handleInputChange}
-                  className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Equity % (at Valuation Cap)
-              </label>
-              <input
-                type="number"
-                name="equityPercentage"
-                value={inputs.equityPercentage}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-          </div>
-          
-          <h2 className="text-xl font-semibold text-gray-800 mt-6 mb-4">Profit-Sharing Triggers</h2>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Years Post-Investment
-              </label>
-              <input
-                type="number"
-                name="yearsToTrigger"
-                value={inputs.yearsToTrigger}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Revenue Threshold
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                <input
-                  type="text"
-                  name="revenueThreshold"
-                  value={formatInputValue(inputs.revenueThreshold)}
-                  onChange={handleInputChange}
-                  className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Profit Margin Threshold (%)
-              </label>
-              <input
-                type="number"
-                name="profitMargin"
-                value={inputs.profitMargin}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+        {/* Disclaimer */}
+        <div className="mb-8 rounded-lg border border-amber-200 bg-amber-50 p-4">
+          <div className="flex items-start gap-3">
+            <svg className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.814-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
+            </svg>
+            <p className="text-sm text-amber-800">
+              <span className="font-semibold">For Simulation Purposes Only.</span>{' '}
+              Projections are hypothetical illustrations. They do not represent guaranteed returns or investment advice.
+              All investments carry risk, including loss of principal. The Venture Bond is illiquid.
+            </p>
           </div>
         </div>
-        
-        <div className="col-span-1 bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Company Projections</h2>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Initial Annual Revenue
-              </label>
-              <div className="relative">
-                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-500">$</span>
-                <input
-                  type="text"
-                  name="initialRevenue"
-                  value={formatInputValue(inputs.initialRevenue)}
-                  onChange={handleInputChange}
-                  className="pl-8 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
+
+        {/* Founder Journey — Compact */}
+        <section className="mb-10">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">How It Works</h2>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+            {[
+              { label: 'Investment', detail: 'Convertible equity + profit sharing', color: 'border-green-200 bg-green-50' },
+              { label: 'Growth', detail: 'Revenue, margins, efficiency', color: 'border-green-200 bg-green-50' },
+              { label: 'Triggers Met', detail: 'Time + Revenue + Margin thresholds', color: 'border-green-200 bg-green-50' },
+              { label: 'Profit Sharing', detail: '20% \u2192 10% \u2192 5% \u2192 1% tranches', color: 'border-green-200 bg-green-50' },
+              { label: 'Exit Paths', detail: 'Continue, equity round, or exit event', color: 'border-gray-200 bg-gray-50' },
+            ].map((step, i) => (
+              <div key={i} className={`rounded-lg border p-4 ${step.color}`}>
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Step {i + 1}</div>
+                <h3 className="font-semibold text-gray-900 text-sm mb-1">{step.label}</h3>
+                <p className="text-xs text-gray-600 leading-relaxed">{step.detail}</p>
               </div>
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Initial Profit Margin (%)
-              </label>
-              <input
-                type="number"
-                name="initialProfitMargin"
-                value={inputs.initialProfitMargin}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Annual Revenue Growth Rate (%)
-              </label>
-              <input
-                type="number"
-                name="growthRate"
-                value={inputs.growthRate}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 pr-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1">
-                Simulation Years
-              </label>
-              <input
-                type="number"
-                name="simulationYears"
-                value={inputs.simulationYears}
-                onChange={handleInputChange}
-                min="5"
-                max="25"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              />
-            </div>
+            ))}
           </div>
-          
-          <div className="mt-8">
+        </section>
+
+        {/* Scenario Selector */}
+        <section className="mb-6">
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-sm font-medium text-gray-700">Scenario:</span>
+            {(['conservative', 'normal', 'optimistic'] as const).map((s) => (
+              <button
+                key={s}
+                onClick={() => applyScenario(s)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                  activeScenario === s
+                    ? 'bg-green-700 text-white'
+                    : 'border border-gray-200 bg-gray-50 text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                {s.charAt(0).toUpperCase() + s.slice(1)}
+              </button>
+            ))}
             <button
               onClick={handleReset}
-              className="w-full bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition duration-200"
+              className="px-4 py-2 rounded-lg text-sm font-medium border border-gray-200 bg-white text-gray-500 hover:bg-gray-50 transition-colors ml-auto"
             >
-              Reset to Defaults
+              Reset
             </button>
           </div>
-        </div>
-        
-        <div className="col-span-1 bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Key Results</h2>
-          
-          {results && (
-            <div className="space-y-6">
-              <div className="bg-green-50 p-4 rounded-md border border-green-200">
-                <h3 className="font-medium text-green-800 mb-2">Return Summary</h3>
-                <div className="grid grid-cols-2 gap-2">
-                  <div className="text-sm text-gray-600">Total Company Revenue:</div>
-                  <div className="text-sm font-semibold text-gray-800 text-right">
-                    {formatCurrency(results.summaryMetrics.totalRevenue)}
-                  </div>
-                  
-                  <div className="text-sm text-gray-600">Return Multiple:</div>
-                  <div className="text-sm font-semibold text-gray-800 text-right">
-                    {results.summaryMetrics.totalReturnMultiple.toFixed(2)}x
-                  </div>
-                  
-                  <div className="text-sm text-gray-600">Fund Distribution:</div>
-                  <div className="text-sm font-semibold text-gray-800 text-right">
-                    {formatPercent((results.summaryMetrics.distributionToProfit * 100).toFixed(2))}
-                  </div>
+        </section>
+
+        {/* Calculator: Inputs (left) + Results (right) */}
+        <section className="mb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Inputs — 2 columns on left */}
+            <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Investment Parameters */}
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-5">
+                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Investment Parameters</h3>
+                <div className="space-y-3">
+                  {[
+                    { label: 'Investment Amount', name: 'investmentAmount', prefix: '$', type: 'text' },
+                    { label: 'Valuation Cap', name: 'valCap', prefix: '$', type: 'text' },
+                    { label: 'Equity % (at Val Cap)', name: 'equityPercentage', type: 'number' },
+                  ].map((field) => (
+                    <div key={field.name}>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">{field.label}</label>
+                      <div className="relative">
+                        {field.prefix && <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 text-sm">$</span>}
+                        <input
+                          type={field.type}
+                          name={field.name}
+                          value={field.type === 'text' ? formatInputValue((inputs as any)[field.name]) : (inputs as any)[field.name]}
+                          onChange={handleInputChange}
+                          className={`${field.prefix ? 'pl-7' : ''} w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-wide mt-5 mb-3">Profit-Sharing Triggers</h4>
+                <div className="space-y-3">
+                  {[
+                    { label: 'Years Post-Investment', name: 'yearsToTrigger', type: 'number' },
+                    { label: 'Revenue Threshold', name: 'revenueThreshold', prefix: '$', type: 'text' },
+                    { label: 'Profit Margin Threshold (%)', name: 'profitMargin', type: 'number' },
+                  ].map((field) => (
+                    <div key={field.name}>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">{field.label}</label>
+                      <div className="relative">
+                        {field.prefix && <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 text-sm">$</span>}
+                        <input
+                          type={field.type}
+                          name={field.name}
+                          value={field.type === 'text' ? formatInputValue((inputs as any)[field.name]) : (inputs as any)[field.name]}
+                          onChange={handleInputChange}
+                          className={`${field.prefix ? 'pl-7' : ''} w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+                        />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-800 mb-2">Profit Sharing Details</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <div className="text-sm text-gray-600">Trigger Occurs in Year:</div>
-                    <div className="text-sm font-semibold text-gray-800">
-                      {results.summaryMetrics.triggerYear}
+
+              {/* Company Projections */}
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-5">
+                <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Company Projections</h3>
+                <div className="space-y-3">
+                  {[
+                    { label: 'Initial Annual Revenue', name: 'initialRevenue', prefix: '$', type: 'text' },
+                    { label: 'Initial Profit Margin (%)', name: 'initialProfitMargin', type: 'number' },
+                    { label: 'Annual Revenue Growth (%)', name: 'growthRate', type: 'number' },
+                    { label: 'Simulation Years', name: 'simulationYears', type: 'number' },
+                  ].map((field) => (
+                    <div key={field.name}>
+                      <label className="block text-xs font-medium text-gray-600 mb-1">{field.label}</label>
+                      <div className="relative">
+                        {field.prefix && <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 text-sm">$</span>}
+                        <input
+                          type={field.type}
+                          name={field.name}
+                          value={field.type === 'text' ? formatInputValue((inputs as any)[field.name]) : (inputs as any)[field.name]}
+                          onChange={handleInputChange}
+                          min={field.name === 'simulationYears' ? 5 : undefined}
+                          max={field.name === 'simulationYears' ? 25 : undefined}
+                          className={`${field.prefix ? 'pl-7' : ''} w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500`}
+                        />
+                      </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <div className="text-sm text-gray-600">Time to Recoup Investment:</div>
-                    <div className="text-sm font-semibold text-gray-800">
-                      {typeof results.summaryMetrics.timeToRecoup === 'number' 
-                        ? `${results.summaryMetrics.timeToRecoup} years` 
-                        : results.summaryMetrics.timeToRecoup}
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <div className="text-sm text-gray-600">Total Distributions:</div>
-                    <div className="text-sm font-semibold text-gray-800">
-                      {formatCurrency(results.summaryMetrics.totalDistributions)}
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <div className="text-sm text-gray-600">Distribution Multiple:</div>
-                    <div className="text-sm font-semibold text-gray-800">
-                      {results.summaryMetrics.finalReturnMultiple.toFixed(2)}x
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-800 mb-2">Equity Component</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <div className="text-sm text-gray-600">Equity Ownership:</div>
-                    <div className="text-sm font-semibold text-gray-800">
-                      {formatPercent(inputs.equityPercentage)}
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <div className="text-sm text-gray-600">Final Equity Value:</div>
-                    <div className="text-sm font-semibold text-gray-800">
-                      {formatCurrency(results.summaryMetrics.equityFinalValue)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="font-medium text-gray-800 mb-2">Founder Alignment</h3>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <div className="text-sm text-gray-600">Company Total Profit:</div>
-                    <div className="text-sm font-semibold text-gray-800">
-                      {formatCurrency(results.summaryMetrics.totalProfits)}
-                    </div>
-                  </div>
-                  
-                  <div className="flex justify-between">
-                    <div className="text-sm text-gray-600">Profit Share to Company:</div>
-                    <div className="text-sm font-semibold text-gray-800">
-                      {formatPercent((results.summaryMetrics.profitRetainedByCompany * 100).toFixed(2))}
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
-          )}
-        </div>
-      </div>
 
-      {/* Year-by-Year Projections Table */}
-      {results && (
-        <div className="bg-white p-6 rounded-lg shadow mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">Year-by-Year Projections</h2>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Year</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Revenue</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Distribution</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Profit Share %</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Return Multiple</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Equity Value</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Value</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {results.yearlyData.map((yearData: YearlyData, index: number) => (
-                  <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{yearData.year}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(yearData.revenue)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(yearData.profit)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(yearData.distribution)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatPercent(yearData.profitSharePercentage)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{yearData.returnMultiple}x</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(yearData.equityValue)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{formatCurrency(yearData.totalValue)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {/* Key Results — right column */}
+            <div className="rounded-lg border border-gray-200 bg-gray-50 p-5">
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-4">Key Results</h3>
+              {results && (
+                <div className="space-y-5">
+                  <div className="rounded-lg border border-green-200 bg-green-50 p-4">
+                    <div className="text-center mb-3">
+                      <div className="text-3xl font-bold text-green-800">{results.summaryMetrics.totalReturnMultiple.toFixed(2)}x</div>
+                      <div className="text-xs text-green-700 mt-0.5">Total Return Multiple</div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
+                      <div className="text-gray-600">Revenue:</div>
+                      <div className="font-medium text-gray-900 text-right">{formatCurrency(results.summaryMetrics.totalRevenue)}</div>
+                      <div className="text-gray-600">Distributions:</div>
+                      <div className="font-medium text-gray-900 text-right">{formatCurrency(results.summaryMetrics.totalDistributions)}</div>
+                      <div className="text-gray-600">Dist. Multiple:</div>
+                      <div className="font-medium text-gray-900 text-right">{results.summaryMetrics.finalReturnMultiple.toFixed(2)}x</div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-semibold text-gray-700 uppercase">Profit Sharing</h4>
+                    {[
+                      { label: 'Trigger Year', value: results.summaryMetrics.triggerYear },
+                      { label: 'Time to Recoup', value: typeof results.summaryMetrics.timeToRecoup === 'number' ? `${results.summaryMetrics.timeToRecoup}y` : results.summaryMetrics.timeToRecoup },
+                    ].map((item) => (
+                      <div key={item.label} className="flex justify-between text-sm">
+                        <span className="text-gray-600">{item.label}</span>
+                        <span className="font-medium text-gray-900">{item.value}</span>
+                      </div>
+                    ))}
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-semibold text-gray-700 uppercase">Equity</h4>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Ownership</span>
+                      <span className="font-medium text-gray-900">{formatPercent(inputs.equityPercentage)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Final Value</span>
+                      <span className="font-medium text-gray-900">{formatCurrency(results.summaryMetrics.equityFinalValue)}</span>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <h4 className="text-xs font-semibold text-gray-700 uppercase">Founder Alignment</h4>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Profit Retained</span>
+                      <span className="font-medium text-gray-900">{formatPercent((results.summaryMetrics.profitRetainedByCompany * 100))}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        </section>
 
-      {/* Main Chart Section */}
-      {results && (
-        <div className="bg-white p-6 rounded-lg shadow mb-8">
-          <h2 className="text-lg font-semibold text-gray-800 mb-4">Company Profit vs Distributions</h2>
-          <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <ComposedChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 30, bottom: 5 }}
-              >
-                <XAxis 
-                  dataKey="year" 
-                  label={{ value: 'Year', position: 'insideBottomRight', offset: -5, fontSize: 12 }}
-                  tick={{ fontSize: 11 }}
-                />
-                <YAxis 
-                  label={{ value: 'Amount ($)', angle: -90, position: 'insideLeft', fontSize: 12 }}
-                  tickFormatter={(value) => value >= 1000000 ? `$${(value / 1000000).toFixed(1)}M` : `$${(value / 1000).toFixed(0)}K`}
-                  tick={{ fontSize: 11 }}
-                />
-                <Tooltip 
-                  formatter={(value: any, name: string) => {
-                    if (name === "Company Profit") return [formatCurrency(Number(value)), name];
-                    if (name === "Distribution to Investor") return [formatCurrency(Number(value)), name];
-                    if (name === "Cumulative Distribution") return [formatCurrency(Number(value)), name];
-                    return [value, name];
-                  }}
-                  labelFormatter={(label: any) => `Year ${label}`}
-                  contentStyle={{ fontSize: '12px' }}
-                />
-                <Legend wrapperStyle={{ fontSize: '12px' }} />
-                                      <Bar dataKey="profit" name="Company Profit" fill="#4a7c59" />
-                      <Bar dataKey="distribution" name="Distribution to Investor" fill="#6bb6ff" />
-                <Line 
-                  type="monotone" 
-                  dataKey="cumulativeDistribution" 
-                  name="Cumulative Distribution" 
-                                      stroke="#dda15e" 
-                  strokeWidth={2} 
-                  dot={{ r: 5 }} 
-                />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
-        </div>
-      )}
+        {/* Tabbed Results: Table / Chart */}
+        {results && (
+          <section className="mb-10">
+            <div className="flex items-center gap-1 mb-4 border-b border-gray-200">
+              {(['chart', 'table'] as const).map((tab) => (
+                <button
+                  key={tab}
+                  onClick={() => setActiveResultTab(tab)}
+                  className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px ${
+                    activeResultTab === tab
+                      ? 'border-green-700 text-green-800'
+                      : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  {tab === 'chart' ? 'Chart' : 'Year-by-Year Table'}
+                </button>
+              ))}
+            </div>
 
-      <div className="mt-8 rounded-lg border border-gray-200 bg-gray-100 p-4 text-xs text-gray-600 space-y-2">
-        <p className="font-semibold text-gray-700">Important Disclosures</p>
-        <p>
-          This interactive calculator is provided for educational and illustrative purposes only. The scenarios, projections, and estimated
-          returns displayed are hypothetical and based on simplified growth assumptions. They do not constitute investment advice,
-          an offer to sell, or a solicitation of an offer to buy any securities.
-        </p>
-        <p>
-          Past performance is not indicative of future results. All investments involve risk, including the potential loss of
-          principal. The Venture Bond is an illiquid investment with no guaranteed market for resale. Investors should consult
-          their own financial, legal, and tax advisors before making any investment decisions.
-        </p>
-        <p>
-          The Venture Bond profit-sharing thresholds (20% until 2x, 10% until 4x, 5% until 6x, 1% beyond 6x) and equity
-          component are subject to the terms of the applicable investment agreements.
-        </p>
+            {activeResultTab === 'chart' && (
+              <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
+                <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">Company Profit vs Distributions</h3>
+                <div className="h-80">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <ComposedChart
+                      data={chartData}
+                      margin={{ top: 10, right: 20, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
+                      <XAxis dataKey="year" tick={{ fontSize: 11, fill: '#6b7280' }} />
+                      <YAxis
+                        tickFormatter={(value) => value >= 1000000 ? `$${(value / 1000000).toFixed(1)}M` : `$${(value / 1000).toFixed(0)}K`}
+                        tick={{ fontSize: 11, fill: '#6b7280' }}
+                      />
+                      <Tooltip
+                        formatter={(value: any, name: string) => [formatCurrency(Number(value)), name]}
+                        labelFormatter={(label: any) => `Year ${label}`}
+                        contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '13px' }}
+                      />
+                      <Legend wrapperStyle={{ fontSize: '12px' }} />
+                      <Bar dataKey="profit" name="Company Profit" fill="#4a7c59" radius={[3, 3, 0, 0]} />
+                      <Bar dataKey="distribution" name="Distribution to Investor" fill="#6bb6ff" radius={[3, 3, 0, 0]} />
+                      <Line
+                        type="monotone"
+                        dataKey="cumulativeDistribution"
+                        name="Cumulative Distribution"
+                        stroke="#dda15e"
+                        strokeWidth={2}
+                        dot={{ r: 3 }}
+                      />
+                    </ComposedChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+
+            {activeResultTab === 'table' && (
+              <div className="rounded-lg border border-gray-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        {['Year', 'Revenue', 'Profit', 'Distribution', 'Share %', 'Return', 'Equity', 'Total'].map((h) => (
+                          <th key={h} className="px-4 py-2.5 text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">{h}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {results.yearlyData.map((yearData: YearlyData, index: number) => (
+                        <tr key={index} className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">{yearData.year}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{formatCurrency(yearData.revenue)}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{formatCurrency(yearData.profit)}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{formatCurrency(yearData.distribution)}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{formatPercent(yearData.profitSharePercentage)}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{yearData.returnMultiple}x</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-700">{formatCurrency(yearData.equityValue)}</td>
+                          <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900">{formatCurrency(yearData.totalValue)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* Disclosures */}
+        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-xs text-gray-500 space-y-2">
+          <p className="font-semibold text-gray-600">Important Disclosures</p>
+          <p>
+            This calculator is for educational and illustrative purposes only. Scenarios and returns are hypothetical.
+            They do not constitute investment advice, an offer to sell, or a solicitation to buy securities.
+            All investments involve risk, including loss of principal. The Venture Bond is illiquid with no guaranteed resale market.
+          </p>
+          <p>
+            Profit-sharing thresholds (20% until 2x, 10% until 4x, 5% until 6x, 1% beyond 6x) and equity terms are
+            subject to applicable investment agreements.
+          </p>
+        </div>
       </div>
     </div>
   );

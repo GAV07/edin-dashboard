@@ -64,22 +64,23 @@ export default function Team() {
   };
 
   return (
-    <div className="bg-white py-12">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        {/* Header Section */}
-        <div className="mb-16">
-          <h2 className="text-balance text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-            About the team
-          </h2>
-          <p className="mt-6 text-md text-gray-600 max-w-2xl">
-            Real-world operators and investors fueling sustainable innovation
+    <div className="bg-white min-h-screen">
+      <div className="max-w-5xl mx-auto px-6 py-12 lg:py-16">
+        {/* Header */}
+        <div className="mb-10">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
+            Leadership Team
+          </h1>
+          <p className="mt-4 text-gray-600 max-w-3xl leading-relaxed">
+            Real-world operators and investors with deep expertise in venture, technology,
+            and ecosystem building.
           </p>
         </div>
 
         {/* Team Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {people.map((person, index) => (
-            <div key={person.name} className="bg-white rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow duration-300 overflow-hidden">
+            <div key={person.name} className="rounded-lg border border-gray-200 overflow-hidden hover:border-gray-300 transition-colors">
               <div className="p-6">
                 <div className="flex flex-col items-center text-center">
                   <Image
@@ -90,13 +91,12 @@ export default function Team() {
                     className="w-24 h-24 flex-none rounded-full object-cover mb-4"
                   />
                   <h3 className="text-lg font-semibold tracking-tight text-gray-900">{person.name}</h3>
-                  <p className="text-sm font-medium text-blue-600 mb-3">{person.role}</p>
+                  <p className="text-sm font-medium text-green-700 mb-3">{person.role}</p>
                   <p className="text-sm text-gray-600 leading-relaxed">{person.shortBio}</p>
 
-                  {/* Expand/Collapse Button */}
                   <button
                     onClick={() => toggleExpand(index)}
-                    className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                    className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-green-700 hover:text-green-800 transition-colors"
                   >
                     <span>{expandedIndex === index ? 'Show less' : 'Read full bio'}</span>
                     <ExpandIcon expanded={expandedIndex === index} />
@@ -104,7 +104,6 @@ export default function Team() {
                 </div>
               </div>
 
-              {/* Expanded Bio */}
               {expandedIndex === index && (
                 <div className="px-6 pb-6 border-t border-gray-100">
                   <div className="mt-4 text-sm text-gray-600 leading-relaxed whitespace-pre-line text-left">
@@ -113,13 +112,12 @@ export default function Team() {
                 </div>
               )}
 
-              {/* LinkedIn Link */}
               <div className="px-6 pb-6 flex justify-center">
                 <a
                   href={person.linkedinUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-blue-600 hover:text-blue-700 transition-colors"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-gray-700 transition-colors"
                 >
                   <svg fill="currentColor" viewBox="0 0 20 20" aria-hidden="true" className="w-4 h-4">
                     <path
@@ -128,7 +126,7 @@ export default function Team() {
                       fillRule="evenodd"
                     />
                   </svg>
-                  View LinkedIn
+                  LinkedIn
                 </a>
               </div>
             </div>

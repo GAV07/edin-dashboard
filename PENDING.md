@@ -4,82 +4,93 @@ Items remaining after the 2026-05-20 partner meeting changes. Target: reviewable
 
 ---
 
+## Completed (since 5/20 meeting)
+
+- [x] **Login gate disclaimer** — Mandatory checkbox on sign-in with comprehensive language
+- [x] **Database caching** — Postgres on Railway, admin-only sync from Google Sheets, no per-request API calls
+- [x] **FAQ removed from nav** — Page exists but not in sidebar
+- [x] **Documents removed from nav** — No documents page in sidebar
+- [x] **EdinOS restructured as roadmap** — 3-phase format, no longer fintech product page
+- [x] **Market Research source-focused** — Organized by topic with external source links
+- [x] **Deal Flow anonymized** — Industry/stage/region distributions, no channel names revealed
+- [x] **Team bios with collapsible expand** — Expandable format working
+- [x] **Thesis page replaces Exec Summary in nav** — `/thesis` in nav, `/executive-summary` removed from nav
+- [x] **Portfolio Support page added** — `/portfolio-support` in nav with placeholder content
+- [x] **Per-page disclaimers on Venture Bond & Pro Forma** — Prominent banners at top of both pages
+- [x] **Executive Summary link on Overview** — "View Executive Summary" button on the Overview page
+- [x] **Venture Bond visual condensing** — Compact layout: inputs/results side-by-side, tabbed chart/table, compact founder journey
+- [x] **Old EdinOS sub-components deleted** — Removed EdinOSHero, EdinOSFeatures, IntelligenceEcosystem, OperationsArchitecture, CompetitiveAdvantages
+- [x] **Design polish pass** — Consistent layout (max-w container, unified header style, border cards vs shadow cards, green accent color), applied across Overview, Venture Bond, Team pages
+
+---
+
 ## Awaiting Input
 
 ### Portfolio Support Page — Aurelia's Content
 - **Page:** `/portfolio-support`
 - **Status:** Placeholder is live with generic framework (strategic guidance, network access, operational support, community)
 - **Needed:** Aurelia said she'd put her draft in Notion. Once that's in, replace the placeholder content with her layered approach: (1) what we provide independently/free through our network, (2) what requires paid services/perks, (3) deeper engagements like fractional support
-- **Note from meeting:** Don't be overly prescriptive here either. Aurelia hasn't finalized the structure and needs collaboration from the team. Keep it honest about what's confirmed vs aspirational
+- **Note from meeting:** Don't be overly prescriptive. Keep it honest about what's confirmed vs aspirational
 
 ### Team Bios — Verify & Update
 - **Page:** `/team`
 - **Status:** Expanded bios written based on what was available. Collapsible format is working
-- **Needed:** Andrew needs to drop his deep bio into Notion (task tracker, search "deep bio"). Verify all three bios are accurate — especially Aurelia's and Andrew's. The long bios I wrote are educated extrapolations; partners should confirm the details
+- **Needed:** Andrew needs to drop his deep bio into Notion (task tracker, search "deep bio"). Verify all three bios are accurate — the long bios are educated extrapolations; partners should confirm details
 - **Note:** Eric mentioned wanting to fix his headshot image (has a "wavy thing"). Replace `/images/team/erick.jpeg` when the new image is ready
 
 ### Pro Forma — Reconnect to New Google Sheet
 - **Page:** `/pro-forma`
 - **Status:** Currently connected to the old Google Sheet (`1dR8V0zwmybcKOR0Tg8MWQWjDuVLxQ_YUu4WDUBEqxSM`). Numbers are stale
-- **Needed:** New Google Sheet ID from Andrew once the model is updated with the new fee structure from their conversation a few weeks ago. Update `GOOGLE_SHEET_ID` in `.env.local` and verify all cell range references in `src/lib/googleSheetsAPI.ts` and `src/app/api/dashboard/route.ts` still map correctly
-- **Note from meeting:** Andrew is also planning to take a stab at redoing the deck and updating the model with the new fee structure
+- **Needed:** New Google Sheet ID from Andrew once the model is updated with the new fee structure. Update `GOOGLE_SHEET_ID` in `.env.local` and verify all cell range references in `src/lib/googleSheetsAPI.ts`
 
 ---
 
-## Technical
+## Design & UX Gaps
 
-### Database Caching — Fix API Loading Issues
-- **Why:** The dashboard currently fetches from Google Sheets on every page load, causing the flickering/loading Eric demonstrated in the meeting. He mentioned building a database to fix this
-- **Status:** Postgres caching exists in `src/lib/database.ts` with a 1-hour TTL for the dashboard route, but other routes (`/api/pro-forma`, `/api/portfolio`, `/api/portfolio-stats`) don't use it yet
-- **Action:** Extend the Postgres cache layer to all API routes. This will eliminate the loading spinner on every navigation and reduce Google Sheets API quota usage
-- **Note:** Eric said "the database that I'm gonna build is also gonna fix this longer loading problem." The infra is partially there — just needs to be applied consistently
-
-### Venture Bond Calculator — Visual Condensing
-- **Page:** `/venture-bond`
-- **Why from meeting:** Eric said "I want to condense this a bit so that they can see all of this without scrolling so much"
-- **Ideas:** Put the input parameters and quick-start scenario buttons in a more compact layout. Consider a side-by-side view (inputs left, results right) on desktop. The table and chart could be tabs instead of stacked vertically
-- **Note:** The disclaimer banner I added takes some space at the top now — factor that into the condensed layout
+### Overall Visual Polish
+- **Status:** First pass complete — unified layout containers, consistent card borders, green accent color system, consistent header patterns across pages
+- **Still needed:** Several pages could benefit from further refinement:
+  - Pro Forma dashboard has a different visual density than other pages (data-heavy by nature, but could use card-border consistency)
+  - Consider adding subtle page-level illustrations or icons to break up text-heavy pages (Thesis, Portfolio Support)
+  - Mobile responsiveness needs testing across all pages — especially the Venture Bond calculator inputs
+  - Color consistency audit: some pages still use blue accents (market research links, deal flow steps) while the brand direction is green
 
 ---
 
-## Pages That Need More Context / Cleanup
-
-### Thesis Page (`/thesis`)
-- **What it replaced:** Executive Summary tab
-- **What's there now:** The opportunity, human flourishing, Venture Bond advantage, economic development flywheel, why now
-- **Still needed:** The executive summary content (fund terms, metrics, target returns) should be accessible somewhere — either as a downloadable PDF linked from the Overview page, or as a section within the Thesis page. Eric mentioned "the executive summary could just be a link on the overview page." The old exec summary page still exists at `/executive-summary` but is no longer in the nav
-- **Decision needed:** Do we add a "View Executive Summary" link/button on the Overview page? Or fold the key metrics into the Thesis page?
+## Pages That Need More Context
 
 ### Deal Flow Page (`/deal-flow`)
-- **What changed:** Replaced the aspirational funnel (1000+ deals → 500 screened → 100 meetings → 35 companies) with anonymized pipeline distributions and sourcing channel counts
-- **Still needed:** The pipeline distribution data (industry %, stage %, region %) is placeholder/estimated. Need to pull real numbers from the generator list and LinkedIn founder data that Eric has in the existing database. Eric mentioned he already built visualizations for this data (company analysis, geographic distribution map) — those could be integrated
-- **Note from meeting:** Aurelia said don't reveal specific channel names (secret sauce). Andrew agreed. Current version shows national/regional/local counts only, which they approved
-- **CrunchBase API:** Eric and Andrew discussed getting a CrunchBase API key to enrich the founder/company data with revenue info. If that happens, the pipeline distributions can be made more accurate
+- **Still needed:** Pipeline distribution data (industry %, stage %, region %) is placeholder/estimated. Need to pull real numbers from the generator list and LinkedIn founder data in the existing database
+- **Note from meeting:** Aurelia said don't reveal specific channel names (secret sauce). Current version shows national/regional/local counts only
+- **CrunchBase API:** Discussed for enriching company data with revenue info. Would improve pipeline distributions
 
 ### Market Research Page (`/market-research`)
-- **What changed:** Restructured from custom analysis to source-led format organized by topic
-- **Still needed:** The team discussed adding more sources over time — Stanford articles on liquidity, foundation research, etc. The current sources are preserved from the original page. As they find new authoritative sources, they can be added to the `researchTopics` array in `src/components/MarketResearch.tsx`
-- **Note from meeting:** Eric wanted this to be a "what is the market saying" page with links organized by topic. That's what it is now, but it could benefit from a few more topics or sources as the team identifies them
+- **Still needed:** More sources over time — Stanford articles on liquidity, foundation research. Current sources are from the original page
+- **Note from meeting:** Eric wanted "what is the market saying" with links organized by topic — that's what it is now
 
 ### EdinOS Page (`/edin-os`)
-- **What changed:** Stripped down from a fintech product page to a 3-phase roadmap (Core Operations → Intelligence Layer → Where This Goes)
-- **Old sub-components still in repo:** `EdinOSHero.tsx`, `EdinOSFeatures.tsx`, `IntelligenceEcosystem.tsx`, `OperationsArchitecture.tsx`, `CompetitiveAdvantages.tsx` — these are no longer imported but haven't been deleted. Can be cleaned up once the team confirms they're happy with the new version
-- **Decision needed:** Should any of the items marked "In Development" be changed to "Live" once they're actually built? The status badges are easy to toggle in the component
+- **Decision needed:** Should any "In Development" items be changed to "Live" once built? Status badges are easy to toggle
 
 ### Overview Page (`/`)
-- **Not changed yet but discussed:** The overview dashboard pulls metrics from Google Sheets (committed capital $86M, management fee 2.5%, carry 20%, etc.). Eric mentioned these numbers need to be adjusted once the new Google Sheet is connected. Also the annual returns and cumulative returns charts depend on the same data
-- **Potential addition:** A link to the executive summary PDF or the polished exec summary doc could live here
+- **Depends on:** Pro Forma reconnect (#3 above). Numbers need updating when new Google Sheet is connected
 
 ### Old Pages Still in Repo (not in nav)
-- `/executive-summary` — old exec summary page, still accessible by direct URL
-- `/faq` — FAQ page, still accessible by direct URL
-- These can be deleted or kept as unlisted pages. No rush — they're just not linked anywhere
+- `/executive-summary` — Now linked from Overview page as supplementary detail
+- `/faq` — Accessible by direct URL but not linked. Can delete or keep for future chat replacement
 
 ---
 
-## Compliance & Legal (Discussed but Not Started)
+## Compliance & Legal (Not Blocking Portal)
 
-- **PPM (Private Placement Memorandum):** Team agreed to take a first stab using Claude, then have Fenwick review. Not blocking the portal launch but needed before institutional LPs (e.g., American Bible Society). Eric will own this after the portal is done
-- **Compliance Manual:** Andrew took a stab at a draft — will share with Eric for review. Includes data privacy, cybersecurity, access control. Eric may need admin access to Google Drive for this
-- **Aduro Onboarding:** Intro call scheduled for tomorrow (5/21). Need to clarify: does Aduro handle subscription agreement flow, or does Fenwick? And do LPs need a separate Aduro login?
-- **Insurance:** Professional liability insurance in progress, expected within 2 weeks
+- **PPM (Private Placement Memorandum):** Team agreed to draft using Claude, then have Fenwick review. Not blocking portal but needed before institutional LPs (e.g., American Bible Society). Eric will own this after portal is done
+- **Compliance Manual:** Andrew took a stab at a draft — will share with Eric for review
+- **Aduro Onboarding:** Clarify subscription agreement flow with Aduro vs Fenwick
+- **Insurance:** Professional liability in progress, expected within 2 weeks
+
+---
+
+## Explicitly Deferred
+
+- **AI chat function** — Eric hasn't cracked it yet; Andrew agrees it's nice-to-have, do last
+- **BundleIQ integration** — Andrew mentioned Nick's platform for data room chat; parked
+- **CrunchBase API enrichment** — Needs paid access; would improve deal flow data
