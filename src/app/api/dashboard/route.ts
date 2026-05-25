@@ -1,33 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCachedData } from '@/lib/database';
 
-interface DashboardData {
-  fundOverview: {
-    committedCapital: string;
-    investableCapital: string;
-    managementFee: string;
-    fundLife: string;
-    deploymentPeriod: string;
-    carry: string;
-  };
-  portfolioAllocation: {
-    numberOfInvestments: string;
-    averageCheckSize: string;
-    successRate: string;
-  };
-  returnMetrics: {
-    lpDistributions: string;
-    gpCarry: string;
-    moic: string;
-    grossTvpi: string;
-    dpi: string;
-    irr: string;
-  };
-  distributionSourcesData: Array<{ name: string; value: number }>;
-  annualReturnsData: Array<{ year: string; returns: number }>;
-}
-
-const FALLBACK_DATA: DashboardData = {
+const FALLBACK_DATA = {
   fundOverview: {
     committedCapital: '$86M',
     investableCapital: '$70,000,000',
@@ -56,25 +30,19 @@ const FALLBACK_DATA: DashboardData = {
   annualReturnsData: [],
 };
 
-// No TTL — data only updates when admin manually refreshes
+// No TTL — data only updates when admin manually refreshes via Sync Data
 const MAX_AGE = 60 * 60 * 24 * 365; // effectively infinite
 
 export async function GET() {
   try {
     const cacheKey = 'dashboard-data';
 
-    const cached = await getCachedData<DashboardData>(cacheKey, MAX_AGE);
-    console.log('Dashboard cache lookup result:', cached ? 'found' : 'miss', cached ? `keys: ${Object.keys(cached).join(',')}` : '');
+    const cached = await getCachedData(cacheKey, MAX_AGE);
     if (cached) {
-      // Validate the cached data has required fields
-      if (cached.fundOverview && cached.returnMetrics && cached.portfolioAllocation) {
-        return NextResponse.json(cached);
-      }
-      console.warn('Cached dashboard data is malformed, returning fallback. Type:', typeof cached);
+      return NextResponse.json(cached);
     }
 
-    // No data in DB yet — return fallback
-    console.warn('No dashboard data in database. Use admin panel to sync from Google Sheets.');
+    // No cached data — return fallback until admin syncs
     return NextResponse.json(FALLBACK_DATA);
   } catch (error: any) {
     console.error('Error in dashboard API route:', error);

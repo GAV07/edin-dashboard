@@ -119,7 +119,7 @@ async function fetchProFormaData(scenario: string) {
   const { sheets } = await getGoogleSheet(sheetId);
 
   const sheetName = scenario === 'base' ? 'Base_API' :
-    scenario === 'conservative' ? 'Conservative_API' : 'Optimistic_API';
+    scenario === 'conservative' ? 'Pessimistic_API' : 'Optimistic_API';
 
   // Verify the sheet tab exists before fetching
   const availableSheets = await getAvailableSheetNames(sheets, sheetId);

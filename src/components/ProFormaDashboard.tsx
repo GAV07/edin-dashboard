@@ -190,13 +190,9 @@ const ProFormaDashboard = () => {
   useEffect(() => {
     if (isSessionValid) {
       loadData();
-      
-      // Create session-aware interval that will auto-cleanup on session expiry
-      createInterval(() => {
-        loadData(true);
-      }, 5 * 60 * 1000); // Refresh every 5 minutes
     }
-  }, [selectedScenario, isSessionValid, createInterval, loadData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedScenario, isSessionValid]);
 
   if (!isClient) {
     return null; // or a loading state that matches server-side
@@ -313,7 +309,7 @@ const ProFormaDashboard = () => {
                 className="block w-full px-4 py-3 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-base"
               >
                 <option value="base">Base Case</option>
-                <option value="conservative">Conservative</option>
+                <option value="conservative">Pessimistic</option>
                 <option value="optimistic">Optimistic</option>
               </select>
             </div>

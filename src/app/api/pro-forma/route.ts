@@ -1,42 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getCachedData } from '@/lib/database';
 
-interface ProFormaData {
-  assumptions: {
-    avgCheckSize: string;
-    targetPortfolio: string;
-    failureRate: string;
-    profitSharingStartYear: string;
-    netIncomeMultiple: string;
-    revenueMultiple: string;
-    startingAverageMargin: string;
-  };
-  yearlyData: Array<{
-    year: string;
-    activePortcos: number;
-    companiesProfitSharing: number;
-    portfolioRevenue: number;
-    portfolioProfit: number;
-    avgMargins: number;
-    avgRevenuePerCompany: number;
-    avgAnnualGrowthRate: number;
-    investmentsMade: number;
-    annualProfitSharing: number;
-    cumulativeProfitSharingDistributions: number;
-    cumulativeResidualValue: number;
-    residualValueEstimateRevenue: number;
-    residualValueEstimateProfit: number;
-    totalValue: number;
-    grossTVPI: number;
-    netTVPI: number;
-    percentageCapitalReturned: number;
-    grossProfitSharingReturnMultiple: number;
-    netProfitSharingReturnMultiple: number;
-    irr: number;
-  }>;
-}
-
-// No TTL — data only updates when admin manually refreshes
+// No TTL — data only updates when admin manually refreshes via Sync Data
 const MAX_AGE = 60 * 60 * 24 * 365; // effectively infinite
 
 export async function GET(request: Request) {
@@ -45,16 +10,15 @@ export async function GET(request: Request) {
     const scenario = searchParams.get('scenario') || 'base';
     const cacheKey = `pro-forma-${scenario}`;
 
-    const cached = await getCachedData<ProFormaData>(cacheKey, MAX_AGE);
+    const cached = await getCachedData(cacheKey, MAX_AGE);
     if (cached) {
       return NextResponse.json(cached);
     }
 
-    // No data in DB yet — return error so admin knows to sync
-    console.warn(`No pro-forma data for scenario "${scenario}" in database. Use admin panel to sync from Google Sheets.`);
+    // No cached data — admin needs to sync from Google Sheets first
     return NextResponse.json(
       {
-        error: `No data available for ${scenario} scenario. An admin needs to sync data from Google Sheets.`,
+        error: `No data available for ${scenario} scenario. Please use Admin > Sync Data to load data from Google Sheets.`,
         timestamp: new Date().toISOString()
       },
       { status: 404 }
