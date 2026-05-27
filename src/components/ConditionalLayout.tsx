@@ -5,6 +5,8 @@ import { Sidebar } from './Sidebar'
 import { Footer } from './Footer'
 import { usePathname } from 'next/navigation'
 
+const NO_FOOTER_PAGES = ['/thesis']
+
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
   const pathname = usePathname()
@@ -32,7 +34,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
         <div className="lg:pl-2 lg:pt-2 bg-gray-100 flex-1 overflow-y-auto">
           <div className="flex-1 bg-white min-h-screen lg:rounded-tl-xl border border-transparent lg:border-neutral-200 overflow-y-auto">
             {children}
-            <Footer />
+            {!NO_FOOTER_PAGES.includes(pathname || '') && <Footer />}
           </div>
         </div>
       </>

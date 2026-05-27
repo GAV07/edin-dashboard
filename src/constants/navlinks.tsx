@@ -32,9 +32,14 @@ export const navlinks = [
     icon: IconBriefcase2,
   },
   {
-    href: "/edin-os",
-    label: "EdinOS",
-    icon: IconDeviceLaptop,
+    href: "/deal-flow",
+    label: "Deal Flow",
+    icon: IconUsersGroup,
+  },
+  {
+    href: "/portfolio-support",
+    label: "Portfolio Support",
+    icon: IconHeartHandshake,
   },
   {
     href: "/market-research",
@@ -42,18 +47,13 @@ export const navlinks = [
     icon: IconBuildingStore,
   },
   {
-    href: "/deal-flow",
-    label: "Deal Flow",
-    icon: IconUsersGroup,
+    href: "/edin-os",
+    label: "EdinOS",
+    icon: IconDeviceLaptop,
   },
   {
     href: "/team",
     label: "Team",
     icon: IconUsers,
-  },
-  {
-    href: "/portfolio-support",
-    label: "Portfolio Support",
-    icon: IconHeartHandshake,
   },
 ];
