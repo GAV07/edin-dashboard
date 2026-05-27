@@ -261,23 +261,9 @@ const ProFormaDashboard = () => {
             <h1 className="text-3xl font-bold text-dark">Edin Capital Financial Model</h1>
             <p className="text-lg text-gray-500">Venture Bond Pro Forma Dashboard</p>
 
-            {/* Disclaimer Banner */}
-            <div className="rounded-lg border border-amber-200 bg-amber-50 p-4">
-              <div className="flex items-start gap-3">
-                <svg className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.814-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-                </svg>
-                <div className="text-sm text-amber-800">
-                  <p className="font-semibold mb-1">Projected Returns &mdash; For Illustrative Purposes Only</p>
-                  <p>
-                    The financial projections presented here are based on modeled assumptions and hypothetical scenarios.
-                    They do not represent guaranteed returns, promises of performance, or investment advice.
-                    All investments carry substantial risk, including the potential loss of the entire principal invested.
-                    Past performance is not indicative of future results. Consult your own financial advisor before making investment decisions.
-                  </p>
-                </div>
-              </div>
-            </div>
+            <p className="text-xs text-gray-400">
+              Projected returns for illustrative purposes only. Based on modeled assumptions and hypothetical scenarios.
+            </p>
             {lastUpdated && (
               <p className="text-sm text-gray-400">
                 Last updated: {lastUpdated.toLocaleString('en-US', {

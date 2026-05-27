@@ -46,17 +46,16 @@ export default function DashboardClient() {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      // Don't attempt to fetch data if session is invalid
-      if (!isSessionValid) {
-        setError('Session expired. Please sign in again.');
-        setLoading(false);
-        return;
-      }
+    if (!isSessionValid) return;
 
+    let cancelled = false;
+
+    const fetchData = async () => {
       try {
         const response = await safeFetch('/api/dashboard');
         const result = await response.json();
+
+        if (cancelled) return;
 
         if (!response.ok) {
           throw new Error(result.error || 'Failed to fetch data');
@@ -67,29 +66,33 @@ export default function DashboardClient() {
         }
 
         setData(result);
-        setError(null); // Clear any previous errors
+        setError(null);
       } catch (err: any) {
+        if (cancelled) return;
         console.error('Error fetching dashboard data:', err);
-        
-        // Handle session expiration gracefully
+
         if (err.message.includes('Session expired')) {
           setError('Your session has expired. Please sign in again to continue.');
           return;
         }
-        
+
         setError(err.message || 'An error occurred while fetching data');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
-    if (isSessionValid) {
-      fetchData();
+    fetchData();
 
-      // Create session-aware interval that will auto-cleanup on session expiry
-      createInterval(fetchData, 5 * 60 * 1000); // Refresh every 5 minutes
-    }
-  }, [isSessionValid, createInterval, safeFetch]);
+    // Refresh every 5 minutes — use raw setInterval to avoid dependency churn
+    const intervalId = setInterval(fetchData, 5 * 60 * 1000);
+
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isSessionValid]);
 
   if (loading) {
     return (

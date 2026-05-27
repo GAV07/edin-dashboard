@@ -320,19 +320,9 @@ const VentureBondCalculator = () => {
           </p>
         </div>
 
-        {/* Disclaimer */}
-        <div className="mb-8 rounded-lg border border-amber-200 bg-amber-50 p-4">
-          <div className="flex items-start gap-3">
-            <svg className="h-5 w-5 text-amber-600 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.814-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126ZM12 15.75h.007v.008H12v-.008Z" />
-            </svg>
-            <p className="text-sm text-amber-800">
-              <span className="font-semibold">For Simulation Purposes Only.</span>{' '}
-              Projections are hypothetical illustrations. They do not represent guaranteed returns or investment advice.
-              All investments carry risk, including loss of principal. The Venture Bond is illiquid.
-            </p>
-          </div>
-        </div>
+        <p className="text-xs text-gray-400 mt-2">
+          For simulation purposes only. All projections are hypothetical and do not represent guaranteed returns.
+        </p>
 
         {/* Founder Journey — Compact */}
         <section className="mb-10">
@@ -609,19 +599,6 @@ const VentureBondCalculator = () => {
           </section>
         )}
 
-        {/* Disclosures */}
-        <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 text-xs text-gray-500 space-y-2">
-          <p className="font-semibold text-gray-600">Important Disclosures</p>
-          <p>
-            This calculator is for educational and illustrative purposes only. Scenarios and returns are hypothetical.
-            They do not constitute investment advice, an offer to sell, or a solicitation to buy securities.
-            All investments involve risk, including loss of principal. The Venture Bond is illiquid with no guaranteed resale market.
-          </p>
-          <p>
-            Profit-sharing thresholds (20% until 2x, 10% until 4x, 5% until 6x, 1% beyond 6x) and equity terms are
-            subject to applicable investment agreements.
-          </p>
-        </div>
       </div>
     </div>
   );
