@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Investment Thesis | Investor Dashboard",
@@ -34,70 +33,152 @@ const layers = [
   },
 ];
 
+const companyProfile = [
+  {
+    title: "Financial Profile",
+    items: [
+      "$1M+ annual revenue with path to $15M+",
+      "30%+ margins or clear path within 12\u201318 months",
+      "Capital-efficient growth model",
+      "Venture Bond-compatible profit-sharing potential",
+    ],
+  },
+  {
+    title: "Founder & Company",
+    items: [
+      "2\u20135+ years of operating history",
+      "Domain-expert founders with deep industry knowledge",
+      "Growth-minded but not VC-pressure dependent",
+      "Clean cap table, limited or no debt",
+    ],
+  },
+  {
+    title: "Stage & Geography",
+    items: [
+      "Seed-stage companies prioritizing profitability over hypergrowth",
+      "Southeast US emphasis \u2014 deep network in Florida tri-county",
+      "National investment capability",
+      "Regional economic development alignment preferred",
+    ],
+  },
+];
+
 export default function ThesisPage() {
   return (
-    <div className="relative w-full overflow-hidden" style={{ height: 'calc(100vh - 0.5rem)' }}>
-      {/* Full-bleed background image */}
-      <Image
-        src="/images/tree-roots.jpg"
-        alt=""
-        fill
-        className="object-cover"
-        priority
-      />
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/60" />
-
-      {/* All content layered over the image */}
-      <div className="relative z-10 h-full flex flex-col justify-center gap-10 px-8 max-w-6xl mx-auto">
-        {/* Headline + description */}
-        <div>
-          <span className="inline-block text-[10px] font-semibold tracking-[0.2em] uppercase text-white/60 border border-white/20 rounded-full px-3 py-1 mb-4">
+    <div className="bg-white min-h-screen">
+      <div className="max-w-6xl mx-auto px-6 py-12 lg:py-16">
+        {/* Header */}
+        <div className="mb-10">
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl mb-3">
             Investment Thesis
-          </span>
-          <h1 className="text-4xl sm:text-5xl font-serif font-light text-white leading-tight mb-4">
-            Human
-            <br />
-            Flourishing
-            <span className="text-goldenCircuit">.</span>
           </h1>
-          <p className="text-base text-white/75 leading-relaxed max-w-lg">
-            We invest in companies that build novel, robust, scalable solutions
-            contributing to the full spectrum of human flourishing.
+          <p className="text-gray-600 leading-relaxed max-w-3xl">
+            Edin Capital targets a structural gap in venture: profitable, seed-stage companies
+            with strong unit economics that are underserved by traditional VC. These founders
+            prioritize sustainable growth over hypergrowth \u2014 and our Venture Bond instrument
+            is designed specifically for them.
           </p>
         </div>
 
-        {/* Three layers */}
-        <div>
-          <p className="text-[10px] text-white/50 uppercase tracking-[0.15em] font-medium mb-3">
-            Organized across three layers
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {layers.map((layer) => (
-              <div
-                key={layer.name}
-                className="rounded-xl bg-white/10 backdrop-blur-md border border-white/15 p-5"
-              >
-                <h3 className="text-sm font-semibold text-white mb-1">
-                  {layer.name}
-                </h3>
-                <p className="text-xs text-white/60 mb-3 leading-relaxed">
-                  {layer.description}
-                </p>
-                <div className="flex flex-wrap gap-1.5">
-                  {layer.sectors.map((sector) => (
-                    <span
-                      key={sector}
-                      className="inline-block text-[11px] font-medium text-white/80 bg-white/10 border border-white/15 rounded-md px-2.5 py-1"
-                    >
-                      {sector}
-                    </span>
-                  ))}
+        {/* Two-column layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+          {/* LEFT: Company Profile */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Company Profile</h2>
+            <div className="space-y-5">
+              {companyProfile.map((section) => (
+                <div
+                  key={section.title}
+                  className="rounded-lg border border-gray-200 bg-gray-50 p-5"
+                >
+                  <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">
+                    {section.title}
+                  </h3>
+                  <ul className="space-y-2">
+                    {section.items.map((item) => (
+                      <li key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                        <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-green-600 flex-shrink-0" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* RIGHT: Sectors & Framework */}
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4">Sectors & Framework</h2>
+            <p className="text-sm text-gray-600 mb-5 leading-relaxed">
+              We invest in companies that build novel, robust, scalable solutions
+              contributing to the full spectrum of human flourishing \u2014 organized
+              across three layers.
+            </p>
+            <div className="space-y-4">
+              {layers.map((layer) => (
+                <div
+                  key={layer.name}
+                  className="rounded-lg border border-gray-200 bg-gray-50 p-5"
+                >
+                  <h3 className="text-sm font-semibold text-gray-900 mb-1">
+                    {layer.name}
+                  </h3>
+                  <p className="text-xs text-gray-500 mb-3 leading-relaxed">
+                    {layer.description}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {layer.sectors.map((sector) => (
+                      <span
+                        key={sector}
+                        className="inline-block text-xs font-medium text-green-800 bg-green-50 border border-green-200 rounded-md px-2.5 py-1"
+                      >
+                        {sector}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
+
+        {/* Synthesis */}
+        <section className="rounded-lg border border-gray-200 bg-gray-50 p-6 lg:p-8">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">Why This Combination</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-2">
+                Structural Resilience
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Companies with real revenue, strong margins, and capital-efficient models
+                are built to weather market cycles \u2014 not dependent on follow-on funding
+                or exit timing.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-2">
+                Socioeconomic Growth
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                These sectors \u2014 from health and education to infrastructure and workforce \u2014
+                are the engines of regional economies. Backing them creates durable,
+                compounding value.
+              </p>
+            </div>
+            <div>
+              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-2">
+                Human Flourishing
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                This portfolio construction systematically promotes human flourishing:
+                profitable companies in essential sectors, led by domain experts,
+                building for communities that need it most.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

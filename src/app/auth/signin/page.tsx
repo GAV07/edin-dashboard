@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { signIn, getSession, useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { Eye, EyeOff, Lock, Mail } from 'lucide-react'
+import { Mail, Lock, Eye, EyeOff, Shield } from 'lucide-react'
 import { useEffect } from 'react'
 
 declare global {
@@ -16,6 +16,7 @@ export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [isAdminLogin, setIsAdminLogin] = useState(false)
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
@@ -63,12 +64,12 @@ export default function SignIn() {
     try {
       const result = await signIn('credentials', {
         email,
-        password,
+        password: isAdminLogin ? password : '',
         redirect: false,
       })
 
       if (result?.error) {
-        setError('Invalid email or password')
+        setError('Email not recognized. Please contact your Edin representative for access.')
         // Track failed login attempt
         if (typeof window !== 'undefined' && window.gtag) {
           window.gtag('event', 'login_failed', {
@@ -124,7 +125,7 @@ export default function SignIn() {
         {/* Logo/Header */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-green-700 rounded-xl mb-4">
-            <Lock className="w-8 h-8 text-white" />
+            <Mail className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-white">Edin Investor Portal</h1>
           <p className="text-gray-200 mt-2">Dive deeper into what we are building here at Edin</p>
@@ -155,38 +156,56 @@ export default function SignIn() {
               </div>
             </div>
 
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? 'text' : 'password'}
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="Enter your password"
-                />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
-                  )}
-                </button>
-              </div>
+            {/* Admin Login Toggle */}
+            <div className="flex items-center justify-between">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsAdminLogin(!isAdminLogin)
+                  setPassword('')
+                  setError('')
+                }}
+                className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+              >
+                <Shield className="w-3.5 h-3.5" />
+                {isAdminLogin ? 'Switch to investor login' : 'Admin login'}
+              </button>
             </div>
+
+            {/* Password Field (Admin only) */}
+            {isAdminLogin && (
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+                  Admin Password
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Lock className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    id="password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    required
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                    placeholder="Enter admin password"
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    ) : (
+                      <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    )}
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Error Message */}
             {error && (
@@ -221,7 +240,7 @@ export default function SignIn() {
               disabled={isLoading || !disclaimerAccepted}
               className="w-full bg-gradient-to-r from-green-600 to-green-700 text-white py-3 px-4 rounded-lg font-medium hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading ? 'Accessing...' : 'Access Portal'}
             </button>
           </form>
         </div>

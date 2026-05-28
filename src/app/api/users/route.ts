@@ -54,9 +54,9 @@ export async function POST(request: NextRequest) {
     const { email, password, name, role } = body
 
     // Validate required fields
-    if (!email || !password || !name || !role) {
+    if (!email || !name || !role) {
       return NextResponse.json(
-        { error: 'Missing required fields: email, password, name, role' },
+        { error: 'Missing required fields: email, name, role' },
         { status: 400 }
       )
     }
@@ -78,17 +78,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate password strength
-    if (password.length < 8) {
-      return NextResponse.json(
-        { error: 'Password must be at least 8 characters long' },
-        { status: 400 }
-      )
+    // Admin users require a password
+    if (role === 'admin') {
+      if (!password || password.length < 8) {
+        return NextResponse.json(
+          { error: 'Admin accounts require a password of at least 8 characters' },
+          { status: 400 }
+        )
+      }
     }
 
     const newUser = await UserManagement.createUser({
       email,
-      password,
+      password: role === 'admin' ? password : undefined,
       name,
       role
     })

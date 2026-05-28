@@ -6,8 +6,8 @@ import {
   IconClipboardData,
   IconUsers,
   IconUsersGroup,
-  IconBuildingStore,
   IconHeartHandshake,
+  IconScale,
 } from "@tabler/icons-react";
 
 export const navlinks = [
@@ -42,11 +42,6 @@ export const navlinks = [
     icon: IconHeartHandshake,
   },
   {
-    href: "/market-research",
-    label: "Market Research",
-    icon: IconBuildingStore,
-  },
-  {
     href: "/edin-os",
     label: "EdinOS",
     icon: IconDeviceLaptop,
@@ -55,5 +50,10 @@ export const navlinks = [
     href: "/team",
     label: "Team",
     icon: IconUsers,
+  },
+  {
+    href: "/legal",
+    label: "Legal & Compliance",
+    icon: IconScale,
   },
 ];

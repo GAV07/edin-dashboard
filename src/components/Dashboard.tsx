@@ -107,37 +107,25 @@ export default function Dashboard({
                 <p className="text-gray-500 mt-1">Edin Capital Investor Portal</p>
               </div>
             </div>
-            <Link
-              href="/executive-summary"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 transition-colors self-start"
-            >
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z" />
-              </svg>
-              View Executive Summary
-            </Link>
-          </div>
-
-          {/* Mission & Vision */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Our Mission</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                We partner with exceptional founders to build profitable, sustainable businesses through our Venture Bond instrument — providing patient capital and aligned incentives that enable companies to thrive without the constraints of traditional venture capital&apos;s boom-or-bust model.
-              </p>
-            </div>
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-              <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wide mb-3">Our Vision</h3>
-              <p className="text-sm text-gray-600 leading-relaxed">
-                To establish Integrated Capital as the defining investment category of the next generation — where financial innovation and socioeconomic impact converge to create regenerative ecosystems that redefine what&apos;s possible in early-stage investing.
-              </p>
+            <div className="flex items-center gap-3 self-start">
+              <a
+                href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 transition-colors"
+              >
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
+                </svg>
+                Download Deck
+              </a>
             </div>
           </div>
         </div>
 
         {/* Key Metrics */}
         <section className="mb-10">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Key Metrics</h2>
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Key Projections</h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {keyMetricsStats.map((stat) => (
               <div key={stat.id} className="rounded-lg border border-gray-200 bg-gray-50 p-5 text-center">
@@ -239,6 +227,32 @@ export default function Dashboard({
                 </ResponsiveContainer>
               </div>
             </div>
+          </div>
+        </section>
+
+        {/* Explore the Data Room */}
+        <section className="mb-10">
+          <h2 className="text-xl font-semibold text-gray-900 mb-4">Explore the Data Room</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { href: '/thesis', label: 'Investment Thesis', desc: 'Company profile & sectors' },
+              { href: '/pro-forma', label: 'Pro Forma', desc: 'Financial projections' },
+              { href: '/venture-bond', label: 'Venture Bond', desc: 'Structure & calculator' },
+              { href: '/deal-flow', label: 'Deal Flow', desc: 'Pipeline & sourcing' },
+              { href: '/portfolio-support', label: 'Portfolio Support', desc: 'The Edin Experience' },
+              { href: '/edin-os', label: 'EdinOS', desc: 'Platform roadmap' },
+              { href: '/team', label: 'Team', desc: 'Leadership bios' },
+              { href: '/legal', label: 'Legal & Compliance', desc: 'Fund documents' },
+            ].map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-lg border border-gray-200 bg-gray-50 p-4 hover:bg-gray-100 hover:border-gray-300 transition-colors group"
+              >
+                <div className="text-sm font-medium text-gray-900 group-hover:text-green-700">{item.label}</div>
+                <div className="text-xs text-gray-500 mt-1">{item.desc}</div>
+              </Link>
+            ))}
           </div>
         </section>
 

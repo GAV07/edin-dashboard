@@ -17,14 +17,16 @@ export class UserManagement {
     return (rows[0] as unknown as User) || null
   }
 
-  // Create new user
+  // Create new user — admin users require a password, investors do not
   static async createUser(userData: CreateUserData): Promise<User> {
     const existingUser = await this.getUserByEmail(userData.email)
     if (existingUser) {
       throw new Error('User with this email already exists')
     }
 
-    const hashedPassword = await bcrypt.hash(userData.password, 12)
+    const hashedPassword = userData.password
+      ? await bcrypt.hash(userData.password, 12)
+      : null
 
     const sql = getDb()
     const rows = await sql`
@@ -65,17 +67,5 @@ export class UserManagement {
   static async activateUser(userId: string): Promise<void> {
     const sql = getDb()
     await sql`UPDATE users SET is_active = true, updated_at = now() WHERE id = ${userId}`
-  }
-
-  // Change user password
-  static async changePassword(userId: string, newPassword: string): Promise<void> {
-    const hashedPassword = await bcrypt.hash(newPassword, 12)
-    const sql = getDb()
-    await sql`UPDATE users SET password_hash = ${hashedPassword}, updated_at = now() WHERE id = ${userId}`
-  }
-
-  // Verify password
-  static async verifyPassword(user: User, password: string): Promise<boolean> {
-    return await bcrypt.compare(password, user.password_hash)
   }
 }

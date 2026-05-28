@@ -41,8 +41,7 @@ export const config = {
     '/venture-bond/:path*', 
     '/pro-forma/:path*',
     '/team/:path*',
-    '/market-research/:path*',
-    '/executive-summary/:path*',
+    '/legal/:path*',
     '/faq/:path*',
     '/edin-os/:path*',
     '/admin/:path*'

@@ -10,8 +10,6 @@ const pipelineStats = {
   sourcingChannels: 85,
   targetInvestments: 35,
   avgCheckSize: '$2M',
-  fastTrackCompanies: 21,
-  thesisStrongCompanies: 138,
 };
 
 const sourcingChannels = [
@@ -73,9 +71,9 @@ const companiesByRegion = [
 
 // Evaluation quality tiers
 const evaluationTiers = [
-  { tier: 'Fast Track', count: 21, color: 'bg-green-500' },
-  { tier: 'Thesis Strong', count: 138, color: 'bg-blue-500' },
-  { tier: 'Standard', count: 476, color: 'bg-gray-400' },
+  { tier: 'Fast Track', description: 'Companies that closely match our thesis across all five dimensions and are prioritized for diligence.', color: 'bg-green-500' },
+  { tier: 'Thesis Strong', description: 'Companies with strong thesis alignment and market potential that warrant deeper evaluation.', color: 'bg-blue-500' },
+  { tier: 'Standard', description: 'Companies in our pipeline being monitored for thesis fit as they develop.', color: 'bg-gray-400' },
 ];
 
 function HorizontalBar({ data, colorClass }: { data: { label: string; percentage: number }[]; colorClass: string }) {
@@ -147,13 +145,11 @@ export default function CompanyShowcase() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {evaluationTiers.map((tier) => (
               <div key={tier.tier} className="rounded-lg border border-gray-200 bg-gray-50 p-5">
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 mb-2">
                   <div className={`w-3 h-3 rounded-full ${tier.color}`} />
-                  <div>
-                    <div className="text-2xl font-bold text-gray-900">{tier.count}</div>
-                    <div className="text-xs text-gray-500 uppercase tracking-wide">{tier.tier}</div>
-                  </div>
+                  <div className="text-sm font-semibold text-gray-900">{tier.tier}</div>
                 </div>
+                <p className="text-sm text-gray-500 leading-relaxed">{tier.description}</p>
               </div>
             ))}
           </div>

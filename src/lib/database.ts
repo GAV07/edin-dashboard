@@ -12,7 +12,7 @@ export function getDb() {
 export interface User {
   id: string
   email: string
-  password_hash: string
+  password_hash?: string | null
   name: string
   role: 'admin' | 'investor'
   created_at: string
@@ -79,7 +79,7 @@ export async function setCachedData(key: string, data: unknown): Promise<void> {
 
 export interface CreateUserData {
   email: string
-  password: string
+  password?: string
   name: string
   role: 'admin' | 'investor'
 }

@@ -14,9 +14,8 @@ const fallbackUsers = [
     role: "admin"
   },
   {
-    id: "2", 
+    id: "2",
     email: "demo-investor@example.com",
-    password: "$2b$12$6/.4/lJbAxylYEA3Ght5neBkQ/ZkI3SxXVLnjYBk8ufQPuieQ3J.C", // "password123"
     name: "Demo Investor",
     role: "investor"
   }
@@ -28,16 +27,16 @@ export const authOptions = {
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
         if (process.env.NODE_ENV === 'development') {
           console.log("Authorize called with:", credentials?.email)
         }
-        
-        if (!credentials?.email || !credentials?.password) {
+
+        if (!credentials?.email) {
           if (process.env.NODE_ENV === 'development') {
-            console.log("Missing credentials")
+            console.log("Missing email")
           }
           return null
         }
@@ -46,21 +45,34 @@ export const authOptions = {
           // Try to get user from database first
           if (process.env.DATABASE_PUBLIC_URL) {
             const user = await UserManagement.getUserByEmail(credentials.email)
-            
+
             if (user) {
-              const isPasswordValid = await UserManagement.verifyPassword(user, credentials.password)
-              
               if (process.env.NODE_ENV === 'development') {
-                console.log("Database user found:", user.email, "Password valid:", isPasswordValid)
+                console.log("Database user found:", user.email, "role:", user.role)
               }
-              
-              if (isPasswordValid) {
-                return {
-                  id: user.id,
-                  email: user.email,
-                  name: user.name,
-                  role: user.role
+
+              // Admin users require password verification
+              if (user.role === 'admin') {
+                if (!credentials.password || !user.password_hash) {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.log("Admin login requires password")
+                  }
+                  return null
                 }
+                const isPasswordValid = await bcrypt.compare(credentials.password, user.password_hash)
+                if (!isPasswordValid) {
+                  if (process.env.NODE_ENV === 'development') {
+                    console.log("Admin password invalid")
+                  }
+                  return null
+                }
+              }
+
+              return {
+                id: user.id,
+                email: user.email,
+                name: user.name,
+                role: user.role
               }
             }
           }
@@ -73,23 +85,24 @@ export const authOptions = {
         const user = fallbackUsers.find(user => user.email === credentials.email)
         if (!user) {
           if (process.env.NODE_ENV === 'development') {
-            console.log("User not found in fallback:", credentials.email)
+            console.log("User not found:", credentials.email)
           }
           return null
         }
 
         if (process.env.NODE_ENV === 'development') {
-          console.log("Using fallback user:", user.email)
+          console.log("Using fallback user:", user.email, "role:", user.role)
         }
-        
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
-        
-        if (process.env.NODE_ENV === 'development') {
-          console.log("Fallback password valid:", isPasswordValid)
-        }
-        
-        if (!isPasswordValid) {
-          return null
+
+        // Admin fallback users require password verification
+        if (user.role === 'admin') {
+          if (!credentials.password || !('password' in user)) {
+            return null
+          }
+          const isPasswordValid = await bcrypt.compare(credentials.password, user.password!)
+          if (!isPasswordValid) {
+            return null
+          }
         }
 
         return {
