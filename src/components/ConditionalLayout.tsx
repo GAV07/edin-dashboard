@@ -2,49 +2,95 @@
 
 import { useSession } from 'next-auth/react'
 import { Sidebar } from './Sidebar'
-import { Footer } from './Footer'
 import { usePathname } from 'next/navigation'
+import Image from 'next/image'
 
-const NO_FOOTER_PAGES = ['/thesis']
+const ROUTE_TITLE: Record<string, string> = {
+  '/': 'Overview',
+  '/thesis': 'Thesis',
+  '/pro-forma': 'Pro Forma',
+  '/venture-bond': 'Venture Bond',
+  '/deal-flow': 'Deal Flow',
+  '/portfolio-support': 'Portfolio Support',
+  '/edin-os': 'EdinOS',
+  '/team': 'Team',
+  '/legal': 'Legal & Compliance',
+  '/admin/users': 'Manage Users',
+  '/admin/data': 'Sync Data',
+}
+
+function Topbar() {
+  const pathname = usePathname()
+  const title = ROUTE_TITLE[pathname || '/'] || 'Overview'
+
+  return (
+    <div className="topbar">
+      <div className="crumbs">
+        <span>edin capital</span>
+        <span className="crumb-sep">/</span>
+        <span>fund i</span>
+        <span className="crumb-sep">/</span>
+        <span className="crumb-current">{title.toLowerCase()}</span>
+      </div>
+      <div className="top-meta">
+        <span className="top-pill">
+          <span className="dot" />
+          Data as of Q2 2026
+        </span>
+      </div>
+    </div>
+  )
+}
+
+function BrandFoot() {
+  return (
+    <div className="brandfoot">
+      <Image className="mk" src="/images/logos/edincapital_logo.jpeg" alt="" width={16} height={16} />
+      <span className="tag">Integrated Capital.</span>
+      <span className="disc">Edin Capital &mdash; Proprietary &amp; Confidential</span>
+    </div>
+  )
+}
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession()
   const pathname = usePathname()
-  
-  // Don't show sidebar for auth pages
+
   const isAuthPage = pathname?.startsWith('/auth/')
-  
-  // Show loading state
+
   if (status === 'loading') {
     return (
-      <div className="fixed inset-0 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center z-50">
+      <div className="fixed inset-0 flex items-center justify-center z-50"
+        style={{ background: 'var(--surface-app)' }}>
         <div className="flex flex-col items-center justify-center text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mb-4"></div>
-          <p className="text-gray-600">Loading...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 mb-4"
+            style={{ borderColor: 'var(--green-700)' }} />
+          <p style={{ color: 'var(--text-muted)' }}>Loading...</p>
         </div>
       </div>
     )
   }
 
-  // If user is authenticated and not on auth page, show full layout with sidebar
   if (session && !isAuthPage) {
     return (
-      <>
+      <div className="portal-shell" style={{ background: 'var(--surface-app)' }}>
         <Sidebar />
-        <div className="lg:pl-2 lg:pt-2 bg-gray-100 flex-1 overflow-y-auto">
-          <div className="flex-1 bg-white min-h-screen lg:rounded-tl-xl border border-transparent lg:border-neutral-200 overflow-y-auto">
-            {children}
-            {!NO_FOOTER_PAGES.includes(pathname || '') && <Footer />}
-          </div>
+        <div className="portal-main">
+          <Topbar />
+          <main className="canvas" key={pathname}>
+            <div className="screen">
+              {children}
+            </div>
+          </main>
+          <BrandFoot />
         </div>
-      </>
+      </div>
     )
   }
 
-  // For unauthenticated users or auth pages, show full-screen layout
   return (
     <div className="fixed inset-0 overflow-y-auto">
       {children}
     </div>
   )
-} 
+}

@@ -1,19 +1,14 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
+import { PageHead, SectionLabel, MetricGrid } from '@/components/portal/ui';
+import { Bars, Trend, Donut, ChartLegend, C } from '@/components/portal/charts';
 import {
-  PieChart, Pie, Cell,
-  BarChart, Bar,
-  LineChart, Line,
-  XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend,
-  ResponsiveContainer,
-  ComposedChart,
-  Area,
-  ReferenceLine
-} from 'recharts';
+  IconBolt, IconClipboardData, IconChartBar, IconBriefcase2,
+  IconUsersGroup, IconHeartHandshake, IconDeviceLaptop, IconUsers,
+  IconScale, IconArrowRight, IconDownload,
+} from '@tabler/icons-react';
 
 interface DashboardProps {
   fundOverview: {
@@ -41,225 +36,173 @@ interface DashboardProps {
   annualReturnsData: Array<{ year: string; returns: number; cumulative: number }>;
 }
 
-const COLORS = ['#2d5016', '#4a7c59', '#6bb6ff', '#00b894', '#74b9ff'];
-
-// Format numbers to millions with 1 decimal place
-const formatMillions = (value: number) => {
-  return `$${(value / 1000000).toFixed(1)}M`;
-};
-
-const formatPercentage = (value: string) => {
-  return value.endsWith('%') ? value : `${value}%`;
-};
+const dataRoomItems = [
+  { href: '/thesis', icon: IconClipboardData, t: 'Investment thesis', d: 'Sectors, profile & framework' },
+  { href: '/pro-forma', icon: IconChartBar, t: 'Pro forma', d: '12-year financial projections' },
+  { href: '/venture-bond', icon: IconBriefcase2, t: 'Venture Bond', d: 'Structure & return calculator' },
+  { href: '/deal-flow', icon: IconUsersGroup, t: 'Deal flow', d: 'Pipeline & sourcing' },
+  { href: '/portfolio-support', icon: IconHeartHandshake, t: 'Portfolio support', d: 'The Edin Experience' },
+  { href: '/edin-os', icon: IconDeviceLaptop, t: 'EdinOS', d: 'Platform roadmap' },
+  { href: '/team', icon: IconUsers, t: 'Team', d: 'Partners & leadership' },
+  { href: '/legal', icon: IconScale, t: 'Legal & compliance', d: 'Fund documents' },
+];
 
 export default function Dashboard({
   fundOverview,
-  portfolioAllocation,
   returnMetrics,
-  annualReturnsData
+  distributionSourcesData,
+  annualReturnsData,
 }: DashboardProps) {
-  // Create key metrics summary stats
-  const allStats = [
-    { id: 'committed', name: 'Capital Ask', value: fundOverview.committedCapital },
-    { id: 'numInv', name: 'Number of Investments', value: portfolioAllocation.numberOfInvestments },
-    { id: 'checkSize', name: 'Average Check Size', value: portfolioAllocation.averageCheckSize },
-    { id: 'distributions', name: 'Cum. Profit Sharing Dist. (10y)', value: returnMetrics.lpDistributions },
-    { id: 'moic', name: 'RVPI (10y)', value: returnMetrics.moic },
-    { id: 'tvpi', name: 'TVPI (10y)', value: returnMetrics.grossTvpi },
-    { id: 'dpi', name: 'DPI (10y)', value: returnMetrics.dpi },
-    { id: 'irr', name: 'IRR (10y)', value: returnMetrics.irr },
-  ];
-
-  // Filter out stats with blank or empty values
-  const keyMetricsStats = allStats.filter(stat => 
-    stat.value && 
-    stat.value.toString().trim() !== '' && 
-    stat.value.toString().trim() !== '-' &&
-    stat.value.toString().trim() !== 'N/A' &&
-    stat.value.toString().trim() !== '0'
-  );
-
-  // Use cumulative returns data directly from API
-  const cumulativeReturnsData = annualReturnsData.map((item) => ({
-    year: item.year,
-    annual: item.returns,
-    cumulative: item.cumulative
+  const annual = annualReturnsData.map((d) => ({
+    label: d.year.replace('Year ', 'Y'),
+    value: d.returns / 1_000_000,
+  }));
+  const cumulative = annualReturnsData.map((d) => ({
+    label: d.year.replace('Year ', 'Y'),
+    value: Math.round(d.cumulative / 1_000_000),
   }));
 
   return (
-    <div className="bg-white min-h-screen">
-      <div className="max-w-6xl mx-auto px-6 py-12 lg:py-16">
-        {/* Header */}
-        <div className="mb-10">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 mb-8">
-            <div className="flex items-center gap-5">
-              <Image
-                alt="Edin Capital Logo"
-                src="/images/logos/edin logo - gray stacked.png"
-                width={160}
-                height={64}
-                className="h-16 w-auto object-contain"
-              />
-              <div>
-                <h1 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-                  Fund I Overview
-                </h1>
-                <p className="text-gray-500 mt-1">Edin Capital Investor Portal</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 self-start">
-              <a
-                href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 bg-gray-50 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:border-gray-300 transition-colors"
+    <>
+      <PageHead
+        num="01"
+        eyebrow="Fund I · Snapshot"
+        title={<>A single instrument, <em>dual return paths.</em></>}
+        lede="Edin Capital Fund I pairs convertible equity with structured profit-sharing —the Venture Bond —to return capital as durable companies grow, not only when they exit."
+        action={
+          <a
+            href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0"
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '8px 16px', borderRadius: 'var(--radius-sm)',
+              border: '1px solid var(--border-default)',
+              background: 'var(--surface-card)',
+              fontSize: 'var(--text-sm)', fontWeight: 500,
+              color: 'var(--text-primary)', textDecoration: 'none',
+            }}
+          >
+            Download deck
+            <IconDownload style={{ width: 15, height: 15 }} />
+          </a>
+        }
+      />
+
+      <SectionLabel num="i">Fund terms</SectionLabel>
+      <MetricGrid
+        cols={6}
+        items={[
+          { label: 'Committed', value: fundOverview.committedCapital },
+          { label: 'Investable', value: fundOverview.investableCapital },
+          { label: 'Mgmt fee', value: fundOverview.managementFee },
+          { label: 'Carry', value: fundOverview.carry },
+          { label: 'Deployment', value: fundOverview.deploymentPeriod },
+          { label: 'Fund life', value: fundOverview.fundLife },
+        ]}
+      />
+
+      <SectionLabel num="ii">Projected returns · 10-year</SectionLabel>
+      <MetricGrid
+        cols={5}
+        style={{ gridTemplateColumns: '1.4fr 1fr 1fr 1fr 1fr' }}
+        items={[
+          { label: 'Cum. LP distributions', value: returnMetrics.lpDistributions, sub: 'Profit-sharing + exit liquidity, gross of fees', style: { background: 'var(--surface-cream)' } },
+          { label: 'MOIC', value: returnMetrics.moic, mono: true },
+          { label: 'Gross TVPI', value: returnMetrics.grossTvpi, mono: true },
+          { label: 'DPI', value: returnMetrics.dpi, mono: true },
+          { label: 'Net IRR', value: returnMetrics.irr, mono: true },
+        ]}
+      />
+
+      <SectionLabel num="iii">Returns analysis</SectionLabel>
+      <div className="ed-grid ed-g2">
+        <div className="panel">
+          <div className="panel-head">
+            <span className="panel-title">Annual distributions</span>
+            <span className="panel-unit">$M / year</span>
+          </div>
+          <div className="panel-pad">
+            <Bars data={annual} unit="$M" marker="Y10" />
+          </div>
+        </div>
+        <div className="panel">
+          <div className="panel-head">
+            <span className="panel-title">Cumulative distributions</span>
+            <span className="panel-unit">$M</span>
+          </div>
+          <div className="panel-pad">
+            <Trend data={cumulative} unit="$M" marker="Y10" />
+          </div>
+        </div>
+      </div>
+
+      <div className="ed-grid ed-g3" style={{ marginTop: 'var(--space-4)', gridTemplateColumns: '1fr 2fr' }}>
+        <div className="panel panel--accent">
+          <div className="panel-head"><span className="panel-title">Sources of return</span></div>
+          <div className="panel-pad" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Donut data={distributionSourcesData.map(d => ({
+              ...d,
+              value: d.value < 1 ? Math.round(d.value * 100) : Math.round(d.value),
+            }))} />
+            <ChartLegend items={[
+              { label: 'Profit-sharing', color: C.pine },
+              { label: 'Exit liquidity', color: C.gold },
+            ]} />
+          </div>
+        </div>
+        <div className="panel panel--cream">
+          <div className="panel-pad" style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', justifyContent: 'center', height: '100%' }}>
+            <span className="eyebrow-pill">
+              <span className="eyebrow-num">06</span>
+              <span className="eyebrow-text">The instrument</span>
+            </span>
+            <p style={{ fontFamily: 'var(--font-serif)', fontSize: 'var(--text-xl)', lineHeight: 1.3, color: 'var(--text-strong)', letterSpacing: '-0.01em' }}>
+              The Venture Bond pays as companies compound —<em style={{ fontFamily: 'var(--font-serif)', fontStyle: 'italic', color: 'var(--green-600)' }}>not only when they exit.</em>
+            </p>
+            <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', lineHeight: 1.55, maxWidth: 520 }}>
+              Equity participation plus a tiered share of net income (20% → 10% → 5% → 1%) returns capital years earlier than the traditional venture J-curve, while founders retain the majority of their profit.
+            </p>
+            <div>
+              <Link
+                href="/venture-bond"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 6,
+                  fontSize: 'var(--text-sm)', fontWeight: 600,
+                  color: 'var(--green-700)', textDecoration: 'none',
+                }}
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                </svg>
-                Download Deck
-              </a>
+                Explore the structure
+                <IconArrowRight style={{ width: 15, height: 15 }} />
+              </Link>
             </div>
           </div>
         </div>
-
-        {/* Key Metrics */}
-        <section className="mb-10">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Key Projections</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {keyMetricsStats.map((stat) => (
-              <div key={stat.id} className="rounded-lg border border-gray-200 bg-gray-50 p-5 text-center">
-                <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-                <div className="text-xs text-gray-500 mt-1.5 uppercase tracking-wide">{stat.name}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Investment Returns Analysis */}
-        <section className="mb-10">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">Investment Returns Analysis</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Annual Returns Chart */}
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">Annual Returns</h3>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart
-                    data={cumulativeReturnsData}
-                    margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                    <XAxis dataKey="year" fontSize={11} tick={{ fill: '#6b7280' }} />
-                    <YAxis
-                      tickFormatter={formatMillions}
-                      fontSize={11}
-                      tick={{ fill: '#6b7280' }}
-                    />
-                    <Tooltip
-                      formatter={(value: number) => formatMillions(value)}
-                      labelFormatter={(label) => `${label}`}
-                      contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '13px' }}
-                    />
-                    <Bar
-                      dataKey="annual"
-                      fill="#2d5016"
-                      name="Annual Returns"
-                      radius={[4, 4, 0, 0]}
-                    />
-                    <ReferenceLine
-                      x="Year 10"
-                      stroke="#9ca3af"
-                      strokeDasharray="3 3"
-                      label={{
-                        value: '10y',
-                        position: 'top',
-                        fill: '#9ca3af',
-                        fontSize: 11
-                      }}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            {/* Cumulative Returns Chart */}
-            <div className="rounded-lg border border-gray-200 bg-gray-50 p-6">
-              <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wide mb-4">Cumulative Returns</h3>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={cumulativeReturnsData}
-                    margin={{ top: 10, right: 20, left: 10, bottom: 5 }}
-                  >
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
-                    <XAxis dataKey="year" fontSize={11} tick={{ fill: '#6b7280' }} />
-                    <YAxis
-                      tickFormatter={formatMillions}
-                      fontSize={11}
-                      tick={{ fill: '#6b7280' }}
-                    />
-                    <Tooltip
-                      formatter={(value: number) => formatMillions(value)}
-                      labelFormatter={(label) => `${label}`}
-                      contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', fontSize: '13px' }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="cumulative"
-                      stroke="#4a7c59"
-                      strokeWidth={2.5}
-                      name="Cumulative Returns"
-                      dot={{ fill: '#4a7c59', strokeWidth: 2, r: 3 }}
-                    />
-                    <ReferenceLine
-                      x="Year 10"
-                      stroke="#9ca3af"
-                      strokeDasharray="3 3"
-                      label={{
-                        value: '10y',
-                        position: 'top',
-                        fill: '#9ca3af',
-                        fontSize: 11
-                      }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Explore the Data Room */}
-        <section className="mb-10">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">Explore the Data Room</h2>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { href: '/thesis', label: 'Investment Thesis', desc: 'Company profile & sectors' },
-              { href: '/pro-forma', label: 'Pro Forma', desc: 'Financial projections' },
-              { href: '/venture-bond', label: 'Venture Bond', desc: 'Structure & calculator' },
-              { href: '/deal-flow', label: 'Deal Flow', desc: 'Pipeline & sourcing' },
-              { href: '/portfolio-support', label: 'Portfolio Support', desc: 'The Edin Experience' },
-              { href: '/edin-os', label: 'EdinOS', desc: 'Platform roadmap' },
-              { href: '/team', label: 'Team', desc: 'Leadership bios' },
-              { href: '/legal', label: 'Legal & Compliance', desc: 'Fund documents' },
-            ].map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-lg border border-gray-200 bg-gray-50 p-4 hover:bg-gray-100 hover:border-gray-300 transition-colors group"
-              >
-                <div className="text-sm font-medium text-gray-900 group-hover:text-green-700">{item.label}</div>
-                <div className="text-xs text-gray-500 mt-1">{item.desc}</div>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <p className="text-center text-gray-400 text-xs">
-          Data based on Edin Capital Fund I financial projections.
-        </p>
       </div>
-    </div>
+
+      <SectionLabel num="iv">Explore the data room</SectionLabel>
+      <div className="ed-grid ed-g4">
+        {dataRoomItems.map((c) => {
+          const Icon = c.icon;
+          return (
+            <Link
+              key={c.href}
+              href={c.href}
+              className="panel"
+              style={{ padding: 'var(--space-4)', textDecoration: 'none', display: 'flex', flexDirection: 'column', gap: 'var(--space-3)', cursor: 'pointer', transition: 'border-color var(--duration-fast)' }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <Icon style={{ width: 18, height: 18, color: 'var(--green-600)' }} />
+                <IconArrowRight style={{ width: 15, height: 15, color: 'var(--text-muted)' }} />
+              </div>
+              <div>
+                <div style={{ fontSize: 'var(--text-sm)', fontWeight: 600, color: 'var(--text-primary)' }}>{c.t}</div>
+                <div style={{ fontSize: 'var(--text-xs)', color: 'var(--text-muted)', marginTop: 2 }}>{c.d}</div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </>
   );
-} 
+}

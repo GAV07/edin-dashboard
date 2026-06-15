@@ -1,23 +1,13 @@
-import { Sidebar } from "@/components/Sidebar";
 import "./globals.css";
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { twMerge } from "tailwind-merge";
-import { Footer } from "@/components/Footer";
 import Script from "next/script";
 import { AuthProvider } from "@/components/AuthProvider";
 import { AnalyticsWrapper } from "@/components/AnalyticsWrapper";
 import { ConditionalLayout } from "@/components/ConditionalLayout";
 
-const inter = Inter({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-});
-
 export const metadata: Metadata = {
   title: "Edin Capital",
-  description:
-    "A new beginning for venture capital",
+  description: "A new beginning for venture capital",
 };
 
 export default function RootLayout({
@@ -28,7 +18,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Google Analytics */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-60LQ571T8N"
           strategy="afterInteractive"
@@ -39,16 +28,21 @@ export default function RootLayout({
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-60LQ571T8N', {
-              send_page_view: false // We'll handle page views manually with user context
+              send_page_view: false
             });
           `}
         </Script>
       </head>
       <body
-        className={twMerge(
-          inter.className,
-          "flex antialiased h-screen overflow-hidden bg-gray-100"
-        )}
+        style={{
+          margin: 0,
+          fontFamily: "var(--font-sans)",
+          fontSize: "var(--text-base)",
+          lineHeight: "var(--leading-normal)",
+          color: "var(--text-primary)",
+          background: "var(--surface-app)",
+          WebkitFontSmoothing: "antialiased",
+        }}
       >
         <AuthProvider>
           <AnalyticsWrapper>

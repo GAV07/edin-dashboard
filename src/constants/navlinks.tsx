@@ -10,50 +10,32 @@ import {
   IconScale,
 } from "@tabler/icons-react";
 
-export const navlinks = [
+export const navGroups = [
   {
-    href: "/",
-    label: "Overview",
-    icon: IconBolt,
+    group: "The Fund",
+    items: [
+      { href: "/", label: "Overview", icon: IconBolt },
+      { href: "/thesis", label: "Thesis", icon: IconClipboardData },
+      { href: "/pro-forma", label: "Pro Forma", icon: IconChartBar },
+      { href: "/venture-bond", label: "Venture Bond", icon: IconBriefcase2 },
+    ],
   },
   {
-    href: "/thesis",
-    label: "Thesis",
-    icon: IconClipboardData,
+    group: "Pipeline",
+    items: [
+      { href: "/deal-flow", label: "Deal Flow", icon: IconUsersGroup },
+      { href: "/portfolio-support", label: "Portfolio Support", icon: IconHeartHandshake },
+    ],
   },
   {
-    href: "/pro-forma",
-    label: "Pro Forma",
-    icon: IconChartBar,
-  },
-  {
-    href: "/venture-bond",
-    label: "Venture Bond",
-    icon: IconBriefcase2,
-  },
-  {
-    href: "/deal-flow",
-    label: "Deal Flow",
-    icon: IconUsersGroup,
-  },
-  {
-    href: "/portfolio-support",
-    label: "Portfolio Support",
-    icon: IconHeartHandshake,
-  },
-  {
-    href: "/edin-os",
-    label: "EdinOS",
-    icon: IconDeviceLaptop,
-  },
-  {
-    href: "/team",
-    label: "Team",
-    icon: IconUsers,
-  },
-  {
-    href: "/legal",
-    label: "Legal & Compliance",
-    icon: IconScale,
+    group: "The Firm",
+    items: [
+      { href: "/edin-os", label: "EdinOS", icon: IconDeviceLaptop },
+      { href: "/team", label: "Team", icon: IconUsers },
+      { href: "/legal", label: "Legal & Compliance", icon: IconScale },
+    ],
   },
 ];
+
+// Flat list for backwards compatibility
+export const navlinks = navGroups.flatMap((g) => g.items);

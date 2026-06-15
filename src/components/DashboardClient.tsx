@@ -1,6 +1,5 @@
 'use client';
 
-import { Container } from "@/components/Container";
 import Dashboard from "@/components/Dashboard";
 import { useEffect, useState } from "react";
 import { useSessionAwareFetch } from '@/hooks/useSessionAwareFetch';
@@ -96,48 +95,39 @@ export default function DashboardClient() {
 
   if (loading) {
     return (
-      <Container>
-        <div className="flex items-center justify-center h-screen">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div>
-        </div>
-      </Container>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 400 }}>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2" style={{ borderColor: 'var(--green-700)' }} />
+      </div>
     );
   }
 
   if (error) {
     const isSessionError = error.includes('Session expired') || error.includes('sign in');
-    
+
     return (
-      <Container>
-        <div className="flex items-center justify-center h-screen">
-          <div className="text-center p-6 bg-white rounded-lg shadow-lg">
-            <div className="text-red-500 text-5xl mb-4">
-              {isSessionError ? '🔒' : '⚠️'}
-            </div>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
-              {isSessionError ? 'Session Expired' : 'Error Loading Dashboard'}
-            </h2>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <div className="space-x-2">
-              {isSessionError ? (
-                <button 
-                  onClick={() => router.push('/auth/signin')}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Sign In Again
-                </button>
-              ) : (
-                <button 
-                  onClick={() => window.location.reload()}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
-                >
-                  Try Again
-                </button>
-              )}
-            </div>
-          </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 400 }}>
+        <div style={{ textAlign: 'center', padding: 'var(--space-7)', background: 'var(--surface-card)', border: '1px solid var(--border-subtle)', borderRadius: 'var(--radius-lg)', maxWidth: 420 }}>
+          <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: 'var(--text-xl)', color: 'var(--text-strong)', marginBottom: 'var(--space-3)' }}>
+            {isSessionError ? 'Session Expired' : 'Error Loading Dashboard'}
+          </h2>
+          <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-muted)', marginBottom: 'var(--space-5)' }}>{error}</p>
+          {isSessionError ? (
+            <button
+              onClick={() => router.push('/auth/signin')}
+              style={{ padding: '8px 20px', background: 'var(--green-700)', color: 'var(--paper-100)', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: 'var(--text-sm)', fontWeight: 600, cursor: 'pointer' }}
+            >
+              Sign In Again
+            </button>
+          ) : (
+            <button
+              onClick={() => window.location.reload()}
+              style={{ padding: '8px 20px', background: 'var(--green-700)', color: 'var(--paper-100)', border: 'none', borderRadius: 'var(--radius-sm)', fontSize: 'var(--text-sm)', fontWeight: 600, cursor: 'pointer' }}
+            >
+              Try Again
+            </button>
+          )}
         </div>
-      </Container>
+      </div>
     );
   }
 

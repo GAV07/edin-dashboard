@@ -1,16 +1,17 @@
 "use client";
-import { navlinks } from "@/constants/navlinks";
-import { Navlink } from "@/types/navlink";
+import { navGroups } from "@/constants/navlinks";
+import { socials } from "@/constants/socials";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import React, { useState } from "react";
-import { twMerge } from "tailwind-merge";
-import { Heading } from "./Heading";
-import { socials } from "@/constants/socials";
-import { Badge } from "./Badge";
-import { AnimatePresence, motion } from "framer-motion";
-import { IconLayoutSidebarRightCollapse, IconMail, IconLogout, IconUser, IconSettings, IconDatabaseImport } from "@tabler/icons-react";
+import {
+  IconLayoutSidebarRightCollapse,
+  IconDownload,
+  IconLogout,
+  IconSettings,
+  IconDatabaseImport,
+} from "@tabler/icons-react";
 import { isMobile } from "@/lib/utils";
 import { useSession, signOut } from "next-auth/react";
 
@@ -24,214 +25,156 @@ export const Sidebar = () => {
   const [open, setOpen] = useState(isMobile() ? false : true);
   const { data: session } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleSignOut = async () => {
-    // Track sign out event
-    if (typeof window !== 'undefined' && window.gtag && session?.user) {
-      window.gtag('event', 'logout', {
-        event_category: 'Authentication',
+    if (typeof window !== "undefined" && window.gtag && session?.user) {
+      window.gtag("event", "logout", {
+        event_category: "Authentication",
         user_id: session.user.id,
         event_label: session.user.role,
       });
     }
-    
-    // Sign out and redirect to signin page
     try {
-      await signOut({ 
-        callbackUrl: '/auth/signin',
-        redirect: false // Don't use NextAuth's redirect, handle it manually
-      });
-      // Manual redirect after sign out
-      router.push('/auth/signin');
+      await signOut({ callbackUrl: "/auth/signin", redirect: false });
+      router.push("/auth/signin");
     } catch (error) {
-      console.error('Sign out error:', error);
-      // Fallback redirect
-      router.push('/auth/signin');
+      console.error("Sign out error:", error);
+      router.push("/auth/signin");
     }
   };
 
+  const isActive = (href: string) => pathname === href;
+
+  const initials = session?.user?.name
+    ? session.user.name
+        .split(" ")
+        .map((n: string) => n[0])
+        .join("")
+        .toUpperCase()
+        .slice(0, 2)
+    : "??";
+
   return (
     <>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ x: -200 }}
-            animate={{ x: 0 }}
-            transition={{ duration: 0.2, ease: "linear" }}
-            exit={{ x: -200 }}
-            className="px-6  z-[100] py-10 bg-neutral-100 max-w-[14rem] lg:w-fit  fixed lg:relative  h-screen left-0 flex flex-col justify-between"
-          >
-            <div className="flex-1 overflow-auto">
-              <SidebarHeader />
-              <Navigation setOpen={setOpen} />
-            </div>
-            <div className="space-y-3">
-              {/* User Info Section */}
-              {session?.user && (
-                <div className="bg-white rounded-lg p-3 border border-gray-200">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <IconUser className="h-4 w-4 text-gray-500" />
-                    <span className="text-xs font-medium text-gray-700">Signed in as</span>
-                  </div>
-                  <p className="text-xs font-bold text-primary truncate">{session.user.name}</p>
-                  <p className="text-xs text-gray-500 truncate">{session.user.email}</p>
-                  <div className="mt-2">
-                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800 capitalize">
-                      {session.user.role}
-                    </span>
-                  </div>
-                </div>
-              )}
-              
-              {/* Sign Out Button */}
-              {session?.user && (
-                <button
-                  onClick={handleSignOut}
-                  className="w-full flex items-center space-x-2 py-2 px-3 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-md transition duration-200"
+      {open && (
+        <aside className="sb">
+          {/* Brand header */}
+          <div className="sb-head">
+            <span className="sb-mark">
+              <Image
+                src="/images/logos/edincapital_logo.jpeg"
+                alt="Edin Capital"
+                width={30}
+                height={30}
+              />
+            </span>
+            <span className="sb-brand">
+              <span className="sb-brand-name">Edin Capital</span>
+              <span className="sb-brand-sub">Investor Portal</span>
+            </span>
+          </div>
+
+          {/* Navigation */}
+          <nav className="sb-scroll">
+            {navGroups.map((g) => (
+              <React.Fragment key={g.group}>
+                <div className="sb-group-label">{g.group}</div>
+                {g.items.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => isMobile() && setOpen(false)}
+                    className={`sb-link${isActive(item.href) ? " is-active" : ""}`}
+                  >
+                    <item.icon className="sb-ico" />
+                    <span className="sb-lab">{item.label}</span>
+                  </Link>
+                ))}
+              </React.Fragment>
+            ))}
+
+            {/* Admin Section */}
+            {session?.user?.role === "admin" && (
+              <>
+                <div className="sb-group-label">Admin</div>
+                <Link
+                  href="/admin/users"
+                  onClick={() => isMobile() && setOpen(false)}
+                  className={`sb-link${isActive("/admin/users") ? " is-active" : ""}`}
                 >
-                  <IconLogout className="h-4 w-4" />
-                  <span>Sign Out</span>
-                </button>
-              )}
-              
-              <div onClick={() => isMobile() && setOpen(false)}>
-                <Badge href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0" text="Edin Deck" target="_blank" />
+                  <IconSettings className="sb-ico" />
+                  <span className="sb-lab">Manage Users</span>
+                </Link>
+                <Link
+                  href="/admin/data"
+                  onClick={() => isMobile() && setOpen(false)}
+                  className={`sb-link${isActive("/admin/data") ? " is-active" : ""}`}
+                >
+                  <IconDatabaseImport className="sb-ico" />
+                  <span className="sb-lab">Sync Data</span>
+                </Link>
+              </>
+            )}
+
+            {/* Socials */}
+            <div className="sb-group-label">Socials</div>
+            {socials.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => isMobile() && setOpen(false)}
+                className="sb-link"
+              >
+                <link.icon className="sb-ico" />
+                <span className="sb-lab">{link.label}</span>
+              </a>
+            ))}
+
+          </nav>
+
+          {/* Footer */}
+          <div className="sb-foot">
+            <a
+              className="sb-cta"
+              href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span>Download deck</span>
+              <IconDownload style={{ width: 15, height: 15 }} />
+            </a>
+
+            {session?.user && (
+              <div className="sb-user">
+                <span className="sb-user-av">{initials}</span>
+                <span className="sb-user-info">
+                  <span className="sb-user-name">{session.user.name}</span>
+                  <span className="sb-user-role">{session.user.role}</span>
+                </span>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            )}
+
+            {session?.user && (
+              <button onClick={handleSignOut} className="sb-signout">
+                <IconLogout style={{ width: 14, height: 14 }} />
+                <span>Sign out</span>
+              </button>
+            )}
+          </div>
+        </aside>
+      )}
+
+      {/* Mobile toggle */}
       <button
-        className="fixed lg:hidden bottom-4 right-4 h-10 w-10 bg-black text-white rounded-full flex items-center justify-center z-50 shadow-lg hover:shadow-xl transition-all duration-200 hover:bg-gray-800"
+        className="fixed lg:hidden bottom-4 right-4 h-10 w-10 rounded-full flex items-center justify-center z-50 shadow-lg"
+        style={{ background: "var(--green-700)", color: "var(--paper-100)" }}
         onClick={() => setOpen(!open)}
       >
         <IconLayoutSidebarRightCollapse className="h-5 w-5" />
       </button>
     </>
-  );
-};
-
-export const Navigation = ({
-  setOpen,
-}: {
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  const pathname = usePathname();
-  const { data: session } = useSession();
-
-  const isActive = (href: string) => pathname === href;
-
-  return (
-    <div className="flex flex-col space-y-1 my-10 relative z-[100]">
-      {navlinks.map((link: Navlink) => (
-        <Link
-          key={link.href}
-          href={link.href}
-          onClick={() => isMobile() && setOpen(false)}
-          className={twMerge(
-            "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
-            isActive(link.href) && "bg-white shadow-lg text-primary"
-          )}
-        >
-          <link.icon
-            className={twMerge(
-              "h-4 w-4 flex-shrink-0",
-              isActive(link.href) && "text-accent"
-            )}
-          />
-          <span>{link.label}</span>
-        </Link>
-      ))}
-
-      {/* Admin Section - Only show for admin users */}
-      {session?.user?.role === 'admin' && (
-        <>
-          <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
-            Admin
-          </Heading>
-          <Link
-            href="/admin/users"
-            onClick={() => isMobile() && setOpen(false)}
-            className={twMerge(
-              "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
-              isActive('/admin/users') && "bg-white shadow-lg text-primary"
-            )}
-          >
-            <IconSettings
-              className={twMerge(
-                "h-4 w-4 flex-shrink-0",
-                isActive('/admin/users') && "text-accent"
-              )}
-            />
-            <span>Manage Users</span>
-          </Link>
-          <Link
-            href="/admin/data"
-            onClick={() => isMobile() && setOpen(false)}
-            className={twMerge(
-              "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm",
-              isActive('/admin/data') && "bg-white shadow-lg text-primary"
-            )}
-          >
-            <IconDatabaseImport
-              className={twMerge(
-                "h-4 w-4 flex-shrink-0",
-                isActive('/admin/data') && "text-accent"
-              )}
-            />
-            <span>Sync Data</span>
-          </Link>
-        </>
-      )}
-
-      <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
-        Socials
-      </Heading>
-      {socials.map((link: Navlink) => (
-        <a
-          key={link.href}
-          href={link.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => isMobile() && setOpen(false)}
-          className={twMerge(
-            "text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm"
-          )}
-        >
-          <link.icon
-            className={twMerge(
-              "h-4 w-4 flex-shrink-0",
-              isActive(link.href) && "text-accent"
-            )}
-          />
-          <span>{link.label}</span>
-        </a>
-      ))}
-      <Heading as="p" className="text-sm md:text-sm lg:text-sm pt-6 px-2">
-        Contact
-      </Heading>
-      <Link href="mailto:info@edin.capital" className="text-gray-700 hover:text-gray-900 transition duration-200 flex items-center space-x-2 py-2 px-2 rounded-md text-sm">
-        <IconMail className="h-4 w-4 flex-shrink-0" />
-        <span>info@edin.capital</span>
-      </Link>
-    </div>
-  );
-};
-
-const SidebarHeader = () => {
-  return (
-    <div className="flex space-x-2">
-      <Image
-        src="/images/logos/edincapital_logo.jpeg"
-        alt="Avatar"
-        height={40}
-        width={40}
-        className="object-cover object-top rounded-full flex-shrink-0"
-      />
-      <div className="flex text-sm flex-col">
-        <p className="font-bold text-primary">Edin Capital</p>
-        <p className="font-light text-secondary">Fund 1</p>
-      </div>
-    </div>
   );
 };

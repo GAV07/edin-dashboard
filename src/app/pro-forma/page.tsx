@@ -1,10 +1,9 @@
-import { Container } from "@/components/Container";
 import { Metadata } from "next";
 import ProFormaDashboard from "@/components/ProFormaDashboard";
 
 export const metadata: Metadata = {
   title: "Pro Forma | Investor Dashboard",
-  description: "Edin Capital Fund I Pro Forma Model & Growth Projections",
+  description: "Venture Bond Pro Forma Dashboard with scenario analysis.",
 };
 
 export default function ProFormaPage() {
