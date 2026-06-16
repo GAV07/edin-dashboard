@@ -1,8 +1,17 @@
 import { withAuth } from "next-auth/middleware"
+import { NextResponse } from "next/server"
 
 export default withAuth(
   function middleware(req) {
-    // Only run middleware logic for protected routes
+    const token = req.nextauth.token
+    const pathname = req.nextUrl.pathname
+
+    // Admin routes require admin role
+    if (pathname.startsWith('/admin')) {
+      if (token?.role !== 'admin') {
+        return NextResponse.redirect(new URL('/', req.url))
+      }
+    }
   },
   {
     callbacks: {

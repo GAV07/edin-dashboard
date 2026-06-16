@@ -1,10 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { signIn, getSession, useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { Mail, Lock, Eye, EyeOff, Shield } from 'lucide-react'
-import { useEffect } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
+import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 
 declare global {
   interface Window {
@@ -13,14 +12,30 @@ declare global {
 }
 
 export default function SignIn() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    }>
+      <SignInForm />
+    </Suspense>
+  )
+}
+
+function SignInForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [isAdminLogin, setIsAdminLogin] = useState(false)
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const isAdminLogin = searchParams.get('admin') === 'true'
   const { data: session, status } = useSession()
 
   useEffect(() => {
@@ -69,7 +84,10 @@ export default function SignIn() {
       })
 
       if (result?.error) {
-        setError('Email not recognized. Please contact your Edin representative for access.')
+        setError(isAdminLogin
+          ? 'Invalid email or password.'
+          : 'Email not recognized. Please contact your Edin representative for access.'
+        )
         // Track failed login attempt
         if (typeof window !== 'undefined' && window.gtag) {
           window.gtag('event', 'login_failed', {
@@ -127,8 +145,8 @@ export default function SignIn() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-green-700 rounded-xl mb-4">
             <Mail className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">Edin Investor Portal</h1>
-          <p className="text-gray-200 mt-2">Dive deeper into what we are building here at Edin</p>
+          <h1 className="text-3xl font-bold text-white">{isAdminLogin ? 'Edin Admin Portal' : 'Edin Investor Portal'}</h1>
+          <p className="text-gray-200 mt-2">{isAdminLogin ? 'Administrative access' : 'Dive deeper into what we are building here at Edin'}</p>
         </div>
 
         {/* Sign In Form */}
@@ -156,27 +174,11 @@ export default function SignIn() {
               </div>
             </div>
 
-            {/* Admin Login Toggle */}
-            <div className="flex items-center justify-between">
-              <button
-                type="button"
-                onClick={() => {
-                  setIsAdminLogin(!isAdminLogin)
-                  setPassword('')
-                  setError('')
-                }}
-                className="flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <Shield className="w-3.5 h-3.5" />
-                {isAdminLogin ? 'Switch to investor login' : 'Admin login'}
-              </button>
-            </div>
-
-            {/* Password Field (Admin only) */}
+            {/* Password Field (shown when admin login detected via URL) */}
             {isAdminLogin && (
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-                  Admin Password
+                  Password
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -190,7 +192,7 @@ export default function SignIn() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     className="block w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="Enter admin password"
+                    placeholder="Enter your password"
                   />
                   <button
                     type="button"
