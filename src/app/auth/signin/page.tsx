@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from 'react'
 import { signIn, getSession, useSession } from 'next-auth/react'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { Mail, Lock, Eye, EyeOff } from 'lucide-react'
 
 declare global {
@@ -33,9 +33,8 @@ function SignInForm() {
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false)
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [needsPassword, setNeedsPassword] = useState(false)
   const router = useRouter()
-  const searchParams = useSearchParams()
-  const isAdminLogin = searchParams.get('admin') === 'true'
   const { data: session, status } = useSession()
 
   useEffect(() => {
@@ -77,14 +76,36 @@ function SignInForm() {
     setError('')
 
     try {
+      // If we haven't checked yet whether this email needs a password, check first
+      if (!needsPassword) {
+        const checkRes = await fetch('/api/auth/check-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email }),
+        })
+        const { exists, requiresPassword } = await checkRes.json()
+
+        if (!exists) {
+          setError('Email not recognized. Please contact your Edin representative for access.')
+          setIsLoading(false)
+          return
+        }
+
+        if (requiresPassword) {
+          setNeedsPassword(true)
+          setIsLoading(false)
+          return
+        }
+      }
+
       const result = await signIn('credentials', {
         email,
-        password: isAdminLogin ? password : '',
+        password,
         redirect: false,
       })
 
       if (result?.error) {
-        setError(isAdminLogin
+        setError(needsPassword
           ? 'Invalid email or password.'
           : 'Email not recognized. Please contact your Edin representative for access.'
         )
@@ -145,8 +166,8 @@ function SignInForm() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-green-600 to-green-700 rounded-xl mb-4">
             <Mail className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-3xl font-bold text-white">{isAdminLogin ? 'Edin Admin Portal' : 'Edin Investor Portal'}</h1>
-          <p className="text-gray-200 mt-2">{isAdminLogin ? 'Administrative access' : 'Dive deeper into what we are building here at Edin'}</p>
+          <h1 className="text-3xl font-bold text-white">Edin Investor Portal</h1>
+          <p className="text-gray-200 mt-2">Dive deeper into what we are building here at Edin</p>
         </div>
 
         {/* Sign In Form */}
@@ -167,15 +188,15 @@ function SignInForm() {
                   type="email"
                   required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setNeedsPassword(false); setError('') }}
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                   placeholder="Enter your email"
                 />
               </div>
             </div>
 
-            {/* Password Field (shown when admin login detected via URL) */}
-            {isAdminLogin && (
+            {/* Password Field (shown when email requires password) */}
+            {needsPassword && (
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                   Password

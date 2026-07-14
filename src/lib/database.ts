@@ -14,7 +14,7 @@ export interface User {
   email: string
   password_hash?: string | null
   name: string
-  role: 'admin' | 'investor'
+  role: 'admin' | 'partner' | 'investor'
   created_at: string
   updated_at: string
   is_active: boolean
@@ -81,11 +81,11 @@ export interface CreateUserData {
   email: string
   password?: string
   name: string
-  role: 'admin' | 'investor'
+  role: 'admin' | 'partner' | 'investor'
 }
 
 export interface UpdateUserData {
   name?: string
-  role?: 'admin' | 'investor'
+  role?: 'admin' | 'partner' | 'investor'
   is_active?: boolean
 }

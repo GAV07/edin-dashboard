@@ -4,23 +4,6 @@ import bcrypt from "bcryptjs"
 import { UserManagement } from './userManagement'
 import type { JWT } from "next-auth/jwt"
 
-// Fallback in-memory users for when database is not available
-const fallbackUsers = [
-  {
-    id: "1",
-    email: "demo-admin@example.com",
-    password: "$2b$12$6/.4/lJbAxylYEA3Ght5neBkQ/ZkI3SxXVLnjYBk8ufQPuieQ3J.C", // "password123"
-    name: "Demo Admin",
-    role: "admin"
-  },
-  {
-    id: "2",
-    email: "demo-investor@example.com",
-    name: "Demo Investor",
-    role: "investor"
-  }
-]
-
 export const authOptions = {
   providers: [
     CredentialsProvider({
@@ -51,18 +34,18 @@ export const authOptions = {
                 console.log("Database user found:", user.email, "role:", user.role)
               }
 
-              // Admin users require password verification
-              if (user.role === 'admin') {
+              // Admin and partner users require password verification
+              if (user.role === 'admin' || user.role === 'partner') {
                 if (!credentials.password || !user.password_hash) {
                   if (process.env.NODE_ENV === 'development') {
-                    console.log("Admin login requires password")
+                    console.log("Admin/partner login requires password")
                   }
                   return null
                 }
                 const isPasswordValid = await bcrypt.compare(credentials.password, user.password_hash)
                 if (!isPasswordValid) {
                   if (process.env.NODE_ENV === 'development') {
-                    console.log("Admin password invalid")
+                    console.log("Admin/partner password invalid")
                   }
                   return null
                 }
@@ -78,39 +61,12 @@ export const authOptions = {
           }
         } catch (error) {
           console.error("Database authentication error:", error)
-          // Fall back to in-memory users if database fails
-        }
-
-        // Fallback to in-memory users
-        const user = fallbackUsers.find(user => user.email === credentials.email)
-        if (!user) {
-          if (process.env.NODE_ENV === 'development') {
-            console.log("User not found:", credentials.email)
-          }
-          return null
         }
 
         if (process.env.NODE_ENV === 'development') {
-          console.log("Using fallback user:", user.email, "role:", user.role)
+          console.log("User not found:", credentials.email)
         }
-
-        // Admin fallback users require password verification
-        if (user.role === 'admin') {
-          if (!credentials.password || !('password' in user)) {
-            return null
-          }
-          const isPasswordValid = await bcrypt.compare(credentials.password, user.password!)
-          if (!isPasswordValid) {
-            return null
-          }
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          role: user.role
-        }
+        return null
       }
     })
   ],
