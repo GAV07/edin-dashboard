@@ -1,11 +1,12 @@
-## Sidefolio - Portfolio website template
+# Edin Capital — Data Room
 
-As seen on [Aceternity UI](https://ui.aceternity.com/templtes/sidefolio)
+Investor data room for Edin Capital Fund I. Next.js portal with role-based auth, financial modeling dashboards, and live data from Google Sheets and Notion.
 
-## Built with
-- Next.js
-- Tailwindcss
-- Framer motion
-- MDX
+## Stack
 
-Checkout all the templates at [Aceternity UI](https://ui.aceternity.com/templates)
+- Next.js 15 (App Router)
+- NextAuth (credentials + JWT)
+- PostgreSQL (Railway)
+- Google Sheets API (financial models)
+- Notion API (portfolio companies)
+- Recharts, Framer Motion, Tailwind CSS

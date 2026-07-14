@@ -61,6 +61,7 @@ export const authOptions = {
           }
         } catch (error) {
           console.error("Database authentication error:", error)
+          return null
         }
 
         if (process.env.NODE_ENV === 'development') {
