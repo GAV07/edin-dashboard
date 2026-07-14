@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { PageHead, SectionLabel, MetricGrid } from '@/components/portal/ui';
 import { Bars, Trend, Donut, ChartLegend, C } from '@/components/portal/charts';
+import { DROPBOX } from '@/constants/links';
 import {
   IconBolt, IconClipboardData, IconChartBar, IconBriefcase2,
   IconUsersGroup, IconHeartHandshake, IconDeviceLaptop, IconUsers,
@@ -71,7 +72,7 @@ export default function Dashboard({
         lede="Edin Capital Fund I pairs convertible equity with structured profit-sharing —the Venture Bond —to return capital as durable companies grow, not only when they exit."
         action={
           <a
-            href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0"
+            href={DROPBOX.deck}
             target="_blank"
             rel="noopener noreferrer"
             style={{

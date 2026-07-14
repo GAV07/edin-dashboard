@@ -1,6 +1,7 @@
 "use client";
 import { navGroups } from "@/constants/navlinks";
 import { socials } from "@/constants/socials";
+import { DROPBOX } from "@/constants/links";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
@@ -139,7 +140,7 @@ export const Sidebar = () => {
           <div className="sb-foot">
             <a
               className="sb-cta"
-              href="https://www.dropbox.com/scl/fi/rofebzx4l0r5r0lcaweih/Deep-Dive-EDIN.pdf?rlkey=x835swqlmkbwwnb8xm007wjy2&st=rmocy3oj&dl=0"
+              href={DROPBOX.deck}
               target="_blank"
               rel="noopener noreferrer"
             >

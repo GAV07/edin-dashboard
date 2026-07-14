@@ -79,7 +79,7 @@ export const authOptions = {
     maxAge: 24 * 60 * 60, // 24 hours
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user: any }) {
+    async jwt({ token, user }: { token: JWT; user?: { id: string; role: string } }) {
       if (user) {
         token.role = user.role
         token.userId = user.id
