@@ -36,30 +36,33 @@ const layers = [
 
 const companyProfile = [
   {
-    title: "Financial Profile",
+    title: "Scale",
     items: [
-      "$1M+ annual revenue with path to $15M+",
-      "30%+ margins or clear path within 12 to 18 months",
-      "Capital-efficient growth model",
-      "Venture Bond-compatible profit-sharing potential",
+      "Companies at or approaching seven-figure revenue with a credible path to $30M+",
     ],
   },
   {
-    title: "Founder & Company",
+    title: "Economics",
     items: [
-      "2 to 5+ years of operating history",
-      "Domain-expert founders with deep industry knowledge",
-      "Growth-minded but not VC-pressure dependent",
-      "Clean cap table, limited or no debt",
+      "Profitable or near-profitable, with a deliberate focus on efficient growth over capital-intensive hypergrowth",
     ],
   },
   {
-    title: "Stage & Geography",
+    title: "Edge",
     items: [
-      "Seed-stage companies prioritizing profitability over hypergrowth",
-      "Southeast US emphasis with deep network in Florida tri-county",
-      "National investment capability",
-      "Regional economic development alignment preferred",
+      "Domain experts with structural, network, or knowledge-based defensibility",
+    ],
+  },
+  {
+    title: "Resilience",
+    items: [
+      "Insulated from AI displacement yet positioned to deploy it as an operational accelerant",
+    ],
+  },
+  {
+    title: "Readiness",
+    items: [
+      "Demonstrated, early product-market fit with strong signs of sustainable repeatability",
     ],
   },
 ];
@@ -85,8 +88,8 @@ export default function ThesisPage() {
       <PageHead
         num="02"
         eyebrow="Investment thesis"
-        title={<>Profitable companies building <em>durable</em> value</>}
-        lede="Edin Capital targets a structural gap in venture: profitable, seed-stage companies with strong unit economics that are underserved by traditional VC. These founders prioritize sustainable growth over hypergrowth and our Venture Bond instrument is designed specifically for them."
+        title={<>Enduring businesses. <em>Built to last. Ready to grow.</em></>}
+        lede="We back real businesses that don't compromise on ambition or stability. Our thesis targets durable, growth-oriented companies that existing capital was never designed to serve."
       />
 
       <div className="ed-grid ed-g2">

@@ -27,28 +27,14 @@ export default withAuth(
   }
 )
 
-// Only protect the main application routes, not static files or API routes
 export const config = {
   matcher: [
-    /*
-     * Only protect main application pages:
-     * - / (home page)
-     * - /portfolio
-     * - /deal-flow
-     * - /venture-bond
-     * - /pro-forma
-     * - /team
-     * - /market-research
-     * - /executive-summary
-     * - /faq
-     * - /edin-os
-     * - /admin (admin pages)
-     */
     '/',
-    '/portfolio/:path*',
+    '/thesis/:path*',
     '/deal-flow/:path*',
-    '/venture-bond/:path*', 
+    '/venture-bond/:path*',
     '/pro-forma/:path*',
+    '/portfolio-support/:path*',
     '/team/:path*',
     '/legal/:path*',
     '/faq/:path*',

@@ -1,4 +1,7 @@
+'use client';
+
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
+import { PageHead } from '@/components/portal/ui';
 
 const faqs = [
     {
@@ -11,11 +14,11 @@ const faqs = [
     },
     {
       "question": "How does the profit-sharing mechanism work?",
-      "answer": "Our profit-sharing mechanism is triggered after specific conditions are met: typically 3 years post-investment, when a company reaches certain revenue targets (e.g., $2M LTM) and maintains healthy margins (e.g., 35%). The structure follows a tiered approach: 20% of profits until 2x the initial investment is returned, 10% until 4x, and 5% until 6x, with a total cap of 6x the initial investment."
+      "answer": "Our profit-sharing mechanism is triggered after specific conditions are met: a 4-year time trigger, when a company reaches $3M in revenue, and maintains 15% margins. The structure follows a tiered approach: 20% of net income until 2x return, 15% until 4x, 10% until 6x, and 1% in perpetuity. On a $2M investment, this structure yields a 6x ($12M) return with strong equity appreciation and uncapped upside in place."
     },
     {
       "question": "How does Edin Capital differ from traditional venture capital?",
-      "answer": "Unlike traditional VC that relies on a power law distribution where most investments fail and returns depend on rare unicorns, Edin Capital focuses on sustainable growth companies with an enhanced log-normal distribution where a majority succeed. We prioritize companies showing a path to $15M revenue rather than the $100M+ hypergrowth targets of traditional VC, and provide continuous distributions rather than exit-dependent liquidity with 7-12+ year horizons."
+      "answer": "Unlike traditional VC that relies on a power law distribution where most investments fail and returns depend on 1-2 outliers, Edin Capital focuses on durable, growth-oriented companies where every Venture Bond investment contributes substantial returns. We prioritize companies showing a path to $30M+ revenue rather than the $100M+ hypergrowth targets of traditional VC, and provide recurring distributions through profit-sharing rather than exit-dependent liquidity."
     },
     {
       "question": "What types of companies does Edin Capital invest in?",
@@ -23,11 +26,11 @@ const faqs = [
     },
     {
       "question": "What is the size of your fund and typical investment?",
-      "answer": "Edin Capital Fund I has a target size of $76M, with plans to invest in approximately 25 companies. Our average check size is $2M, with a target TVPI (Total Value to Paid-In Capital) of 3-4x."
+      "answer": "Edin Capital Fund I has a target size of $85M, with plans to invest in 30 companies. Our average check size is $2M. The fund is structured as a perpetual vehicle domiciled in Delaware with a 2/20 fee and carry structure, $250K LP minimum, and priority co-invest allocation to anchor LPs."
     },
     {
       "question": "Who is behind Edin Capital?",
-      "answer": "Edin Capital was founded by a diverse team with complementary expertise: Aurelia Edwards (General Partner, 3x founder and global investor), Erick Gavin (General Partner, former Executive Director at Venture Miami), and Andrew Davis (Managing Partner, award-winning founder trusted by Fortune 100 enterprises). Our team brings experience in entrepreneurship, investing, ecosystem development, and community building across South Florida's tri-county area."
+      "answer": "Edin Capital brings together expertise across venture investing, company building, institutional operations, and regional economic development. Andrew Davis (Managing Partner) has founded three companies and invested in 30+ early-stage startups globally. Aurelia Edwards (General Partner) is a 4x founder whose companies have served celebrities, athletes, and HNWIs. Erick Gavin (General Partner) is the former Executive Director of Venture Miami, leveraging a decade of experience in law, accelerator design, and ecosystem building."
     },
     {
       "question": "What advantages does the Venture Bond offer to investors?",
@@ -57,40 +60,51 @@ const faqs = [
 
 export default function FAQ() {
   return (
-    <div className="bg-white">
-      <div className="mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8 lg:py-40">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="text-2xl font-semibold tracking-tight text-gray-900 sm:text-3xl">
-            Frequently asked questions
-          </h2>
-          <dl className="mt-16 divide-y divide-gray-900/10">
-            {faqs.map((faq) => (
-              <Disclosure key={faq.question} as="div" className="py-6 first:pt-0 last:pb-0">
-                <dt>
-                  <DisclosureButton className="group flex w-full items-start justify-between text-left text-gray-900 hover:text-gray-700 transition-colors">
-                    <span className="text-base/7 font-semibold">{faq.question}</span>
-                    <span className="ml-6 flex h-7 items-center">
-                      <span 
-                        className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors group-data-[open]:hidden"
-                      >
-                        +
-                      </span>
-                      <span 
-                        className="text-2xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors group-[&:not([data-open])]:hidden"
-                      >
-                        −
-                      </span>
-                    </span>
-                  </DisclosureButton>
-                </dt>
-                <DisclosurePanel as="dd" className="mt-2 pr-12">
-                  <p className="text-base/7 text-gray-600">{faq.answer}</p>
-                </DisclosurePanel>
-              </Disclosure>
-            ))}
-          </dl>
-        </div>
-      </div>
-    </div>
+    <>
+      <PageHead
+        num="10"
+        eyebrow="FAQ"
+        title={<>Frequently asked <em>questions.</em></>}
+        lede="Common questions about Edin Capital, the Venture Bond, and our investment approach."
+      />
+
+      <dl style={{ display: 'flex', flexDirection: 'column' }}>
+        {faqs.map((faq) => (
+          <Disclosure key={faq.question} as="div" className="panel" style={{ padding: 0 }}>
+            <dt>
+              <DisclosureButton
+                className="group"
+                style={{
+                  display: 'flex',
+                  width: '100%',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  textAlign: 'left',
+                  padding: 'var(--space-5) var(--space-6)',
+                  background: 'none',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: 'var(--text-strong)',
+                  fontSize: 'var(--text-base)',
+                  fontWeight: 600,
+                  lineHeight: 'var(--leading-relaxed)',
+                }}
+              >
+                <span>{faq.question}</span>
+                <span style={{ marginLeft: 'var(--space-4)', flexShrink: 0, fontSize: 'var(--text-xl)', color: 'var(--text-muted)' }}>
+                  <span className="group-data-[open]:hidden">+</span>
+                  <span className="group-[&:not([data-open])]:hidden">&minus;</span>
+                </span>
+              </DisclosureButton>
+            </dt>
+            <DisclosurePanel as="dd" style={{ padding: '0 var(--space-6) var(--space-6)', margin: 0 }}>
+              <p style={{ fontSize: 'var(--text-sm)', color: 'var(--text-secondary)', lineHeight: 'var(--leading-relaxed)' }}>
+                {faq.answer}
+              </p>
+            </DisclosurePanel>
+          </Disclosure>
+        ))}
+      </dl>
+    </>
   )
 }

@@ -35,7 +35,7 @@ function Topbar() {
       <div className="top-meta">
         <span className="top-pill">
           <span className="dot" />
-          Data as of Q2 2026
+          Data as of Q{Math.ceil((new Date().getMonth() + 1) / 3)} {new Date().getFullYear()}
         </span>
       </div>
     </div>
