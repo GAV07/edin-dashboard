@@ -7,7 +7,7 @@ const people = [
   {
     name: 'Andrew Davis',
     role: 'Managing Partner',
-    imageUrl: '/images/team/andrew.jpeg',
+    imageUrl: '/images/team/andrew.png',
     shortBio: 'Award-winning founder, operator, and investor with 7+ years of venture experience at Techstars, Comcast, and MakerX.',
     fullBio: `Andrew Davis is an award-winning founder, operator, and investor with over a decade of experience building and scaling companies at the intersection of technology and impact. He has held venture roles at Techstars, Comcast Ventures, and MakerX, where he sourced deals, supported portfolio companies, and helped shape investment strategy across early-stage ecosystems.
 
