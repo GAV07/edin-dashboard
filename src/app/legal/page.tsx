@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { PageHead } from "@/components/portal/ui";
+import { FUND } from "@/constants/fund";
 
 export const metadata: Metadata = {
   title: "Legal & Compliance | Investor Dashboard",
@@ -8,13 +9,28 @@ export const metadata: Metadata = {
 
 const sections = [
   {
-    title: "Fund structure & legal documents",
+    title: "Fund entity & structure",
+    items: [
+      `${FUND.legalName} — a ${FUND.domicile} limited partnership`,
+      `General Partner & Management Company: ${FUND.gpEntity}`,
+      `Asset class: ${FUND.assetClass} (the ${FUND.instrument})`,
+      `Target size ${FUND.targetSize} · Hard cap ${FUND.hardCap}`,
+      `Management fee ${FUND.managementFee} · Carried interest ${FUND.carry}`,
+      `Minimum LP commitment: ${FUND.minCommitment}`,
+    ],
+    note: null,
+  },
+  {
+    title: "Fund documents",
     items: [
       "Limited Partnership Agreement (LPA)",
       "Private Placement Memorandum (PPM)",
       "Subscription Agreement",
-      "Certificate of Formation",
-      "Operating Agreement",
+      "Certificate of Limited Partnership — Edin Capital Fund I LP",
+      "Certificate of Formation — Edin Capital Fund I GP LLC",
+      "Certificate of Formation — Edin Capital LLC (Management Co.)",
+      "Operating Agreement — Edin Capital Fund I GP LLC",
+      "Operating Agreement — Edin Capital LLC",
     ],
     note: "Final versions are provided to committed investors during the subscription process. Contact your Edin representative for access.",
   },
@@ -30,9 +46,20 @@ const sections = [
     note: "Edin Capital maintains compliance policies aligned with SEC regulations for exempt fund offerings. The compliance manual is available on request.",
   },
   {
+    title: "Service providers",
+    items: [
+      `Auditor: ${FUND.auditor} (audited annual financials within 120 days of year end)`,
+      `Banking: ${FUND.banks.join('; ')}`,
+      `Legal counsel: ${FUND.legalCounsel}`,
+    ],
+    note: null,
+  },
+  {
     title: "Regulatory disclosures",
     items: [
-      "Operates under Regulation D, Rule 506(b) exemption",
+      `Operates under Regulation D, Rule ${FUND.regDRule} exemption`,
+      `Investment Company Act ${FUND.icaExemption} (≤100 beneficial owners; accredited investors only)`,
+      `Adviser relies on the ${FUND.adviserExemption} exemption`,
       "Securities offered are not registered under the Securities Act of 1933",
       "Investment restricted to accredited investors as defined by the SEC",
       "Past performance is not indicative of future results",
@@ -49,7 +76,7 @@ export default function LegalPage() {
         num="09"
         eyebrow="Legal & compliance"
         title={<>Fund documentation & <em>disclosures.</em></>}
-        lede="Documentation, compliance framework, and regulatory disclosures for Edin Capital Fund I."
+        lede={`Documentation, compliance framework, and regulatory disclosures for ${FUND.legalName}.`}
       />
 
       <div className="ed-grid" style={{ gap: "var(--space-4)" }}>

@@ -13,7 +13,7 @@ const ROUTE_TITLE: Record<string, string> = {
   '/deal-flow': 'Deal Flow',
   '/portfolio-support': 'Portfolio Support',
   '/edin-os': 'EdinOS',
-  '/team': 'Team',
+  '/team': 'Team & Track Record',
   '/legal': 'Legal & Compliance',
   '/admin/users': 'Manage Users',
   '/admin/data': 'Sync Data',

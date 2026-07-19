@@ -2,6 +2,7 @@
 
 import { Disclosure, DisclosureButton, DisclosurePanel } from '@headlessui/react'
 import { PageHead } from '@/components/portal/ui';
+import { FUND } from '@/constants/fund';
 
 const faqs = [
     {
@@ -14,7 +15,7 @@ const faqs = [
     },
     {
       "question": "How does the profit-sharing mechanism work?",
-      "answer": "Our profit-sharing mechanism is triggered after specific conditions are met: a 4-year time trigger, when a company reaches $3M in revenue, and maintains 15% margins. The structure follows a tiered approach: 20% of net income until 2x return, 15% until 4x, 10% until 6x, and 1% in perpetuity. On a $2M investment, this structure yields a 6x ($12M) return with strong equity appreciation and uncapped upside in place."
+      "answer": `Our profit-sharing mechanism activates at the later of a time trigger and a revenue/margin condition being met. The structure follows a tiered approach: ${FUND.tranches} of net income, stepping down as cumulative distributions reach 2×, 4×, and 6× respectively, then 1% in perpetuity. Combined with equity participation, this structure delivers strong returns with uncapped upside.`
     },
     {
       "question": "How does Edin Capital differ from traditional venture capital?",
@@ -26,7 +27,7 @@ const faqs = [
     },
     {
       "question": "What is the size of your fund and typical investment?",
-      "answer": "Edin Capital Fund I has a target size of $85M, with plans to invest in 30 companies. Our average check size is $2M. The fund is structured as a perpetual vehicle domiciled in Delaware with a 2/20 fee and carry structure, $250K LP minimum, and priority co-invest allocation to anchor LPs."
+      "answer": `${FUND.legalName} has a target size of ${FUND.targetSize} (hard cap ${FUND.hardCap}), with plans to invest in ${FUND.targetPortfolio} companies. Our average check size is ${FUND.avgCheck}. The fund is structured as a perpetual vehicle domiciled in ${FUND.domicile} with a ${FUND.managementFee} / ${FUND.carry} fee and carry structure, ${FUND.minCommitment} LP minimum, and priority co-invest allocation to anchor LPs.`
     },
     {
       "question": "Who is behind Edin Capital?",

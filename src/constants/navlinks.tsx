@@ -30,8 +30,8 @@ export const navGroups = [
   {
     group: "The Firm",
     items: [
+      { href: "/team", label: "Team & Track Record", icon: IconUsers },
       { href: "/edin-os", label: "EdinOS", icon: IconDeviceLaptop },
-      { href: "/team", label: "Team", icon: IconUsers },
       { href: "/legal", label: "Legal & Compliance", icon: IconScale },
     ],
   },

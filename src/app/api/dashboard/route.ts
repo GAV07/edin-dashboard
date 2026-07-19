@@ -1,18 +1,23 @@
 import { NextResponse } from 'next/server';
 import { getCachedData } from '@/lib/database';
+import { FUND } from '@/constants/fund';
 
+// Structural/fee values come from FUND constants; return metrics are zeroed
+// until the Google Sheet cache is populated via admin sync.
+// NOTE: The live Google Sheet also needs updating (Erick/Andrew data task)
+// to reflect 2.0% fee, $85M target, perpetual term, ~30 portfolio count.
 const FALLBACK_DATA = {
   fundOverview: {
-    committedCapital: '$86M',
+    committedCapital: FUND.targetSize,
     investableCapital: '$70,000,000',
-    managementFee: '2.5%',
-    fundLife: '15 years',
-    deploymentPeriod: '5 years',
-    carry: '20%',
+    managementFee: FUND.managementFee,
+    fundLife: FUND.term,
+    deploymentPeriod: FUND.deploymentPeriod,
+    carry: FUND.carry,
   },
   portfolioAllocation: {
-    numberOfInvestments: '35',
-    averageCheckSize: '$2M',
+    numberOfInvestments: FUND.targetPortfolio,
+    averageCheckSize: FUND.avgCheck,
     successRate: '75%',
   },
   returnMetrics: {
