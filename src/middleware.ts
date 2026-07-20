@@ -14,6 +14,9 @@ export default withAuth(
     }
   },
   {
+    pages: {
+      signIn: '/auth/signin',
+    },
     callbacks: {
       authorized: ({ token }) => {
         // In development, bypass authentication completely

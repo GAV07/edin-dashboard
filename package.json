@@ -48,7 +48,7 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^5.11.4",
+    "@netlify/plugin-nextjs": "^5.15.12",
     "@types/bcryptjs": "^2.4.6",
     "@types/google-spreadsheet": "^4.0.0"
   }
