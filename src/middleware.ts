@@ -39,7 +39,7 @@ export const config = {
     '/pro-forma/:path*',
     '/portfolio-support/:path*',
     '/team/:path*',
-    '/legal/:path*',
+    '/documents/:path*',
     '/faq/:path*',
     '/edin-os/:path*',
     '/admin/:path*'

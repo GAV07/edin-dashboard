@@ -12,6 +12,7 @@ const ROUTE_TITLE: Record<string, string> = {
   '/venture-bond': 'Venture Bond',
   '/deal-flow': 'Deal Flow',
   '/portfolio-support': 'Portfolio Support',
+  '/documents': 'Documents & Legal',
   '/edin-os': 'EdinOS',
   '/team': 'Team & Track Record',
   '/legal': 'Legal & Compliance',

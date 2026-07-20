@@ -7,7 +7,7 @@ import {
   IconUsers,
   IconUsersGroup,
   IconHeartHandshake,
-  IconScale,
+  IconFolderOpen,
 } from "@tabler/icons-react";
 
 export const navGroups = [
@@ -31,8 +31,8 @@ export const navGroups = [
     group: "The Firm",
     items: [
       { href: "/team", label: "Team & Track Record", icon: IconUsers },
+      { href: "/documents", label: "Documents & Legal", icon: IconFolderOpen },
       { href: "/edin-os", label: "EdinOS", icon: IconDeviceLaptop },
-      { href: "/legal", label: "Legal & Compliance", icon: IconScale },
     ],
   },
 ];
